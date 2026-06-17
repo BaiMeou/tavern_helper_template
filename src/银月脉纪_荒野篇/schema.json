@@ -1,0 +1,1708 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "晓光": {
+      "type": "object",
+      "properties": {
+        "基础属性": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "体质": {
+              "default": 2,
+              "type": "number"
+            },
+            "敏捷": {
+              "default": 2,
+              "type": "number"
+            },
+            "智力": {
+              "default": 8,
+              "type": "number"
+            },
+            "意志": {
+              "default": 4,
+              "type": "number"
+            },
+            "感知": {
+              "default": 4,
+              "type": "number"
+            }
+          }
+        },
+        "生存状态": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "饥饿": {
+              "default": 85,
+              "type": "number"
+            },
+            "口渴": {
+              "default": 55,
+              "type": "number"
+            },
+            "体温": {
+              "default": 36.8,
+              "type": "number"
+            },
+            "精力": {
+              "default": 38,
+              "type": "number"
+            },
+            "健康": {
+              "default": 78,
+              "type": "number"
+            },
+            "精神": {
+              "default": 75,
+              "type": "number"
+            }
+          }
+        },
+        "属性成长": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "体质XP": {
+              "default": 20,
+              "type": "number"
+            },
+            "敏捷XP": {
+              "default": 45,
+              "type": "number"
+            },
+            "意志XP": {
+              "default": 10,
+              "type": "number"
+            },
+            "感知XP": {
+              "default": 80,
+              "type": "number"
+            }
+          }
+        },
+        "营养代谢": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "今日摄入": {
+              "default": {},
+              "type": "object",
+              "properties": {
+                "卡路里": {
+                  "default": 1000,
+                  "type": "number"
+                },
+                "蛋白质克": {
+                  "default": 18,
+                  "type": "number"
+                },
+                "脂肪克": {
+                  "default": 22,
+                  "type": "number"
+                },
+                "碳水克": {
+                  "default": 180,
+                  "type": "number"
+                }
+              }
+            },
+            "体脂储备": {
+              "default": 18,
+              "type": "number"
+            },
+            "基础代谢率": {
+              "default": 1450,
+              "type": "number"
+            },
+            "蛋白质平衡": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "伤口": {
+          "default": {
+            "右手擦伤": {
+              "位置": "右手掌外侧",
+              "类型": "擦伤",
+              "严重度": "轻微",
+              "愈合阶段": "结痂",
+              "感染风险": "低",
+              "对行动影响": "抓握稍感刺痛，不影响主要活动",
+              "处理方式": "已自然结痂，未做特殊处理",
+              "预计愈合天数": 3,
+              "受伤天数": 1
+            }
+          },
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "伤口标识"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "位置": {
+                "type": "string"
+              },
+              "类型": {
+                "type": "string",
+                "enum": [
+                  "割伤",
+                  "擦伤",
+                  "挫伤",
+                  "骨折",
+                  "冻伤",
+                  "烧伤",
+                  "刺伤",
+                  "扭伤",
+                  "拉伤"
+                ]
+              },
+              "严重度": {
+                "type": "string",
+                "enum": [
+                  "轻微",
+                  "中度",
+                  "严重",
+                  "危急"
+                ]
+              },
+              "愈合阶段": {
+                "type": "string",
+                "enum": [
+                  "出血",
+                  "凝血",
+                  "结痂",
+                  "愈合中",
+                  "已愈合",
+                  "留疤"
+                ]
+              },
+              "感染风险": {
+                "type": "string",
+                "enum": [
+                  "低",
+                  "中",
+                  "高",
+                  "已感染"
+                ]
+              },
+              "对行动影响": {
+                "type": "string"
+              },
+              "处理方式": {
+                "type": "string"
+              },
+              "预计愈合天数": {
+                "type": "number"
+              },
+              "受伤天数": {
+                "default": 0,
+                "type": "number"
+              }
+            },
+            "required": [
+              "位置",
+              "类型",
+              "严重度",
+              "愈合阶段",
+              "感染风险",
+              "对行动影响",
+              "处理方式",
+              "预计愈合天数"
+            ]
+          }
+        },
+        "疾病": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "病名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "症状": {
+                "type": "string"
+              },
+              "严重度": {
+                "type": "string",
+                "enum": [
+                  "潜伏期",
+                  "轻微",
+                  "中度",
+                  "严重",
+                  "危急"
+                ]
+              },
+              "阶段": {
+                "type": "string"
+              },
+              "传染性": {
+                "type": "string",
+                "enum": [
+                  "无",
+                  "低",
+                  "中",
+                  "高"
+                ]
+              },
+              "处理方式": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "症状",
+              "严重度",
+              "阶段",
+              "传染性",
+              "处理方式"
+            ]
+          }
+        },
+        "疲劳": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "肌肉疲劳": {
+              "default": 35,
+              "type": "number"
+            },
+            "睡眠债务": {
+              "default": 4,
+              "type": "number"
+            },
+            "累积负荷": {
+              "default": "疲惫",
+              "type": "string",
+              "enum": [
+                "轻松",
+                "正常",
+                "疲惫",
+                "透支",
+                "极限"
+              ]
+            }
+          }
+        },
+        "狐类特性": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "狐尾湿度": {
+              "default": "干燥",
+              "type": "string",
+              "enum": [
+                "干燥",
+                "微湿",
+                "湿透"
+              ]
+            },
+            "九尾状态": {
+              "default": "合并一尾",
+              "type": "string",
+              "enum": [
+                "合并一尾",
+                "部分展开",
+                "完全展开"
+              ]
+            }
+          }
+        },
+        "执念": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "状态": {
+              "default": "稳固",
+              "type": "string",
+              "enum": [
+                "稳固",
+                "动摇",
+                "崩溃"
+              ]
+            },
+            "强度": {
+              "default": 85,
+              "type": "number"
+            },
+            "近期波动": {
+              "default": "",
+              "type": "string"
+            },
+            "核心锚点": {
+              "default": "铃铛还在就还有家——主人一定在找晓光",
+              "type": "string"
+            }
+          }
+        },
+        "睡眠": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "上次睡眠时长": {
+              "default": 0,
+              "type": "number"
+            },
+            "睡眠债务": {
+              "default": 4,
+              "type": "number"
+            },
+            "睡眠质量": {
+              "default": "未睡",
+              "type": "string",
+              "enum": [
+                "未睡",
+                "浅眠断续",
+                "浅眠",
+                "正常",
+                "深睡"
+              ]
+            },
+            "最近中断": {
+              "default": "尚未入睡",
+              "type": "string"
+            },
+            "床铺类型": {
+              "default": "无",
+              "type": "string",
+              "enum": [
+                "无",
+                "裸地",
+                "草垫",
+                "保温毯",
+                "帐篷",
+                "庇护所床铺"
+              ]
+            }
+          }
+        },
+        "第六感": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "听觉预警": {
+              "default": {},
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "description": "方位"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "声音类型": {
+                    "type": "string"
+                  },
+                  "距离估计": {
+                    "type": "string"
+                  },
+                  "威胁评估": {
+                    "type": "string",
+                    "enum": [
+                      "无害",
+                      "注意",
+                      "警惕",
+                      "危险"
+                    ]
+                  }
+                },
+                "required": [
+                  "声音类型",
+                  "距离估计",
+                  "威胁评估"
+                ]
+              }
+            },
+            "嗅觉探测": {
+              "default": {},
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "description": "气味源"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "气味类型": {
+                    "type": "string"
+                  },
+                  "强度": {
+                    "type": "string",
+                    "enum": [
+                      "微弱",
+                      "明显",
+                      "浓烈"
+                    ]
+                  },
+                  "方向": {
+                    "type": "string"
+                  },
+                  "关联信息": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "气味类型",
+                  "强度",
+                  "方向",
+                  "关联信息"
+                ]
+              }
+            },
+            "灵力感知": {
+              "default": "灵力极度稀薄——几乎什么都察觉不到，只有颈间铃铛微弱地温暖着",
+              "type": "string"
+            },
+            "时间感知偏差": {
+              "default": "正常",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "时间": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "天数": {
+              "default": 0,
+              "type": "number"
+            },
+            "时段": {
+              "default": "清晨",
+              "type": "string",
+              "enum": [
+                "黎明",
+                "清晨",
+                "正午",
+                "午后",
+                "黄昏",
+                "夜晚",
+                "深夜"
+              ]
+            },
+            "天气": {
+              "default": "阴",
+              "type": "string",
+              "enum": [
+                "晴",
+                "多云",
+                "阴",
+                "微雨",
+                "大雨",
+                "暴风雨",
+                "雾",
+                "雪",
+                "暴风雪"
+              ]
+            },
+            "季节": {
+              "default": "深秋",
+              "type": "string",
+              "enum": [
+                "深秋",
+                "初冬",
+                "严冬",
+                "早春"
+              ]
+            },
+            "月相": {
+              "default": "残月",
+              "type": "string",
+              "enum": [
+                "新月",
+                "蛾眉月",
+                "上弦月",
+                "盈凸月",
+                "满月",
+                "亏凸月",
+                "下弦月",
+                "残月"
+              ]
+            }
+          }
+        },
+        "地形": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "当前位置": {
+              "default": "飞机残骸西侧 — 机身中部与驾驶舱之间",
+              "type": "string"
+            },
+            "北方": {
+              "default": "针叶林深处 — 狼群嚎叫方向，松鸡低处活动",
+              "type": "string"
+            },
+            "南方": {
+              "default": "草甸与溪流 — 约200m有水声，但鸟群曾惊飞(大型动物?)",
+              "type": "string"
+            },
+            "东方": {
+              "default": "飞机残骸 — 行李舱已搜刮，驾驶舱有未读飞行日志",
+              "type": "string"
+            },
+            "西方": {
+              "default": "陡峭碎石坡 — 视野开阔但攀爬消耗极大",
+              "type": "string"
+            }
+          }
+        },
+        "地势": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "坡度": {
+              "default": "缓坡",
+              "type": "string",
+              "enum": [
+                "平坦",
+                "缓坡",
+                "中坡",
+                "陡坡",
+                "悬崖"
+              ]
+            },
+            "地表类型": {
+              "default": "针叶铺地",
+              "type": "string",
+              "enum": [
+                "碎石",
+                "泥地",
+                "草地",
+                "针叶铺地",
+                "雪地",
+                "岩石",
+                "沙地"
+              ]
+            },
+            "路径质量": {
+              "default": "开阔",
+              "type": "string",
+              "enum": [
+                "无路",
+                "兽径",
+                "小路",
+                "清晰路径",
+                "开阔"
+              ]
+            },
+            "迷路风险": {
+              "default": "低",
+              "type": "string",
+              "enum": [
+                "低",
+                "中",
+                "高",
+                "极高"
+              ]
+            }
+          }
+        },
+        "地标": {
+          "default": {
+            "飞机残骸": {
+              "名称": "飞机残骸",
+              "方位": "东",
+              "距离": "0m (当前所在)",
+              "类型": "资源点",
+              "描述": "小型私人飞机残骸，驾驶舱有未读飞行日志，行李舱已搜刮完毕，机身中部仍有可用金属件",
+              "已探索": true
+            },
+            "溪流南": {
+              "名称": "南侧溪流",
+              "方位": "南",
+              "距离": "约200m",
+              "类型": "水源",
+              "描述": "可听到水流声，但曾惊起鸟群——可能有大型动物在附近饮水",
+              "已探索": false
+            }
+          },
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "地标名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "type": "string"
+              },
+              "方位": {
+                "type": "string",
+                "enum": [
+                  "北",
+                  "南",
+                  "东",
+                  "西",
+                  "东北",
+                  "西北",
+                  "东南",
+                  "西南"
+                ]
+              },
+              "距离": {
+                "type": "string"
+              },
+              "类型": {
+                "type": "string",
+                "enum": [
+                  "水源",
+                  "庇护所",
+                  "资源点",
+                  "遗迹",
+                  "危险区",
+                  "制高点",
+                  "路径",
+                  "采集点",
+                  "狩猎点"
+                ]
+              },
+              "描述": {
+                "type": "string"
+              },
+              "已探索": {
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "名称",
+              "方位",
+              "距离",
+              "类型",
+              "描述"
+            ]
+          }
+        },
+        "天气详情": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "温度": {
+              "default": 7,
+              "type": "number"
+            },
+            "体感温度": {
+              "default": 5,
+              "type": "number"
+            },
+            "湿度": {
+              "default": 68,
+              "type": "number"
+            },
+            "风速": {
+              "default": 2,
+              "type": "number"
+            },
+            "风向": {
+              "default": "西北",
+              "type": "string",
+              "enum": [
+                "北",
+                "南",
+                "东",
+                "西",
+                "东北",
+                "西北",
+                "东南",
+                "西南",
+                "无风"
+              ]
+            },
+            "地表状况": {
+              "default": "微湿",
+              "type": "string",
+              "enum": [
+                "干燥",
+                "微湿",
+                "泥泞",
+                "冻结",
+                "积雪",
+                "冰面"
+              ]
+            },
+            "树冠覆盖率": {
+              "default": 65,
+              "type": "number"
+            },
+            "气压趋势": {
+              "default": "稳定",
+              "type": "string",
+              "enum": [
+                "上升",
+                "稳定",
+                "下降"
+              ]
+            },
+            "光照明度": {
+              "default": "阴翳",
+              "type": "string",
+              "enum": [
+                "全暗",
+                "微光",
+                "阴翳",
+                "明亮",
+                "直射"
+              ]
+            }
+          }
+        },
+        "水文": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "溪流水位": {
+              "default": "低位",
+              "type": "string",
+              "enum": [
+                "干涸",
+                "枯水",
+                "低位",
+                "正常",
+                "高位",
+                "泛滥"
+              ]
+            },
+            "流速": {
+              "default": "缓慢",
+              "type": "string",
+              "enum": [
+                "静止",
+                "缓慢",
+                "中等",
+                "湍急"
+              ]
+            },
+            "浑浊度": {
+              "default": "微浊",
+              "type": "string",
+              "enum": [
+                "清澈",
+                "微浊",
+                "浑浊",
+                "泥浆"
+              ]
+            },
+            "水生生物": {
+              "default": "未观察到鱼类——溪流太浅且寒冷",
+              "type": "string"
+            },
+            "地下水可获取性": {
+              "default": "需深挖",
+              "type": "string",
+              "enum": [
+                "不可及",
+                "需深挖",
+                "浅挖可得",
+                "地表渗出"
+              ]
+            },
+            "雨水收集效率": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "天体": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "日出时分": {
+              "default": "06:47",
+              "type": "string"
+            },
+            "日落时分": {
+              "default": "17:02",
+              "type": "string"
+            },
+            "月相": {
+              "default": "残月",
+              "type": "string",
+              "enum": [
+                "新月",
+                "蛾眉月",
+                "上弦月",
+                "盈凸月",
+                "满月",
+                "亏凸月",
+                "下弦月",
+                "残月"
+              ]
+            },
+            "可见星座": {
+              "default": "猎户座清晰——深秋夜空，北斗低垂于北面针叶林梢",
+              "type": "string"
+            },
+            "夜间能见度": {
+              "default": "月光可辨",
+              "type": "string",
+              "enum": [
+                "漆黑",
+                "微光",
+                "月光可辨",
+                "明亮"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "装备": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "负重": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "当前": {
+              "default": 7.5,
+              "type": "number"
+            },
+            "安全上限": {
+              "default": 9,
+              "type": "number"
+            }
+          }
+        },
+        "物品栏": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "物品唯一标识名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "type": "string"
+              },
+              "分类": {
+                "type": "string",
+                "enum": [
+                  "工具",
+                  "容器",
+                  "食物",
+                  "庇护",
+                  "武器",
+                  "医疗",
+                  "电子",
+                  "特殊",
+                  "材料",
+                  "自制",
+                  "弹药"
+                ]
+              },
+              "重量": {
+                "type": "number"
+              },
+              "位置": {
+                "type": "string",
+                "enum": [
+                  "手持",
+                  "背包",
+                  "腰挂",
+                  "尾藏",
+                  "颈间",
+                  "穿着",
+                  "营地存储",
+                  "地面"
+                ]
+              },
+              "描述": {
+                "type": "string"
+              },
+              "耐久度": {
+                "type": "number"
+              },
+              "数量": {
+                "type": "number"
+              },
+              "容量": {
+                "type": "number"
+              },
+              "当前容量": {
+                "type": "number"
+              },
+              "保质期天": {
+                "type": "number"
+              },
+              "锋利度": {
+                "type": "number"
+              },
+              "电量": {
+                "type": "number"
+              },
+              "使用次数剩余": {
+                "type": "number"
+              },
+              "保暖值": {
+                "type": "number"
+              },
+              "防风值": {
+                "type": "number"
+              },
+              "防水性": {
+                "type": "string",
+                "enum": [
+                  "不防水",
+                  "防泼水",
+                  "防水",
+                  "完全防水"
+                ]
+              },
+              "湿度": {
+                "type": "number"
+              },
+              "破损度": {
+                "type": "number"
+              },
+              "燃烧时长分钟": {
+                "type": "number"
+              },
+              "结构强度": {
+                "type": "number"
+              },
+              "材料类型": {
+                "type": "string",
+                "enum": [
+                  "硬木",
+                  "软木",
+                  "燧石",
+                  "花岗岩",
+                  "石灰岩",
+                  "砂岩",
+                  "黏土",
+                  "骨",
+                  "筋",
+                  "皮",
+                  "纤维",
+                  "金属",
+                  "布料",
+                  "塑料"
+                ]
+              }
+            },
+            "required": [
+              "名称",
+              "分类",
+              "重量",
+              "位置",
+              "描述"
+            ]
+          }
+        },
+        "容器": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "容器名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "类型": {
+                "type": "string",
+                "enum": [
+                  "金属壶",
+                  "折叠水袋",
+                  "皮水囊",
+                  "陶罐",
+                  "竹筒",
+                  "塑料瓶",
+                  "临时容器"
+                ]
+              },
+              "容量": {
+                "type": "number"
+              },
+              "当前装载": {
+                "type": "number"
+              },
+              "可加热": {
+                "type": "boolean"
+              },
+              "密封性": {
+                "type": "string",
+                "enum": [
+                  "无盖",
+                  "简易覆盖",
+                  "密封",
+                  "完全密封"
+                ]
+              },
+              "装载内容": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "类型",
+              "容量",
+              "当前装载",
+              "可加热",
+              "密封性",
+              "装载内容"
+            ]
+          }
+        },
+        "衣物": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "衣物名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "部位": {
+                "type": "string",
+                "enum": [
+                  "头部",
+                  "上身",
+                  "下身",
+                  "脚部",
+                  "手部",
+                  "颈部",
+                  "全身"
+                ]
+              },
+              "保暖值": {
+                "type": "number"
+              },
+              "防风值": {
+                "type": "number"
+              },
+              "防水性": {
+                "type": "string",
+                "enum": [
+                  "不防水",
+                  "防泼水",
+                  "防水",
+                  "完全防水"
+                ]
+              },
+              "湿度": {
+                "default": 0,
+                "type": "number"
+              },
+              "破损度": {
+                "default": 0,
+                "type": "number"
+              },
+              "当前层次": {
+                "type": "string",
+                "enum": [
+                  "贴身",
+                  "中间层",
+                  "外层"
+                ]
+              }
+            },
+            "required": [
+              "部位",
+              "保暖值",
+              "防风值",
+              "防水性",
+              "当前层次"
+            ]
+          }
+        },
+        "手持": {
+          "default": "短柄斧",
+          "type": "string"
+        },
+        "穿着": {
+          "default": "破损的巫女服",
+          "type": "string"
+        }
+      }
+    },
+    "工坊": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "配方": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "配方名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "已解锁": {
+                "type": "boolean"
+              },
+              "所需材料": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "number"
+                }
+              },
+              "所需工具": {
+                "type": "string"
+              },
+              "效果描述": {
+                "type": "string"
+              },
+              "制作耗时分钟": {
+                "type": "number"
+              },
+              "所需智力": {
+                "default": 0,
+                "type": "number"
+              }
+            },
+            "required": [
+              "已解锁",
+              "所需材料",
+              "所需工具",
+              "效果描述",
+              "制作耗时分钟"
+            ]
+          }
+        },
+        "陷阱": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "陷阱标识"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "位置": {
+                "type": "string"
+              },
+              "类型": {
+                "type": "string",
+                "enum": [
+                  "绳索陷阱",
+                  "钢丝锯陷阱",
+                  "弹性拉索陷阱",
+                  "落穴陷阱",
+                  "网陷阱",
+                  "简易钓钩",
+                  "藤蔓陷阱"
+                ]
+              },
+              "状态": {
+                "type": "string",
+                "enum": [
+                  "布置中",
+                  "待机",
+                  "已触发",
+                  "捕获成功",
+                  "捕获逃脱",
+                  "已损坏",
+                  "已回收"
+                ]
+              },
+              "捕获物": {
+                "default": "",
+                "type": "string"
+              },
+              "布置天数": {
+                "default": 0,
+                "type": "number"
+              },
+              "重置需求": {
+                "default": "",
+                "type": "string"
+              }
+            },
+            "required": [
+              "位置",
+              "类型",
+              "状态"
+            ]
+          }
+        }
+      }
+    },
+    "图鉴": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "野兽": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "生物名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "type": "string"
+              },
+              "分类": {
+                "type": "string",
+                "enum": [
+                  "哺乳类",
+                  "鸟类",
+                  "爬行类",
+                  "鱼类",
+                  "节肢类",
+                  "妖兽",
+                  "不明"
+                ]
+              },
+              "危险等级": {
+                "type": "string",
+                "enum": [
+                  "无害",
+                  "警惕",
+                  "危险",
+                  "致命"
+                ]
+              },
+              "体型": {
+                "type": "string",
+                "enum": [
+                  "微型",
+                  "小型",
+                  "中型",
+                  "大型",
+                  "巨型"
+                ]
+              },
+              "活动时段": {
+                "type": "string"
+              },
+              "习性": {
+                "type": "string"
+              },
+              "足迹描述": {
+                "type": "string"
+              },
+              "叫声描述": {
+                "type": "string"
+              },
+              "遭遇记录": {
+                "type": "string"
+              },
+              "首次发现地点": {
+                "type": "string"
+              },
+              "首次发现时间": {
+                "type": "string"
+              },
+              "是否可食用": {
+                "default": "未知",
+                "type": "string"
+              },
+              "掉落物": {
+                "default": "未知",
+                "type": "string"
+              }
+            },
+            "required": [
+              "名称",
+              "分类",
+              "危险等级",
+              "体型",
+              "活动时段",
+              "习性",
+              "足迹描述",
+              "叫声描述",
+              "遭遇记录",
+              "首次发现地点",
+              "首次发现时间"
+            ]
+          }
+        },
+        "草药": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "植物名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "type": "string"
+              },
+              "识别特征": {
+                "type": "string"
+              },
+              "药用功效": {
+                "type": "string"
+              },
+              "采集部位": {
+                "type": "string"
+              },
+              "处理方式": {
+                "type": "string"
+              },
+              "禁忌": {
+                "default": "未知",
+                "type": "string"
+              },
+              "发现地点": {
+                "type": "string"
+              },
+              "季节": {
+                "type": "string"
+              },
+              "采集数量": {
+                "default": 0,
+                "type": "number"
+              }
+            },
+            "required": [
+              "名称",
+              "识别特征",
+              "药用功效",
+              "采集部位",
+              "处理方式",
+              "发现地点",
+              "季节"
+            ]
+          }
+        },
+        "足迹": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "发现标识"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "发现地点": {
+                "type": "string"
+              },
+              "推测生物": {
+                "type": "string"
+              },
+              "新鲜度": {
+                "type": "string",
+                "enum": [
+                  "极新",
+                  "新",
+                  "较新",
+                  "旧",
+                  "极旧"
+                ]
+              },
+              "方向": {
+                "type": "string"
+              },
+              "备注": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "发现地点",
+              "推测生物",
+              "新鲜度",
+              "方向",
+              "备注"
+            ]
+          }
+        },
+        "日志": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "日期 第X天 HH:MM"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "营地": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "庇护所": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "类型": {
+              "default": "无",
+              "type": "string",
+              "enum": [
+                "无",
+                "临时草铺",
+                "狐尾裹身",
+                "保温毯帐篷",
+                "天然岩洞",
+                "木架帐篷",
+                "加固庇护所"
+              ]
+            },
+            "完整度": {
+              "default": 0,
+              "type": "number"
+            },
+            "舒适度": {
+              "default": 0,
+              "type": "number"
+            },
+            "防水性": {
+              "default": "无",
+              "type": "string",
+              "enum": [
+                "无",
+                "差",
+                "一般",
+                "好",
+                "极好"
+              ]
+            },
+            "防风性": {
+              "default": "无",
+              "type": "string",
+              "enum": [
+                "无",
+                "差",
+                "一般",
+                "好",
+                "极好"
+              ]
+            },
+            "内部温差": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "篝火": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "状态": {
+              "default": "未点燃",
+              "type": "string",
+              "enum": [
+                "未点燃",
+                "引火中",
+                "点燃",
+                "旺盛",
+                "衰减",
+                "余烬",
+                "熄灭"
+              ]
+            },
+            "中心温度": {
+              "default": 0,
+              "type": "number"
+            },
+            "热辐射半径": {
+              "default": 0,
+              "type": "number"
+            },
+            "燃料类型": {
+              "default": "无",
+              "type": "string"
+            },
+            "燃料余量": {
+              "default": 0,
+              "type": "number"
+            },
+            "消耗率": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        },
+        "储水": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "容器名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "容器": {
+                "type": "string"
+              },
+              "容量": {
+                "type": "number"
+              },
+              "水质": {
+                "type": "string",
+                "enum": [
+                  "生水",
+                  "沉淀中",
+                  "煮沸中",
+                  "可饮用",
+                  "已污染"
+                ]
+              },
+              "收集日期": {
+                "type": "string"
+              },
+              "来源": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "容器",
+              "容量",
+              "水质",
+              "收集日期",
+              "来源"
+            ]
+          }
+        },
+        "食物库存": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "食物名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "物品引用": {
+                "type": "string"
+              },
+              "数量": {
+                "type": "number"
+              },
+              "单位": {
+                "type": "string",
+                "enum": [
+                  "个",
+                  "块",
+                  "份",
+                  "条",
+                  "把",
+                  "片",
+                  "块菌"
+                ]
+              },
+              "收集日期": {
+                "type": "string"
+              },
+              "保质期剩余天": {
+                "type": "number"
+              },
+              "腐败风险": {
+                "default": "安全",
+                "type": "string",
+                "enum": [
+                  "安全",
+                  "需尽快食用",
+                  "即将腐败",
+                  "已腐败"
+                ]
+              }
+            },
+            "required": [
+              "物品引用",
+              "数量",
+              "单位",
+              "收集日期",
+              "保质期剩余天"
+            ]
+          }
+        }
+      }
+    },
+    "环境感知": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "声学": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "环境噪声音量": {
+              "default": "安静",
+              "type": "string",
+              "enum": [
+                "死寂",
+                "安静",
+                "轻微",
+                "正常",
+                "嘈杂"
+              ]
+            },
+            "晓光自身噪音": {
+              "default": "轻微",
+              "type": "string",
+              "enum": [
+                "无声",
+                "极低",
+                "轻微",
+                "明显",
+                "嘈杂"
+              ]
+            },
+            "可闻距离": {
+              "default": 150,
+              "type": "number"
+            }
+          }
+        },
+        "气味": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "主导气味": {
+              "default": "潮湿泥土、松针腐叶、远处隐约烟熏(残骸余烬)",
+              "type": "string"
+            },
+            "晓光自身气味强度": {
+              "default": "轻微",
+              "type": "string",
+              "enum": [
+                "无",
+                "微弱",
+                "轻微",
+                "明显",
+                "浓烈"
+              ]
+            },
+            "嗅觉可追踪距离": {
+              "default": 80,
+              "type": "number"
+            },
+            "风对气味的携带": {
+              "default": "西北微风将残骸烟味吹向东南",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "晓光"
+  ]
+}
