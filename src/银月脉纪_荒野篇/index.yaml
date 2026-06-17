@@ -560,7 +560,7 @@
         ```
         <body>
         <script>
-        $('body').load('https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/银月脉纪_荒野篇/界面/状态栏/index.html')
+        $('body').load('https://testingcf.jsdelivr.net/gh/BaiMeou/tavern_helper_template/dist/银月脉纪_荒野篇/界面/状态栏/index.html')
         </script>
         </body>
         ```
@@ -585,18 +585,18 @@
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/变量结构/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/BaiMeou/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/变量结构/index.js';
 
       - 名称: 系统辅助
         id: 3a91c882-e501-4d77-b123-8cd02f3456a7
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/系统辅助/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/BaiMeou/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/系统辅助/index.js';
 
       - 名称: 立即事件
         id: 7b32d941-f612-5e88-c234-9de03f4568b8
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/立即事件/index.js';
+          import 'https://testingcf.jsdelivr.net/gh/BaiMeou/tavern_helper_template/dist/银月脉纪_荒野篇/脚本/立即事件/index.js';
