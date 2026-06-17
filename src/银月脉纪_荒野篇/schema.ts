@@ -1,0 +1,539 @@
+// ═══════════════════════════════════════════════════════════════
+// 银月脉纪：荒野篇 — MVU 变量结构
+// 所有动态集合使用 z.record(z.string(), ...) — AI 随时 insert 新条目
+// $前缀字段为只读计算属性 — AI 不应更新，由 transform 自动生成
+// ═══════════════════════════════════════════════════════════════
+
+export const Schema = z
+  .object({
+    // ═══════════════════════════════════════════════════════
+    // 晓光 — 角色核心
+    // ═══════════════════════════════════════════════════════
+    晓光: z
+      .object({
+        基础属性: z
+          .object({
+            体质: z.coerce.number().prefault(2).transform(v => _.clamp(v, 1, 20)),
+            敏捷: z.coerce.number().prefault(2).transform(v => _.clamp(v, 1, 20)),
+            智力: z.coerce.number().prefault(8).transform(v => _.clamp(v, 1, 20)),
+            意志: z.coerce.number().prefault(4).transform(v => _.clamp(v, 1, 20)),
+            感知: z.coerce.number().prefault(4).transform(v => _.clamp(v, 1, 20)),
+          })
+          .prefault({}),
+
+        生存状态: z
+          .object({
+            饥饿: z.coerce.number().prefault(85).transform(v => _.clamp(v, 0, 100)),
+            口渴: z.coerce.number().prefault(55).transform(v => _.clamp(v, 0, 100)),
+            体温: z.coerce.number().prefault(36.8).transform(v => _.clamp(v, 30, 43)),
+            精力: z.coerce.number().prefault(38).transform(v => _.clamp(v, 0, 100)),
+            健康: z.coerce.number().prefault(78).transform(v => _.clamp(v, 0, 100)),
+            精神: z.coerce.number().prefault(75).transform(v => _.clamp(v, 0, 100)),
+          })
+          .prefault({}),
+
+        属性成长: z
+          .object({
+            体质XP: z.coerce.number().prefault(20).transform(v => _.clamp(v, 0, 100)),
+            敏捷XP: z.coerce.number().prefault(45).transform(v => _.clamp(v, 0, 100)),
+            意志XP: z.coerce.number().prefault(10).transform(v => _.clamp(v, 0, 100)),
+            感知XP: z.coerce.number().prefault(80).transform(v => _.clamp(v, 0, 100)),
+          })
+          .prefault({}),
+
+        营养代谢: z
+          .object({
+            今日摄入: z
+              .object({
+                卡路里: z.coerce.number().prefault(1000),
+                蛋白质克: z.coerce.number().prefault(18),
+                脂肪克: z.coerce.number().prefault(22),
+                碳水克: z.coerce.number().prefault(180),
+              })
+              .prefault({}),
+            体脂储备: z.coerce.number().prefault(18).transform(v => _.clamp(v, 3, 50)),
+            基础代谢率: z.coerce.number().prefault(1450),
+            蛋白质平衡: z.coerce.number().prefault(0),
+          })
+          .prefault({}),
+
+        伤口: z
+          .record(
+            z.string().describe('伤口标识'),
+            z.object({
+              位置: z.string(),
+              类型: z.enum(['割伤', '擦伤', '挫伤', '骨折', '冻伤', '烧伤', '刺伤', '扭伤', '拉伤']),
+              严重度: z.enum(['轻微', '中度', '严重', '危急']),
+              愈合阶段: z.enum(['出血', '凝血', '结痂', '愈合中', '已愈合', '留疤']),
+              感染风险: z.enum(['低', '中', '高', '已感染']),
+              对行动影响: z.string(),
+              处理方式: z.string(),
+              预计愈合天数: z.coerce.number(),
+              受伤天数: z.coerce.number().prefault(0),
+            }),
+          )
+          .prefault({
+            右手擦伤: {
+              位置: '右手掌外侧',
+              类型: '擦伤',
+              严重度: '轻微',
+              愈合阶段: '结痂',
+              感染风险: '低',
+              对行动影响: '抓握稍感刺痛，不影响主要活动',
+              处理方式: '已自然结痂，未做特殊处理',
+              预计愈合天数: 3,
+              受伤天数: 1,
+            },
+          }),
+
+        疾病: z
+          .record(
+            z.string().describe('病名'),
+            z.object({
+              症状: z.string(),
+              严重度: z.enum(['潜伏期', '轻微', '中度', '严重', '危急']),
+              阶段: z.string(),
+              传染性: z.enum(['无', '低', '中', '高']),
+              处理方式: z.string(),
+            }),
+          )
+          .prefault({}),
+
+        疲劳: z
+          .object({
+            肌肉疲劳: z.coerce.number().prefault(35).transform(v => _.clamp(v, 0, 100)),
+            睡眠债务: z.coerce.number().prefault(4).transform(v => _.clamp(v, 0, 48)),
+            累积负荷: z.enum(['轻松', '正常', '疲惫', '透支', '极限']).prefault('疲惫'),
+          })
+          .prefault({}),
+
+        狐类特性: z
+          .object({
+            狐尾湿度: z.enum(['干燥', '微湿', '湿透']).prefault('干燥'),
+            九尾状态: z.enum(['合并一尾', '部分展开', '完全展开']).prefault('合并一尾'),
+          })
+          .prefault({}),
+
+        执念: z
+          .object({
+            状态: z.enum(['稳固', '动摇', '崩溃']).prefault('稳固'),
+            强度: z.coerce.number().prefault(85).transform(v => _.clamp(v, 0, 100)),
+            近期波动: z.string().prefault(''),
+            核心锚点: z.string().prefault('铃铛还在就还有家——主人一定在找晓光'),
+          })
+          .prefault({}),
+
+        睡眠: z
+          .object({
+            上次睡眠时长: z.coerce.number().prefault(0),
+            睡眠债务: z.coerce.number().prefault(4).transform(v => _.clamp(v, 0, 48)),
+            睡眠质量: z.enum(['未睡', '浅眠断续', '浅眠', '正常', '深睡']).prefault('未睡'),
+            最近中断: z.string().prefault('尚未入睡'),
+            床铺类型: z.enum(['无', '裸地', '草垫', '保温毯', '帐篷', '庇护所床铺']).prefault('无'),
+          })
+          .prefault({}),
+
+        第六感: z
+          .object({
+            听觉预警: z
+              .record(z.string().describe('方位'), z.object({
+                声音类型: z.string(),
+                距离估计: z.string(),
+                威胁评估: z.enum(['无害', '注意', '警惕', '危险']),
+              }))
+              .prefault({}),
+            嗅觉探测: z
+              .record(z.string().describe('气味源'), z.object({
+                气味类型: z.string(),
+                强度: z.enum(['微弱', '明显', '浓烈']),
+                方向: z.string(),
+                关联信息: z.string(),
+              }))
+              .prefault({}),
+            灵力感知: z.string().prefault('灵力极度稀薄——几乎什么都察觉不到，只有颈间铃铛微弱地温暖着'),
+            时间感知偏差: z.string().prefault('正常'),
+          })
+          .prefault({}),
+      })
+      .transform(data => {
+        const 精神 = data.生存状态.精神;
+        return {
+          ...data,
+          $精神区间:
+            精神 >= 80 ? '稳定' :
+            精神 >= 50 ? '压抑' :
+            精神 >= 25 ? '临界' : '崩溃',
+          $思维加速可用: data.基础属性.智力 >= 8,
+        };
+      }),
+
+    // ═══════════════════════════════════════════════════════
+    // 世界 — 环境/时间/地形/天气/水文/天体
+    // ═══════════════════════════════════════════════════════
+    世界: z
+      .object({
+        时间: z
+          .object({
+            天数: z.coerce.number().prefault(0),
+            时段: z.enum(['黎明', '清晨', '正午', '午后', '黄昏', '夜晚', '深夜']).prefault('清晨'),
+            天气: z.enum(['晴', '多云', '阴', '微雨', '大雨', '暴风雨', '雾', '雪', '暴风雪']).prefault('阴'),
+            季节: z.enum(['深秋', '初冬', '严冬', '早春']).prefault('深秋'),
+            月相: z.enum(['新月', '蛾眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月']).prefault('残月'),
+          })
+          .prefault({}),
+
+        地形: z
+          .object({
+            当前位置: z.string().prefault('飞机残骸西侧 — 机身中部与驾驶舱之间'),
+            北方: z.string().prefault('针叶林深处 — 狼群嚎叫方向，松鸡低处活动'),
+            南方: z.string().prefault('草甸与溪流 — 约200m有水声，但鸟群曾惊飞(大型动物?)'),
+            东方: z.string().prefault('飞机残骸 — 行李舱已搜刮，驾驶舱有未读飞行日志'),
+            西方: z.string().prefault('陡峭碎石坡 — 视野开阔但攀爬消耗极大'),
+          })
+          .prefault({}),
+
+        地势: z
+          .object({
+            坡度: z.enum(['平坦', '缓坡', '中坡', '陡坡', '悬崖']).prefault('缓坡'),
+            地表类型: z.enum(['碎石', '泥地', '草地', '针叶铺地', '雪地', '岩石', '沙地']).prefault('针叶铺地'),
+            路径质量: z.enum(['无路', '兽径', '小路', '清晰路径', '开阔']).prefault('开阔'),
+            迷路风险: z.enum(['低', '中', '高', '极高']).prefault('低'),
+          })
+          .prefault({}),
+
+        地标: z
+          .record(z.string().describe('地标名'), z.object({
+            名称: z.string(),
+            方位: z.enum(['北', '南', '东', '西', '东北', '西北', '东南', '西南']),
+            距离: z.string(),
+            类型: z.enum(['水源', '庇护所', '资源点', '遗迹', '危险区', '制高点', '路径', '采集点', '狩猎点']),
+            描述: z.string(),
+            已探索: z.boolean().prefault(false),
+          }))
+          .prefault({
+            飞机残骸: {
+              名称: '飞机残骸',
+              方位: '东',
+              距离: '0m (当前所在)',
+              类型: '资源点',
+              描述: '小型私人飞机残骸，驾驶舱有未读飞行日志，行李舱已搜刮完毕，机身中部仍有可用金属件',
+              已探索: true,
+            },
+            溪流南: {
+              名称: '南侧溪流',
+              方位: '南',
+              距离: '约200m',
+              类型: '水源',
+              描述: '可听到水流声，但曾惊起鸟群——可能有大型动物在附近饮水',
+              已探索: false,
+            },
+          }),
+
+        天气详情: z
+          .object({
+            温度: z.coerce.number().prefault(7),
+            体感温度: z.coerce.number().prefault(5),
+            湿度: z.coerce.number().prefault(68).transform(v => _.clamp(v, 5, 100)),
+            风速: z.coerce.number().prefault(2).transform(v => _.clamp(v, 0, 40)),
+            风向: z.enum(['北', '南', '东', '西', '东北', '西北', '东南', '西南', '无风']).prefault('西北'),
+            地表状况: z.enum(['干燥', '微湿', '泥泞', '冻结', '积雪', '冰面']).prefault('微湿'),
+            树冠覆盖率: z.coerce.number().prefault(65).transform(v => _.clamp(v, 0, 100)),
+            气压趋势: z.enum(['上升', '稳定', '下降']).prefault('稳定'),
+            光照明度: z.enum(['全暗', '微光', '阴翳', '明亮', '直射']).prefault('阴翳'),
+          })
+          .prefault({}),
+
+        水文: z
+          .object({
+            溪流水位: z.enum(['干涸', '枯水', '低位', '正常', '高位', '泛滥']).prefault('低位'),
+            流速: z.enum(['静止', '缓慢', '中等', '湍急']).prefault('缓慢'),
+            浑浊度: z.enum(['清澈', '微浊', '浑浊', '泥浆']).prefault('微浊'),
+            水生生物: z.string().prefault('未观察到鱼类——溪流太浅且寒冷'),
+            地下水可获取性: z.enum(['不可及', '需深挖', '浅挖可得', '地表渗出']).prefault('需深挖'),
+            雨水收集效率: z.coerce.number().prefault(0),
+          })
+          .prefault({}),
+
+        天体: z
+          .object({
+            日出时分: z.string().prefault('06:47'),
+            日落时分: z.string().prefault('17:02'),
+            月相: z.enum(['新月', '蛾眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月']).prefault('残月'),
+            可见星座: z.string().prefault('猎户座清晰——深秋夜空，北斗低垂于北面针叶林梢'),
+            夜间能见度: z.enum(['漆黑', '微光', '月光可辨', '明亮']).prefault('月光可辨'),
+          })
+          .prefault({}),
+      })
+      .prefault({}),
+
+    // ═══════════════════════════════════════════════════════
+    // 装备 — 物品栏/容器/衣物/负重
+    // ═══════════════════════════════════════════════════════
+    装备: z
+      .object({
+        负重: z
+          .object({
+            当前: z.coerce.number().prefault(7.5),
+            安全上限: z.coerce.number().prefault(9),
+          })
+          .prefault({}),
+
+        物品栏: z
+          .record(z.string().describe('物品唯一标识名'), z.object({
+            名称: z.string(),
+            分类: z.enum([
+              '工具', '容器', '食物', '庇护', '武器', '医疗',
+              '电子', '特殊', '材料', '自制', '弹药',
+            ]),
+            重量: z.coerce.number(),
+            位置: z.enum(['手持', '背包', '腰挂', '尾藏', '颈间', '穿着', '营地存储', '地面']),
+            描述: z.string(),
+            耐久度: z.coerce.number().optional(),
+            数量: z.coerce.number().optional(),
+            容量: z.coerce.number().optional(),
+            当前容量: z.coerce.number().optional(),
+            保质期天: z.coerce.number().optional(),
+            锋利度: z.coerce.number().optional(),
+            电量: z.coerce.number().optional(),
+            使用次数剩余: z.coerce.number().optional(),
+            保暖值: z.coerce.number().optional(),
+            防风值: z.coerce.number().optional(),
+            防水性: z.enum(['不防水', '防泼水', '防水', '完全防水']).optional(),
+            湿度: z.coerce.number().optional(),
+            破损度: z.coerce.number().optional(),
+            燃烧时长分钟: z.coerce.number().optional(),
+            结构强度: z.coerce.number().optional(),
+            材料类型: z.enum(['硬木', '软木', '燧石', '花岗岩', '石灰岩', '砂岩', '黏土', '骨', '筋', '皮', '纤维', '金属', '布料', '塑料']).optional(),
+          }))
+          .prefault({}),
+
+        容器: z
+          .record(z.string().describe('容器名'), z.object({
+            类型: z.enum(['金属壶', '折叠水袋', '皮水囊', '陶罐', '竹筒', '塑料瓶', '临时容器']),
+            容量: z.coerce.number(),
+            当前装载: z.coerce.number(),
+            可加热: z.boolean(),
+            密封性: z.enum(['无盖', '简易覆盖', '密封', '完全密封']),
+            装载内容: z.string(),
+          }))
+          .prefault({}),
+
+        衣物: z
+          .record(z.string().describe('衣物名'), z.object({
+            部位: z.enum(['头部', '上身', '下身', '脚部', '手部', '颈部', '全身']),
+            保暖值: z.coerce.number(),
+            防风值: z.coerce.number(),
+            防水性: z.enum(['不防水', '防泼水', '防水', '完全防水']),
+            湿度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+            破损度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+            当前层次: z.enum(['贴身', '中间层', '外层']),
+          }))
+          .prefault({}),
+
+        手持: z.string().prefault('短柄斧'),
+        穿着: z.string().prefault('破损的巫女服'),
+      })
+      .prefault({}),
+
+    // ═══════════════════════════════════════════════════════
+    // 工坊 — 配方 + 陷阱
+    // ═══════════════════════════════════════════════════════
+    工坊: z
+      .object({
+        配方: z
+          .record(z.string().describe('配方名'), z.object({
+            已解锁: z.boolean(),
+            所需材料: z.record(z.string(), z.coerce.number()),
+            所需工具: z.string(),
+            效果描述: z.string(),
+            制作耗时分钟: z.coerce.number(),
+            所需智力: z.coerce.number().prefault(0),
+          }))
+          .prefault({}),
+
+        陷阱: z
+          .record(z.string().describe('陷阱标识'), z.object({
+            位置: z.string(),
+            类型: z.enum(['绳索陷阱', '钢丝锯陷阱', '弹性拉索陷阱', '落穴陷阱', '网陷阱', '简易钓钩', '藤蔓陷阱']),
+            状态: z.enum(['布置中', '待机', '已触发', '捕获成功', '捕获逃脱', '已损坏', '已回收']),
+            捕获物: z.string().prefault(''),
+            布置天数: z.coerce.number().prefault(0),
+            重置需求: z.string().prefault(''),
+          }))
+          .prefault({}),
+      })
+      .prefault({}),
+
+    // ═══════════════════════════════════════════════════════
+    // 图鉴 — 野兽/草药/足迹/日志
+    // ═══════════════════════════════════════════════════════
+    图鉴: z
+      .object({
+        野兽: z
+          .record(z.string().describe('生物名'), z.object({
+            名称: z.string(),
+            分类: z.enum(['哺乳类', '鸟类', '爬行类', '鱼类', '节肢类', '妖兽', '不明']),
+            危险等级: z.enum(['无害', '警惕', '危险', '致命']),
+            体型: z.enum(['微型', '小型', '中型', '大型', '巨型']),
+            活动时段: z.string(),
+            习性: z.string(),
+            足迹描述: z.string(),
+            叫声描述: z.string(),
+            遭遇记录: z.string(),
+            首次发现地点: z.string(),
+            首次发现时间: z.string(),
+            是否可食用: z.string().prefault('未知'),
+            掉落物: z.string().prefault('未知'),
+          }))
+          .prefault({}),
+
+        草药: z
+          .record(z.string().describe('植物名'), z.object({
+            名称: z.string(),
+            识别特征: z.string(),
+            药用功效: z.string(),
+            采集部位: z.string(),
+            处理方式: z.string(),
+            禁忌: z.string().prefault('未知'),
+            发现地点: z.string(),
+            季节: z.string(),
+            采集数量: z.coerce.number().prefault(0),
+          }))
+          .prefault({}),
+
+        足迹: z
+          .record(z.string().describe('发现标识'), z.object({
+            发现地点: z.string(),
+            推测生物: z.string(),
+            新鲜度: z.enum(['极新', '新', '较新', '旧', '极旧']),
+            方向: z.string(),
+            备注: z.string(),
+          }))
+          .prefault({}),
+
+        日志: z
+          .record(z.string().describe('日期 第X天 HH:MM'), z.string())
+          .prefault({}),
+      })
+      .prefault({}),
+
+    // ═══════════════════════════════════════════════════════
+    // 营地 — 庇护所/篝火/储水/食物库存
+    // ═══════════════════════════════════════════════════════
+    营地: z
+      .object({
+        庇护所: z
+          .object({
+            类型: z.enum(['无', '临时草铺', '狐尾裹身', '保温毯帐篷', '天然岩洞', '木架帐篷', '加固庇护所']).prefault('无'),
+            完整度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+            舒适度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 10)),
+            防水性: z.enum(['无', '差', '一般', '好', '极好']).prefault('无'),
+            防风性: z.enum(['无', '差', '一般', '好', '极好']).prefault('无'),
+            内部温差: z.coerce.number().prefault(0),
+          })
+          .prefault({}),
+
+        篝火: z
+          .object({
+            状态: z.enum(['未点燃', '引火中', '点燃', '旺盛', '衰减', '余烬', '熄灭']).prefault('未点燃'),
+            中心温度: z.coerce.number().prefault(0),
+            热辐射半径: z.coerce.number().prefault(0),
+            燃料类型: z.string().prefault('无'),
+            燃料余量: z.coerce.number().prefault(0),
+            消耗率: z.coerce.number().prefault(0),
+          })
+          .prefault({}),
+
+        储水: z
+          .record(z.string().describe('容器名'), z.object({
+            容器: z.string(),
+            容量: z.coerce.number(),
+            水质: z.enum(['生水', '沉淀中', '煮沸中', '可饮用', '已污染']),
+            收集日期: z.string(),
+            来源: z.string(),
+          }))
+          .prefault({}),
+
+        食物库存: z
+          .record(z.string().describe('食物名'), z.object({
+            物品引用: z.string(),
+            数量: z.coerce.number(),
+            单位: z.enum(['个', '块', '份', '条', '把', '片', '块菌']),
+            收集日期: z.string(),
+            保质期剩余天: z.coerce.number(),
+            腐败风险: z.enum(['安全', '需尽快食用', '即将腐败', '已腐败']).prefault('安全'),
+          }))
+          .prefault({}),
+      })
+      .prefault({}),
+
+    // ═══════════════════════════════════════════════════════
+    // 环境感知 — 声学/气味
+    // ═══════════════════════════════════════════════════════
+    环境感知: z
+      .object({
+        声学: z
+          .object({
+            环境噪声音量: z.enum(['死寂', '安静', '轻微', '正常', '嘈杂']).prefault('安静'),
+            晓光自身噪音: z.enum(['无声', '极低', '轻微', '明显', '嘈杂']).prefault('轻微'),
+            可闻距离: z.coerce.number().prefault(150),
+          })
+          .prefault({}),
+
+        气味: z
+          .object({
+            主导气味: z.string().prefault('潮湿泥土、松针腐叶、远处隐约烟熏(残骸余烬)'),
+            晓光自身气味强度: z.enum(['无', '微弱', '轻微', '明显', '浓烈']).prefault('轻微'),
+            嗅觉可追踪距离: z.coerce.number().prefault(80),
+            风对气味的携带: z.string().prefault('西北微风将残骸烟味吹向东南'),
+          })
+          .prefault({}),
+      })
+      .prefault({}),
+  })
+  .transform(data => {
+    // ═══════════════════════════════════════════════════════
+    // 顶层衍生计算 — 所有跨域 $只读字段
+    // AI 不应更新这些字段，每次解析时自动重新计算
+    // ═══════════════════════════════════════════════════════
+    const 物品栏 = data.装备.物品栏 || {};
+    const $装备总重 = _(物品栏)
+      .values()
+      .sumBy((item: any) => (item.重量 || 0) * (item.数量 || 1));
+    const 安全上限 = data.装备.负重.安全上限 || 9;
+    const 负重比 = $装备总重 / 安全上限;
+    const $负重速度修正 =
+      负重比 > 1.5 ? -35 : 负重比 > 1.2 ? -15 : 负重比 > 1 ? -5 : 0;
+    const 狐尾湿度 = data.晓光.狐类特性.狐尾湿度;
+    const 狐尾湿透 = 狐尾湿度 === '湿透';
+    const 狐尾微湿 = 狐尾湿度 === '微湿';
+    const $狐尾裹身速度修正 = 狐尾湿透 ? 0 : -5;
+    const $湿尾速度修正 = 狐尾湿透 ? -20 : 狐尾微湿 ? -8 : 0;
+    const $移动速度总修正 = $负重速度修正 + $狐尾裹身速度修正 + $湿尾速度修正;
+    const 体温 = data.晓光.生存状态.体温;
+    const 有庇护所 = data.营地.庇护所.类型 !== '无';
+    const $失温风险等级 =
+      狐尾湿透 && 体温 < 35 ? '极高' :
+      狐尾湿透 ? '高' :
+      体温 < 34 ? '极高' :
+      体温 < 35.5 ? '高' :
+      体温 < 36.5 ? '偏高' : '正常';
+    const $总保暖值 = _(data.装备.衣物 || {}).values().sumBy((c: any) => c.保暖值 || 0);
+    const $总防风值 = _(data.装备.衣物 || {}).values().sumBy((c: any) => c.防风值 || 0);
+
+    return {
+      ...data,
+      $装备总重,
+      $负重比: Math.round(负重比 * 100),
+      $负重速度修正,
+      $移动速度总修正,
+      $狐尾裹身速度修正,
+      $湿尾速度修正,
+      $失温风险等级,
+      $总保暖值,
+      $总防风值,
+      $九尾裹身有效: !狐尾湿透,
+    };
+  });
+
+export type Schema = z.output<typeof Schema>;

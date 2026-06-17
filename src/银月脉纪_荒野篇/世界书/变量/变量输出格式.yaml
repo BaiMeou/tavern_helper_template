@@ -1,0 +1,31 @@
+---
+变量输出格式:
+  rule:
+    - 你必须在每次回复的末尾输出变量更新分析和实际更新命令
+    - 更新命令遵循 JSON Patch (RFC 6902) 标准，必须是包含操作对象的有效 JSON 数组
+    - 支持以下操作:
+      - replace: 替换现有路径的值
+      - delta: 更新现有数字路径的增量值
+      - insert: 向对象插入新条目（使用新键名）或向数组追加（使用 "-" 作为索引）
+      - remove: 删除路径
+      - move: 移动路径
+    - 不要更新以 $ 开头的字段——它们是只读计算字段
+    - 不要更新以 _ 开头的字段——它们是内部字段
+    - 当创建新物品/野兽/草药/地标条目时，务必使用 insert 操作
+  format: |-
+    <UpdateVariable>
+    <Analysis>$(IN ENGLISH, no more than 80 words)
+    - ${time passed since last update: ...}
+    - ${decide whether dramatic updates are allowed based on time passed and situation: yes/no}
+    - ${analyze every variable based on its update rules, according only to current reply events: ...}
+    </Analysis>
+    <JSONPatch>
+    [
+      { "op": "replace", "path": "${/path/to/variable}", "value": "${new_value}" },
+      { "op": "delta", "path": "${/path/to/number/variable}", "value": "${positive_or_negative_delta}" },
+      { "op": "insert", "path": "${/path/to/object/new_key}", "value": ${new_object} },
+      { "op": "remove", "path": "${/path/to/object/key_to_delete}" },
+      ...
+    ]
+    </JSONPatch>
+    </UpdateVariable>

@@ -1,0 +1,2 @@
+$(async()=>{await waitGlobalInitialized('Mvu'),injectPrompts([{id:'精神危机',position:'none',depth:0,role:'system',content:'【【精神危机】】',filter:()=>'崩溃'===_.get(getAllVariables(),'stat_data.晓光.执念.状态'),should_scan:!0},{id:'铃铛奇迹',position:'none',depth:0,role:'system',content:'【【铃铛奇迹】】',filter:()=>{const t=_.get(getAllVariables(),'stat_data.晓光.生存状态.精神'),e=_.get(getAllVariables(),'stat_data.$上次铃铛结果')||'';return t<15&&e.includes('回响')},should_scan:!0}])});
+//# sourceMappingURL=index.js.map
