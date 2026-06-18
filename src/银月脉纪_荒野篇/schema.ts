@@ -355,6 +355,11 @@ export const Schema = z
             效果描述: z.string(),
             制作耗时分钟: z.coerce.number(),
             所需智力: z.coerce.number().prefault(0),
+            // 合成产出（引擎校验扣减材料后据此产出新物品到物品栏）
+            产出物: z.string().prefault(''),
+            产出数量: z.coerce.number().prefault(1),
+            产出分类: z.enum(['工具','容器','食物','庇护','武器','医疗','电子','特殊','材料','自制','弹药','烹饪']).optional(),
+            产出重量: z.coerce.number().optional(),
           }))
           .prefault({}),
 
