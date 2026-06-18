@@ -555,12 +555,12 @@
     - 正则名称: '[界面]前端界面状态栏'
       id: b50d0bed-ff40-4a25-9ada-14feb4283324
       启用: true
-      查找表达式: <StatusPlaceHolderImpl/>
+      查找表达式: /<StatusPlaceHolderImpl\/?>/g
       内容: |-
         ```
         <body>
         <script>
-        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@2aa499b/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
+        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@db0f607/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
         </script>
         </body>
         ```
