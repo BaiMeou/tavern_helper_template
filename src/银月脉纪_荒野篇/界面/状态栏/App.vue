@@ -55,15 +55,11 @@ import CampGroup from './components/camp/CampGroup.vue';
 import WorkshopGroup from './components/workshop/WorkshopGroup.vue';
 import JournalGroup from './components/journal/JournalGroup.vue';
 
-// Setup mode — check if player has completed initial setup
-const isSetupDone = computed(() =>
-  _.has(getVariables({ type: 'message' }), 'stat_data') &&
-  _.size(_.get(getVariables({ type: 'message' }), 'stat_data.装备.物品栏', {}), 0) > 0,
-);
+// Setup mode — starts with wizard, switches to main after setup
+const isSetupDone = ref(false);
 
 function onSetupDone(_attrs: Record<string, number>, _selectedItemIds: string[]) {
-  // SetupWizard writes all items and attributes directly to the variable store.
-  // We just need to mark setup as complete.
+  isSetupDone.value = true;
   toastr.success('准备好了！荒野求生——开始！');
 }
 
