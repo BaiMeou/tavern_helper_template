@@ -4,6 +4,7 @@
 
   <!-- Main App — after setup -->
   <div v-else class="app">
+    <ChoiceModal />
     <TopStatusBar />
 
     <div class="app-body">

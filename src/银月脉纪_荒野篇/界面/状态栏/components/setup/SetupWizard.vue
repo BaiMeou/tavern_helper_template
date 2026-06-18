@@ -276,15 +276,15 @@ const ITEM_POOL: ItemOption[] = [
   { id:'铁丝',icon:'🔗',名称:'铁丝(一卷)',重量:0.2,分类:'材料',描述:'比铜线更硬——制作大型陷阱框架或加固庇护所结构',耐久度:100,易损度:0},
   { id:'树皮绳',icon:'🪢',名称:'树皮绳(天然)',重量:0.1,分类:'材料',描述:'用树皮纤维手工搓制——强度一般但完全天然，可临时替代绳索',易损度:0},
   { id:'松脂',icon:'🕯️',名称:'松脂(小块)',重量:0.05,分类:'材料',描述:'天然引火加速剂——湿木材沾上松脂也能点燃。也可用于防水处理',易损度:0},
-  { id:'燧石',icon:'🪨',名称:'燧石×3',重量:0.15,分类:'材料',description:'敲击产生火星——在没有打火机时的原始火源。每个可用数百次',易损度:0},
+  { id:'燧石',icon:'🪨',名称:'燧石×3',重量:0.15,分类:'材料',描述:'敲击产生火星——在没有打火机时的原始火源。每个可用数百次',易损度:0},
   { id:'桦树皮',icon:'📜',名称:'桦树皮(引火材料)',重量:0.05,分类:'材料',描述:'极佳的天然引火物——薄如纸片，一点即燃。剥自白桦树',易损度:0},
   // 烹饪与饮食 (6)
   { id:'折叠砧板',icon:'🪵',名称:'折叠砧板',重量:0.15,分类:'烹饪',描述:'处理猎物和食材——干净的切割表面。可折叠节省空间',易损度:0},
   { id:'钛合金叉勺',icon:'🥄',名称:'钛合金叉勺',重量:0.03,分类:'烹饪',描述:'比塑料耐久、比钢铁轻——一把搞定汤和固体食物',易损度:0},
   { id:'调料包',icon:'🌿',名称:'调料包(混合香料)',重量:0.08,分类:'烹饪',描述:'盐、胡椒、辣椒粉、蒜粉——让单调的猎物肉变成像样的饭菜',易损度:0},
-  { id:'茶蜡',icon:'🕯️',名称:'茶蜡×6',重量:0.1,分类:'烹饪',description:'小型的稳定火源——每支燃烧4小时。可用于小火加热或保持篝火余烬',易损度:0},
+  { id:'茶蜡',icon:'🕯️',名称:'茶蜡×6',重量:0.1,分类:'烹饪',描述:'小型的稳定火源——每支燃烧4小时。可用于小火加热或保持篝火余烬',易损度:0},
   { id:'折叠烤架',icon:'🍖',名称:'折叠烤架(小型)',重量:0.3,分类:'烹饪',描述:'架在篝火上方的金属烤架——烤肉、烘鱼、晾干衣物',易损度:0},
-  { id:'打火棒',icon:'✨',名称:'打火棒(镁棒)',重量:0.05,分类:'烹饪',description:'没有燃料的火源——刮下镁屑用火星点燃。无限使用次数但有技巧门槛',易损度:0},
+  { id:'打火棒',icon:'✨',名称:'打火棒(镁棒)',重量:0.05,分类:'烹饪',描述:'没有燃料的火源——刮下镁屑用火星点燃。无限使用次数但有技巧门槛',易损度:0},
 ];
 
 // ─── 选择逻辑 ───
@@ -343,8 +343,8 @@ const CARGO_POOL = [
   { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',surviveThreshold:60},
   { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',surviveThreshold:55},
 ];
-function cargoCondition(roll: number, bonus: number): {label:string, durabilityPct:number, repairable:boolean, dismantlable:boolean} {
-  const adjusted = roll + bonus + (item.易损度 || 0);
+function cargoCondition(roll: number, bonus: number, fragility: number = 0): {label:string, durabilityPct:number, repairable:boolean, dismantlable:boolean} {
+  const adjusted = roll + bonus + (fragility || 0);
   if (adjusted >= 80) return {label:'完好',durabilityPct:100,repairable:false,dismantlable:false};
   if (adjusted >= 55) return {label:'少耐久',durabilityPct:40+Math.floor(Math.random()*30),repairable:false,dismantlable:false};
   if (adjusted >= 30) return {label:'部分损坏',durabilityPct:10+Math.floor(Math.random()*20),repairable:true,dismantlable:true};
@@ -540,9 +540,7 @@ function confirm() {
 .confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .chip { padding: 3px 8px; border-radius: 3px; font-size: 10px; background: var(--nav); color: var(--text-secondary); border: 1px solid var(--border); }
-</style>
 
-/* Hardcore mode */
 .hardcore-btn { padding: 8px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--border); border-radius: 4px; font-size: 14px; cursor: pointer; font-family: var(--font-display); font-weight: bold; }
 .hardcore-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -563,3 +561,7 @@ function confirm() {
 .cond-warn { background:rgba(226,143,27,.12);color:var(--warning); }
 .cond-bad { background:rgba(224,73,60,.1);color:var(--danger); }
 
+
+</style>
+
+/* Hardcore mode */
