@@ -3,6 +3,7 @@
   "type": "object",
   "properties": {
     "晓光": {
+      "default": {},
       "type": "object",
       "properties": {
         "基础属性": {
@@ -294,6 +295,15 @@
           "default": {},
           "type": "object",
           "properties": {
+            "灵力环境": {
+              "default": "稀薄",
+              "type": "string",
+              "enum": [
+                "稀薄",
+                "正常",
+                "充沛"
+              ]
+            },
             "狐尾湿度": {
               "default": "干燥",
               "type": "string",
@@ -465,7 +475,8 @@
             }
           }
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "世界": {
       "default": {},
@@ -904,7 +915,8 @@
                   "特殊",
                   "材料",
                   "自制",
-                  "弹药"
+                  "弹药",
+                  "烹饪"
                 ]
               },
               "重量": {
@@ -1170,6 +1182,34 @@
               },
               "所需智力": {
                 "default": 0,
+                "type": "number"
+              },
+              "产出物": {
+                "default": "",
+                "type": "string"
+              },
+              "产出数量": {
+                "default": 1,
+                "type": "number"
+              },
+              "产出分类": {
+                "type": "string",
+                "enum": [
+                  "工具",
+                  "容器",
+                  "食物",
+                  "庇护",
+                  "武器",
+                  "医疗",
+                  "电子",
+                  "特殊",
+                  "材料",
+                  "自制",
+                  "弹药",
+                  "烹饪"
+                ]
+              },
+              "产出重量": {
                 "type": "number"
               }
             },
@@ -1702,7 +1742,5 @@
       }
     }
   },
-  "required": [
-    "晓光"
-  ]
+  "additionalProperties": {}
 }
