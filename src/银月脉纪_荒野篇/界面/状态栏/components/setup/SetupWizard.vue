@@ -83,6 +83,24 @@
         </div>
       </section>
 
+      <!-- Step 3: 物品定位 -->
+      <section v-if="selectedCount > 0" style="margin-top:20px;">
+        <div class="sec-hdr">📌 物品定位 <span class="subtle">选择每件物品的放置位置——影响负重分布</span></div>
+        <div v-for="id in [...selectedIds]" :key="id" class="pos-row">
+          <span class="pos-item-icon">{{ getItemById(id)?.icon || "📦" }}</span>
+          <span class="pos-item-name">{{ getItemById(id)?.名称 || id }}</span>
+          <span class="pos-item-weight">{{ getItemById(id)?.重量 || 0 }}kg</span>
+          <select v-model="itemPositions[id]" class="pos-select">
+            <option v-for="p in availablePositions" :key="p.value" :value="p.value">{{ p.label }}</option>
+          </select>
+        </div>
+      </section>
+      <!-- Step 4: 搜刮残骸 -->
+      <section v-if="selectedCount > 0" style="margin-top:20px;">
+        <div class="sec-hdr">✈️ 搜刮残骸 <span class="subtle">感知影响发现概率</span></div>
+        <div v-if="!cargoRolled"><p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">飞机货舱中的物品——坠机冲击下有些可能还没损坏。</p><button class="roll-btn" @click="rollCargo">🎲 搜索货舱残骸</button></div>
+        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="["cargo-card", cargo.survived ? "survived" : "destroyed"]"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span></div><div class="cargo-desc">{{ cargo.描述 }}</div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
+      </section>
       <!-- 确认按钮 -->
       <button class="confirm-btn" :disabled="selectedCount < 1 || remainingPoints !== 0" @click="confirm">
         {{ remainingPoints !== 0 ? `还需分配 ${remainingPoints} 个属性点` : `🦊 开始求生 (${selectedCount}/20件 · ${totalWeight.toFixed(1)}kg)` }}
@@ -254,6 +272,43 @@ const catRefs = reactive<Record<string, any>>({});
 
 const categories = ['工具','容器','食物','庇护','武器','医疗','电子','特殊','材料','烹饪'];
 const selectedCount = computed(() => selectedIds.value.size);
+const availablePositions = [
+  { value: '背包', label: '🎒 背包 (舒适6kg/上限12kg)' },
+  { value: '腰挂', label: '🔗 腰挂 (舒适1.5kg/上限3kg)' },
+  { value: '手持', label: '✋ 手持 (舒适1kg/上限3kg)' },
+  { value: '尾藏', label: '🦊 尾藏 (舒适0.3kg/上限1kg)' },
+  { value: '颈间', label: '💎 颈间 (舒适0.1kg/上限0.3kg)' },
+  { value: '穿着', label: '👘 穿着 (舒适2kg/上限5kg)' },
+];
+const itemPositions = reactive<Record<string, string>>({});
+function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
+
+// Cargo salvage
+const cargoRolled = ref(false);
+const cargoTakenItems = ref<Array<{重量:number}>>([]);
+const cargoResults = ref<Array<{id:string;icon:string;名称:string;重量:number;描述:string;survived:boolean;taken:boolean}>>([]);
+const CARGO_POOL = [
+  { id:'备用燃油',icon:'⛽',名称:'备用燃油(小型1L)',重量:1.2,描述:'航空燃油——引火加速、清洗油污、简易火把',surviveThreshold:35},
+  { id:'大型急救箱',icon:'🏥',名称:'机载急救箱(大型)',重量:1.5,描述:'比个人急救包全面——夹板、止血钳、烧伤敷料、吗啡x2',surviveThreshold:45},
+  { id:'工具箱',icon:'🧰',名称:'基础工具箱',重量:1.2,描述:'螺丝刀套装、小锤、活动扳手',surviveThreshold:50},
+  { id:'救生衣',icon:'🦺',名称:'飞机救生衣',重量:0.3,描述:'可充气——用作浮具、枕头、或拆开取用面料',surviveThreshold:20},
+  { id:'座椅垫',icon:'💺',名称:'座椅垫(阻燃)',重量:0.5,描述:'阻燃材料——可剪裁用作跪垫、隔热垫',surviveThreshold:30},
+  { id:'航空毛毯',icon:'🧣',名称:'航空毛毯x2',重量:0.8,描述:'阻燃航空毛毯——更轻更保暖。深秋荒野的救命层',surviveThreshold:40},
+  { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',surviveThreshold:60},
+  { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',surviveThreshold:55},
+];
+function rollCargo() {
+  cargoRolled.value = true;
+  const perception = attrs['感知'];
+  const bonus = (perception - 1) * 2;
+  cargoResults.value = CARGO_POOL.map(item => {
+    const roll = Math.floor(Math.random() * 100) + 1;
+    return { ...item, survived: (roll + bonus) >= item.surviveThreshold, taken: false };
+  });
+}
+function cargoTaken(cargo: any) { return cargo.taken; }
+function takeCargo(cargo: any) { cargo.taken = true; cargoTakenItems.value.push(cargo); }
+
 
 const totalWeight = computed(() =>
   ITEM_POOL.filter(i => selectedIds.value.has(i.id)).reduce((sum, i) => sum + i.重量 * (i.数量 || 1), 0),
@@ -327,7 +382,7 @@ function confirm() {
       for (const id of selectedIds.value) {
         const item = ITEM_POOL.find(i => i.id === id);
         if (!item) continue;
-        const itemData: any = { 名称: item.名称, 分类: item.分类, 重量: item.重量, 位置: '背包', 描述: item.描述 };
+        const itemData: any = { 名称: item.名称, 分类: item.分类, 重量: item.重量, 位置: itemPositions[id] || '背包', 描述: item.描述 };
         if (item.耐久度 !== undefined) itemData.耐久度 = item.耐久度;
         if (item.使用次数剩余 !== undefined) itemData.使用次数剩余 = item.使用次数剩余;
         if (item.数量 !== undefined) itemData.数量 = item.数量;
@@ -337,7 +392,14 @@ function confirm() {
         if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
         _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
       }
+      // Write cargo items
+      for (const cargo of cargoResults.value.filter((c:any) => c.taken)) {
+        _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, {
+          名称: cargo.名称, 分类: '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述,
+        });
+      }
       _.set(vars, 'stat_data.装备.负重.当前', totalWeight.value);
+      _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：选择了${selectedCount.value}件物品(总重${totalWeight.value.toFixed(1)}kg)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
     emit('done', { ...attrs }, [...selectedIds.value]);
   }

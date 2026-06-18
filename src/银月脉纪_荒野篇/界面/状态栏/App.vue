@@ -4,6 +4,7 @@
 
   <!-- Main App — after setup -->
   <div v-else class="app">
+    <ChoiceModal />
     <TopStatusBar />
 
     <div class="app-body">
@@ -45,6 +46,7 @@
 
 <script setup lang="ts">
 import SetupWizard from './components/setup/SetupWizard.vue';
+import ChoiceModal from './components/shared/ChoiceModal.vue';
 import TopStatusBar from './components/layout/TopStatusBar.vue';
 import StatusGroup from './components/status/StatusGroup.vue';
 import InventoryGroup from './components/inventory/InventoryGroup.vue';
