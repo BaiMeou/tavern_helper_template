@@ -294,6 +294,15 @@
           "default": {},
           "type": "object",
           "properties": {
+            "灵力环境": {
+              "default": "稀薄",
+              "type": "string",
+              "enum": [
+                "稀薄",
+                "正常",
+                "充沛"
+              ]
+            },
             "狐尾湿度": {
               "default": "干燥",
               "type": "string",
@@ -465,7 +474,8 @@
             }
           }
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "世界": {
       "default": {},
@@ -904,7 +914,8 @@
                   "特殊",
                   "材料",
                   "自制",
-                  "弹药"
+                  "弹药",
+                  "烹饪"
                 ]
               },
               "重量": {
@@ -1704,5 +1715,6 @@
   },
   "required": [
     "晓光"
-  ]
+  ],
+  "additionalProperties": {}
 }
