@@ -56,24 +56,14 @@ import WorkshopGroup from './components/workshop/WorkshopGroup.vue';
 import JournalGroup from './components/journal/JournalGroup.vue';
 
 // Setup mode — check if player has completed initial setup
-const isSetupDone = ref(
+const isSetupDone = computed(() =>
   _.has(getVariables({ type: 'message' }), 'stat_data') &&
-  _.size(_.get(getVariables({ type: 'message' }), 'stat_data.装备.物品栏', {})) > 0,
+  _.size(_.get(getVariables({ type: 'message' }), 'stat_data.装备.物品栏', {}), 0) > 0,
 );
 
-function onSetupDone(attrs: Record<string, number>, selectedItemIds: string[]) {
-  // Write initial attributes
-  updateVariablesWith(vars => {
-    for (const [key, val] of Object.entries(attrs)) {
-      _.set(vars, `stat_data.晓光.基础属性.${key}`, val);
-    }
-  }, { type: 'message', message_id: getCurrentMessageId() });
-
-  // Write selected items from the item pool
-  // The setup wizard has the full item catalog embedded
-  // We need to match selected IDs to full item data
-  // For now, mark setup as done — items will be written by the wizard
-  isSetupDone.value = true;
+function onSetupDone(_attrs: Record<string, number>, _selectedItemIds: string[]) {
+  // SetupWizard writes all items and attributes directly to the variable store.
+  // We just need to mark setup as complete.
   toastr.success('准备好了！荒野求生——开始！');
 }
 

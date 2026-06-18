@@ -341,7 +341,7 @@ const loadPositions = computed(() => {
     const item = ITEM_POOL.find(i => i.id === id);
     if (!item) continue;
     // Infer position from item type
-    const pos = item.分类 === '武器' ? '手持' : item.分类 === '食物' ? '背包' : item.分类 === '庇护' ? '背包' : item.分类 === '工具' ? '背包' : item.分类 === '容器' ? '腰挂' : item.分类 === '医疗' ? '背包' : item.分类 === '电子' ? '腰挂' : item.分类 === '特殊' ? '背包' : item.分类 === '材料' ? '背包' : item.分类 === '烹饪' ? '背包' : '背包';
+    const pos = itemPositions[id] || '背包';
     positions[pos] += item.重量;
   }
   return Object.entries(caps).map(([key, cap]) => {
@@ -399,6 +399,7 @@ function confirm() {
         });
       }
       _.set(vars, 'stat_data.装备.负重.当前', totalWeight.value);
+      _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
       _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：选择了${selectedCount.value}件物品(总重${totalWeight.value.toFixed(1)}kg)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
     emit('done', { ...attrs }, [...selectedIds.value]);

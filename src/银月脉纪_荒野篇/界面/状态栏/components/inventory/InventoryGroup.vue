@@ -84,9 +84,9 @@ function itemBadges(item: any) {
 }
 function itemChips(item: any) {
   const chips: string[] = [];
-  if (item.保质期天) chips.push(`保质${item.保质期天}天`);
-  if (item.锋利度) chips.push(`锋利${item.锋利度}%`);
-  if (item.电量) chips.push(`电量${item.电量}%`);
+  if (item.保质期天 !== undefined) chips.push(`保质${item.保质期天}天`);
+  if (item.锋利度 !== undefined) chips.push(`锋利${item.锋利度}%`);
+  if (item.电量 !== undefined) chips.push(`电量${item.电量}%`);
   return chips;
 }
 </script>

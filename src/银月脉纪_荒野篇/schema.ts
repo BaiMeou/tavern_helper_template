@@ -25,7 +25,7 @@ export const Schema = z
           .object({
             饥饿: z.coerce.number().prefault(85).transform(v => _.clamp(v, 0, 100)),
             口渴: z.coerce.number().prefault(55).transform(v => _.clamp(v, 0, 100)),
-            体温: z.coerce.number().prefault(36.8).transform(v => _.clamp(v, 30, 43)),
+            体温: z.coerce.number().prefault(36.8).transform(v => _.clamp(Number.isNaN(v)?36.8:v, 30, 43)),
             精力: z.coerce.number().prefault(38).transform(v => _.clamp(v, 0, 100)),
             健康: z.coerce.number().prefault(78).transform(v => _.clamp(v, 0, 100)),
             精神: z.coerce.number().prefault(75).transform(v => _.clamp(v, 0, 100)),
@@ -53,7 +53,7 @@ export const Schema = z
               .prefault({}),
             体脂储备: z.coerce.number().prefault(18).transform(v => _.clamp(v, 3, 50)),
             基础代谢率: z.coerce.number().prefault(1450),
-            蛋白质平衡: z.coerce.number().prefault(0),
+            蛋白质平衡: z.coerce.number().prefault(0).transform(v => _.clamp(v, -100, 100)),
           })
           .prefault({}),
 
@@ -109,7 +109,8 @@ export const Schema = z
 
         狐类特性: z
           .object({
-            狐尾湿度: z.enum(['干燥', '微湿', '湿透']).prefault('干燥'),
+            灵力环境: z.enum(["稀薄","正常","充沛"]).prefault("稀薄"),
+        狐尾湿度: z.enum(['干燥', '微湿', '湿透']).prefault('干燥'),
             九尾状态: z.enum(['合并一尾', '部分展开', '完全展开']).prefault('合并一尾'),
           })
           .prefault({}),
@@ -155,7 +156,8 @@ export const Schema = z
           })
           .prefault({}),
       })
-      .transform(data => {
+      .passthrough()
+  .transform(data => {
         const 精神 = data.生存状态.精神;
         return {
           ...data,
@@ -283,7 +285,7 @@ export const Schema = z
             名称: z.string(),
             分类: z.enum([
               '工具', '容器', '食物', '庇护', '武器', '医疗',
-              '电子', '特殊', '材料', '自制', '弹药',
+              '电子', '特殊', '材料', '自制', '弹药', '烹饪',
             ]),
             重量: z.coerce.number(),
             位置: z.enum(['手持', '背包', '腰挂', '尾藏', '颈间', '穿着', '营地存储', '地面']),
@@ -491,6 +493,7 @@ export const Schema = z
       })
       .prefault({}),
   })
+  .passthrough()
   .transform(data => {
     // ═══════════════════════════════════════════════════════
     // 顶层衍生计算 — 所有跨域 $只读字段
@@ -511,13 +514,13 @@ export const Schema = z
     const $湿尾速度修正 = 狐尾湿透 ? -20 : 狐尾微湿 ? -8 : 0;
     const $移动速度总修正 = $负重速度修正 + $狐尾裹身速度修正 + $湿尾速度修正;
     const 体温 = data.晓光.生存状态.体温;
-    const 有庇护所 = data.营地.庇护所.类型 !== '无';
+    const 有庇护所 = data.营地?.庇护所?.类型 !== '无' && data.营地?.庇护所?.类型 !== undefined;
     const $失温风险等级 =
       狐尾湿透 && 体温 < 35 ? '极高' :
       狐尾湿透 ? '高' :
       体温 < 34 ? '极高' :
-      体温 < 35.5 ? '高' :
-      体温 < 36.5 ? '偏高' : '正常';
+      体温 < 35.5 ? (有庇护所 ? '偏高' : '高') :
+      体温 < 36.5 ? (有庇护所 ? '正常' : '偏高') : '正常';
     const $总保暖值 = _(data.装备.衣物 || {}).values().sumBy((c: any) => c.保暖值 || 0);
     const $总防风值 = _(data.装备.衣物 || {}).values().sumBy((c: any) => c.防风值 || 0);
 

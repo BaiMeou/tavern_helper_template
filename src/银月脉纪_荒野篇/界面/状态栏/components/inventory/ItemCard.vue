@@ -35,10 +35,11 @@ const positions = [
   { value: '颈间', short: '💎颈间' }, { value: '穿着', short: '👘穿着' },
 ];
 
+const store = useDataStore();
+
 function onPosChange(e: Event) {
   const newPos = (e.target as HTMLSelectElement).value;
   if (props.itemKey) {
-    const store = useDataStore();
     const oldPos = _.get(store.data, `装备.物品栏.${props.itemKey}.位置`, '背包');
     _.set(store.data, `装备.物品栏.${props.itemKey}.位置`, newPos);
     _.set(store.data, '$前端操作', `玩家将「${props.name || props.itemKey}」从${oldPos}移动到${newPos}`);

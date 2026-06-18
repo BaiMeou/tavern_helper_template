@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import { useDataStore } from '../../store';
 
 const store = useDataStore();
@@ -56,7 +56,7 @@ watch(() => _.get(store.data, '$前端选择'), (newVal: any) => {
     selected.value = new Set();
     visible.value = true;
   }
-}, { deep: true });
+});
 
 function toggleOpt(opt: any) {
   if (selected.value.has(opt.id)) {
@@ -66,7 +66,6 @@ function toggleOpt(opt: any) {
     if (selected.value.size >= (choiceData.value.最大数量 || 99)) return;
     selected.value.add(opt.id);
   }
-  selected.value = new Set(selected.value);
 }
 
 function confirm() {
@@ -74,11 +73,10 @@ function confirm() {
   // Write picked items to inventory
   const itemData: Record<string, any> = {};
   for (const opt of picked) {
-    itemData[opt.id] = {
-      名称: opt.名称, 分类: opt.分类 || '特殊', 重量: opt.重量 || 0,
-      位置: '背包', 描述: opt.描述 || '',
-      耐久度: opt.耐久度, 数量: opt.数量,
-    };
+    const entry: any = { 名称: opt.名称, 分类: opt.分类 || '特殊', 重量: opt.重量 || 0, 位置: '背包', 描述: opt.描述 || '' };
+    if (opt.耐久度 !== undefined) entry.耐久度 = opt.耐久度;
+    if (opt.数量 !== undefined) entry.数量 = opt.数量;
+    itemData[opt.id] = entry;
   }
   // Write to store (syncs to AI)
   for (const [key, val] of Object.entries(itemData)) {
@@ -95,8 +93,14 @@ function confirm() {
 }
 
 function close() {
-  _.set(store.data, '$前端选择', null);
   visible.value = false;
+  const prev = _.get(store.data, '$前端选择');
+  _.set(store.data, '$前端选择', null);
+  nextTick(() => {
+    if (_.get(store.data, '$前端选择') && _.get(store.data, '$前端选择') !== prev && !visible.value) {
+      visible.value = true; // AI wrote a new choice while we were closing — reopen
+    }
+  });
 }
 </script>
 
