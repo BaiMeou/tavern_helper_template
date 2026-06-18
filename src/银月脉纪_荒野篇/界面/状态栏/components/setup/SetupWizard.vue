@@ -26,7 +26,7 @@
         <div class="weight-bar-card">
           <div class="weight-bar-row">
             <span class="wbr-label">⚖️ 负重</span>
-            <span class="wbr-value">{{ carryWeight.toFixed(1) }} / {{ safeLimit.value.toFixed(1) }} kg</span><span v-if="cargoHoldWeight > 0" style="font-size:11px;color:var(--text-secondary);"> + {{ cargoHoldWeight.toFixed(1) }}kg 行李舱</span>
+            <span class="wbr-value">{{ carryWeight.toFixed(1) }} / {{ safeLimit.value.toFixed(1) }} kg</span><span v-if="cargoHoldWeight > 0" style="font-size:11px;color:var(--text-secondary);margin-left:4px;"> 📦+{{ cargoHoldWeight.toFixed(1) }}kg待打捞</span>
             <span :class="['wbr-badge', weightRatio > 100 ? 'over' : weightRatio > 80 ? 'warn' : 'safe']">
               {{ weightRatio > 100 ? '⚠️ 超重' : weightRatio > 80 ? '满载' : '安全' }}
             </span>
@@ -343,19 +343,33 @@ const CARGO_POOL = [
   { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',surviveThreshold:60},
   { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',surviveThreshold:55},
 ];
+function cargoCondition(roll: number, bonus: number): {label:string, durabilityPct:number, repairable:boolean, dismantlable:boolean} {
+  const adjusted = roll + bonus;
+  if (adjusted >= 80) return {label:'完好',durabilityPct:100,repairable:false,dismantlable:false};
+  if (adjusted >= 55) return {label:'少耐久',durabilityPct:40+Math.floor(Math.random()*30),repairable:false,dismantlable:false};
+  if (adjusted >= 30) return {label:'部分损坏',durabilityPct:10+Math.floor(Math.random()*20),repairable:true,dismantlable:true};
+  return {label:'损坏',durabilityPct:0,repairable:false,dismantlable:true};
+}
 function rollCargo() {
   cargoRolled.value = true;
   const perception = attrs['感知'];
   const bonus = (perception - 1) * 3;
-  // Roll for player's cargo hold items + airplane cargo pool
   const playerCargoItems = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id] === 'cargo');
-  const allCargo = [...playerCargoItems.map(i => ({...i, surviveThreshold: 50})), ...CARGO_POOL];
+  const allCargo = [...playerCargoItems, ...CARGO_POOL];
   cargoResults.value = allCargo.map(item => {
     const roll = Math.floor(Math.random() * 100) + 1;
-    return { ...item, survived: (roll + bonus) >= (item.surviveThreshold || 50), taken: false };
+    const cond = cargoCondition(roll, bonus);
+    return { ...item, survived: cond.label !== '损坏', condition: cond, taken: false };
   });
 }
 function cargoTaken(cargo: any) { return cargo.taken; }
+function condBadge(cond: any) {
+  if (!cond) return 'badge badge-good';
+  if (cond.label === '完好') return 'badge badge-good';
+  if (cond.label === '少耐久') return 'badge badge-warn';
+  if (cond.label === '部分损坏') return 'badge badge-bad';
+  return 'badge badge-bad';
+}
 function takeCargo(cargo: any) { cargo.taken = true; cargoTakenItems.value.push(cargo); }
 
 
@@ -441,11 +455,14 @@ function confirm() {
         if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
         _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
       }
-      // Write cargo items
+      // Write cargo items with condition data
       for (const cargo of cargoResults.value.filter((c:any) => c.taken)) {
-        _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, {
-          名称: cargo.名称, 分类: '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述,
-        });
+        const cond = cargo.condition || {label:'完好',durabilityPct:100};
+        const entry: any = { 名称: cargo.名称, 分类: '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述 };
+        entry.耐久度 = cond.durabilityPct || 0;
+        if (cond.label === '部分损坏') entry.描述 = cargo.描述 + ' [部分损坏·可修理]';
+        if (cond.label === '损坏') entry.描述 = cargo.描述 + ' [严重损坏·可拆解]';
+        _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, entry);
       }
       _.set(vars, 'stat_data.装备.负重.当前', carryWeight.value);
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
@@ -540,4 +557,9 @@ function confirm() {
 .carry-btn { padding: 4px 10px; border-radius: 3px; border: 1px solid var(--border); background: var(--card); font-size: 11px; cursor: pointer; font-family: var(--font-body); transition: all .15s; }
 .carry-btn.on-person.active { background: rgba(76,175,80,0.15); color: var(--success); border-color: var(--success); font-weight: bold; }
 .carry-btn.cargo.active { background: rgba(226,143,27,0.12); color: var(--warning); border-color: var(--warning); font-weight: bold; }
+
+
+.cond-good { background:rgba(76,175,80,.12);color:var(--success); }
+.cond-warn { background:rgba(226,143,27,.12);color:var(--warning); }
+.cond-bad { background:rgba(224,73,60,.1);color:var(--danger); }
 
