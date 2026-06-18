@@ -99,7 +99,7 @@
       <section v-if="selectedCount > 0" style="margin-top:20px;">
         <div class="sec-hdr">✈️ 搜刮残骸 <span class="subtle">感知影响发现概率</span></div>
         <div v-if="!cargoRolled"><p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">飞机货舱中的物品——坠机冲击下有些可能还没损坏。</p><button class="roll-btn" @click="rollCargo">🎲 搜索货舱残骸</button></div>
-        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="["cargo-card", cargo.survived ? "survived" : "destroyed"]"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span></div><div class="cargo-desc">{{ cargo.描述 }}</div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
+        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="[`cargo-card`, cargo.survived ? `survived` : `destroyed`]"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span></div><div class="cargo-desc">{{ cargo.描述 }}</div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
       </section>
       <!-- 确认按钮 -->
       <button class="confirm-btn" :disabled="selectedCount < 1 || remainingPoints !== 0" @click="confirm">
