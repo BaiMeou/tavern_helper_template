@@ -3,6 +3,7 @@
     <div class="wizard-card">
       <h1 class="wizard-title">银月脉纪：荒野篇</h1>
       <p class="wizard-sub">坠机之前，你从残骸中抢救出了什么？<br>你的身体状态如何？</p>
+      <div style="text-align:center;margin-bottom:16px;"><button class="hardcore-btn" @click="hardcoreMode">🦴 硬核模式：空手求生</button></div>
 
       <!-- Step 1: 属性分配 -->
       <section>
@@ -25,7 +26,7 @@
         <div class="weight-bar-card">
           <div class="weight-bar-row">
             <span class="wbr-label">⚖️ 负重</span>
-            <span class="wbr-value">{{ totalWeight.toFixed(1) }} / {{ safeLimit }} kg</span>
+            <span class="wbr-value">{{ carryWeight.toFixed(1) }} / {{ safeLimit.value.toFixed(1) }} kg</span><span v-if="cargoHoldWeight > 0" style="font-size:11px;color:var(--text-secondary);"> + {{ cargoHoldWeight.toFixed(1) }}kg 行李舱</span>
             <span :class="['wbr-badge', weightRatio > 100 ? 'over' : weightRatio > 80 ? 'warn' : 'safe']">
               {{ weightRatio > 100 ? '⚠️ 超重' : weightRatio > 80 ? '满载' : '安全' }}
             </span>
@@ -83,7 +84,29 @@
         </div>
       </section>
 
-      <!-- Step 3: 物品定位 -->
+      <!-- Step 3: 随身 vs 行李舱 -->
+      <section v-if="selectedCount > 0 && !carryAssigned" style="margin-top:20px;">
+        <div class="sec-hdr">✈️ 随身携带 vs 放入行李舱</div>
+        <div class="risk-warning">
+          ⚠️ <strong>行李舱风险</strong>：坠机冲击可能损坏行李舱中的物品。感知越高，物品幸存概率越大。随身携带的物品<strong>100%保留</strong>但计入当前负重。
+        </div>
+        <div class="weight-split">
+          <span>🟢 随身: {{ carryWeight.toFixed(1) }}kg</span>
+          <span>📦 行李舱: {{ cargoHoldWeight.toFixed(1) }}kg（暂不计入负重）</span>
+        </div>
+        <div v-for="id in [...selectedIds]" :key="id" class="carry-row">
+          <span class="carry-icon">{{ getItemById(id)?.icon || '📦' }}</span>
+          <span class="carry-name">{{ getItemById(id)?.名称 || id }}</span>
+          <span class="carry-weight">{{ getItemById(id)?.重量 || 0 }}kg</span>
+          <div class="carry-actions">
+            <button :class="['carry-btn', 'on-person', { active: carryChoice[id] === 'carry' }]" @click="carryChoice[id]='carry'">✋ 随身</button>
+            <button :class="['carry-btn', 'cargo', { active: carryChoice[id] === 'cargo' }]" @click="carryChoice[id]='cargo'">📦 行李舱</button>
+          </div>
+        </div>
+        <button class="confirm-btn" style="margin-top:12px;background:var(--accent);" @click="carryAssigned=true" :disabled="Object.keys(carryChoice).length < selectedCount">确认分配 → 下一步</button>
+      </section>
+
+      <!-- Step 4: 物品定位 -->
       <section v-if="selectedCount > 0" style="margin-top:20px;">
         <div class="sec-hdr">📌 物品定位 <span class="subtle">选择每件物品的放置位置——影响负重分布</span></div>
         <div v-for="id in [...selectedIds]" :key="id" class="pos-row">
@@ -281,6 +304,29 @@ const availablePositions = [
   { value: '穿着', label: '👘 穿着 (舒适2kg/上限5kg)' },
 ];
 const itemPositions = reactive<Record<string, string>>({});
+const carryChoice = reactive<Record<string, string>>({});
+const carryAssigned = ref(false);
+
+// Weight calculations for carry-on vs cargo hold
+const carryWeight = computed(() => {
+  let w = 0;
+  for (const id of selectedIds.value) {
+    if (carryChoice[id] === 'carry') {
+      const item = ITEM_POOL.find(i => i.id === id);
+      if (item) w += item.重量 * (item.数量 || 1);
+    }
+  }
+  return w;
+});
+const cargoHoldWeight = computed(() => totalWeight.value - carryWeight.value);
+
+function hardcoreMode() {
+  selectedIds.value = new Set();
+  carryAssigned.value = true;
+  cargoRolled.value = true;
+  cargoResults.value = [];
+  toastr.info('硬核模式：晓光将空手面对荒野。祝你好运。');
+}
 function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
 
 // Cargo salvage
@@ -300,10 +346,13 @@ const CARGO_POOL = [
 function rollCargo() {
   cargoRolled.value = true;
   const perception = attrs['感知'];
-  const bonus = (perception - 1) * 2;
-  cargoResults.value = CARGO_POOL.map(item => {
+  const bonus = (perception - 1) * 3;
+  // Roll for player's cargo hold items + airplane cargo pool
+  const playerCargoItems = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id] === 'cargo');
+  const allCargo = [...playerCargoItems.map(i => ({...i, surviveThreshold: 50})), ...CARGO_POOL];
+  cargoResults.value = allCargo.map(item => {
     const roll = Math.floor(Math.random() * 100) + 1;
-    return { ...item, survived: (roll + bonus) >= item.surviveThreshold, taken: false };
+    return { ...item, survived: (roll + bonus) >= (item.surviveThreshold || 50), taken: false };
   });
 }
 function cargoTaken(cargo: any) { return cargo.taken; }
@@ -313,7 +362,7 @@ function takeCargo(cargo: any) { cargo.taken = true; cargoTakenItems.value.push(
 const totalWeight = computed(() =>
   ITEM_POOL.filter(i => selectedIds.value.has(i.id)).reduce((sum, i) => sum + i.重量 * (i.数量 || 1), 0),
 );
-const weightRatio = computed(() => (totalWeight.value / safeLimit.value) * 100);
+const weightRatio = computed(() => (carryWeight.value / safeLimit.value) * 100);
 const weightGradient = computed(() => weightRatio.value > 100 ? 'var(--danger)' : weightRatio.value > 80 ? 'linear-gradient(90deg, var(--success), var(--warning))' : 'var(--success)');
 
 function categoryCount(cat: string) { return ITEM_POOL.filter(i => i.分类 === cat).length; }
@@ -398,7 +447,7 @@ function confirm() {
           名称: cargo.名称, 分类: '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述,
         });
       }
-      _.set(vars, 'stat_data.装备.负重.当前', totalWeight.value);
+      _.set(vars, 'stat_data.装备.负重.当前', carryWeight.value);
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
       _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：选择了${selectedCount.value}件物品(总重${totalWeight.value.toFixed(1)}kg)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
@@ -475,3 +524,20 @@ function confirm() {
 
 .chip { padding: 3px 8px; border-radius: 3px; font-size: 10px; background: var(--nav); color: var(--text-secondary); border: 1px solid var(--border); }
 </style>
+
+/* Hardcore mode */
+.hardcore-btn { padding: 8px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--border); border-radius: 4px; font-size: 14px; cursor: pointer; font-family: var(--font-display); font-weight: bold; }
+.hardcore-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Carry-on vs cargo */
+.risk-warning { font-size: 11px; color: var(--warning); background: rgba(226,143,27,0.08); padding: 8px 10px; border-radius: 4px; border-left: 3px solid var(--warning); margin-bottom: 10px; line-height: 1.4; }
+.weight-split { display: flex; gap: 16px; font-size: 12px; margin-bottom: 10px; padding: 6px 0; }
+.carry-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed rgba(140,126,108,0.15); }
+.carry-icon { font-size: 20px; width: 28px; text-align: center; }
+.carry-name { font-weight: bold; font-size: 12px; width: 80px; flex-shrink: 0; }
+.carry-weight { font-size: 11px; color: var(--text-secondary); font-family: var(--font-data); width: 40px; }
+.carry-actions { display: flex; gap: 4px; margin-left: auto; }
+.carry-btn { padding: 4px 10px; border-radius: 3px; border: 1px solid var(--border); background: var(--card); font-size: 11px; cursor: pointer; font-family: var(--font-body); transition: all .15s; }
+.carry-btn.on-person.active { background: rgba(76,175,80,0.15); color: var(--success); border-color: var(--success); font-weight: bold; }
+.carry-btn.cargo.active { background: rgba(226,143,27,0.12); color: var(--warning); border-color: var(--warning); font-weight: bold; }
+
