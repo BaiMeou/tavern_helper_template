@@ -267,7 +267,7 @@ const ITEM_POOL: ItemOption[] = [
 // ─── 选择逻辑 ───
 const selectedIds = ref(new Set<string>());
 const activeCategory = ref('');
-const safeLimit = 9;
+const safeLimit = computed(() => { const w=50; const c=0.6; const r=0.3; const m=1+(attrs["体质"]-1)*0.08; return Math.round(w*r*c*m*10)/10; });
 const catRefs = reactive<Record<string, any>>({});
 
 const categories = ['工具','容器','食物','庇护','武器','医疗','电子','特殊','材料','烹饪'];
@@ -313,7 +313,7 @@ function takeCargo(cargo: any) { cargo.taken = true; cargoTakenItems.value.push(
 const totalWeight = computed(() =>
   ITEM_POOL.filter(i => selectedIds.value.has(i.id)).reduce((sum, i) => sum + i.重量 * (i.数量 || 1), 0),
 );
-const weightRatio = computed(() => (totalWeight.value / safeLimit) * 100);
+const weightRatio = computed(() => (totalWeight.value / safeLimit.value) * 100);
 const weightGradient = computed(() => weightRatio.value > 100 ? 'var(--danger)' : weightRatio.value > 80 ? 'linear-gradient(90deg, var(--success), var(--warning))' : 'var(--success)');
 
 function categoryCount(cat: string) { return ITEM_POOL.filter(i => i.分类 === cat).length; }
