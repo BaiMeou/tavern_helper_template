@@ -334,17 +334,18 @@ const cargoRolled = ref(false);
 const cargoTakenItems = ref<Array<{重量:number}>>([]);
 const cargoResults = ref<Array<{id:string;icon:string;名称:string;重量:number;描述:string;survived:boolean;taken:boolean}>>([]);
 const CARGO_POOL = [
-  { id:'备用燃油',icon:'⛽',名称:'备用燃油(小型1L)',重量:1.2,描述:'航空燃油——引火加速、清洗油污、简易火把',surviveThreshold:35},
-  { id:'大型急救箱',icon:'🏥',名称:'机载急救箱(大型)',重量:1.5,描述:'比个人急救包全面——夹板、止血钳、烧伤敷料、吗啡x2',surviveThreshold:45},
-  { id:'工具箱',icon:'🧰',名称:'基础工具箱',重量:1.2,描述:'螺丝刀套装、小锤、活动扳手',surviveThreshold:50},
-  { id:'救生衣',icon:'🦺',名称:'飞机救生衣',重量:0.3,描述:'可充气——用作浮具、枕头、或拆开取用面料',surviveThreshold:20},
-  { id:'座椅垫',icon:'💺',名称:'座椅垫(阻燃)',重量:0.5,描述:'阻燃材料——可剪裁用作跪垫、隔热垫',surviveThreshold:30},
-  { id:'航空毛毯',icon:'🧣',名称:'航空毛毯x2',重量:0.8,描述:'阻燃航空毛毯——更轻更保暖。深秋荒野的救命层',surviveThreshold:40},
-  { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',surviveThreshold:60},
-  { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',surviveThreshold:55},
+  // 易损度: 越大越易在坠机中损坏(作为掷骰减项)。金属/液体容器结实(低)，电子/精密件脆(高)
+  { id:'备用燃油',icon:'⛽',名称:'备用燃油(小型1L)',重量:1.2,描述:'航空燃油——引火加速、清洗油污、简易火把',易损度:20},
+  { id:'大型急救箱',icon:'🏥',名称:'机载急救箱(大型)',重量:1.5,描述:'比个人急救包全面——夹板、止血钳、烧伤敷料、吗啡x2',易损度:10},
+  { id:'工具箱',icon:'🧰',名称:'基础工具箱',重量:1.2,描述:'螺丝刀套装、小锤、活动扳手',易损度:5},
+  { id:'救生衣',icon:'🦺',名称:'飞机救生衣',重量:0.3,描述:'可充气——用作浮具、枕头、或拆开取用面料',易损度:8},
+  { id:'座椅垫',icon:'💺',名称:'座椅垫(阻燃)',重量:0.5,描述:'阻燃材料——可剪裁用作跪垫、隔热垫',易损度:3},
+  { id:'航空毛毯',icon:'🧣',名称:'航空毛毯x2',重量:0.8,描述:'阻燃航空毛毯——更轻更保暖。深秋荒野的救命层',易损度:3},
+  { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',易损度:30},
+  { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',易损度:8},
 ];
 function cargoCondition(roll: number, bonus: number, fragility: number = 0): {label:string, durabilityPct:number, repairable:boolean, dismantlable:boolean} {
-  const adjusted = roll + bonus + (fragility || 0);
+  const adjusted = roll + bonus - (fragility || 0);
   if (adjusted >= 80) return {label:'完好',durabilityPct:100,repairable:false,dismantlable:false};
   if (adjusted >= 55) return {label:'少耐久',durabilityPct:40+Math.floor(Math.random()*30),repairable:false,dismantlable:false};
   if (adjusted >= 30) return {label:'部分损坏',durabilityPct:10+Math.floor(Math.random()*20),repairable:true,dismantlable:true};
@@ -442,7 +443,9 @@ function confirm() {
   if (remainingPoints.value === 0) {
     updateVariablesWith(vars => {
       for (const [key, val] of Object.entries({ ...attrs })) { _.set(vars, `stat_data.晓光.基础属性.${key}`, val); }
+      // 只把【随身】物品写入物品栏。货舱物品延迟到搜刮存活后才入库（避免重复+让"货舱不减负重"逻辑成立）
       for (const id of selectedIds.value) {
+        if (carryChoice[id] === 'cargo') continue;
         const item = ITEM_POOL.find(i => i.id === id);
         if (!item) continue;
         const itemData: any = { 名称: item.名称, 分类: item.分类, 重量: item.重量, 位置: itemPositions[id] || '背包', 描述: item.描述 };
@@ -455,18 +458,21 @@ function confirm() {
         if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
         _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
       }
-      // Write cargo items with condition data
+      // 货舱：只写存活的；同时为玩家选中的cargo（无论存活与否）补一份"待打捞"记录到$待搜刮货舱供AI参考
+      const cargoCarried = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id]==='cargo');
+      _.set(vars, 'stat_data.$待搜刮货舱', cargoCarried.map(i => ({ id:i.id, 名称:i.名称, 重量:i.重量 })));
       for (const cargo of cargoResults.value.filter((c:any) => c.taken)) {
         const cond = cargo.condition || {label:'完好',durabilityPct:100};
-        const entry: any = { 名称: cargo.名称, 分类: '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述 };
+        const entry: any = { 名称: cargo.名称, 分类: cargo.分类 || '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述 };
         entry.耐久度 = cond.durabilityPct || 0;
         if (cond.label === '部分损坏') entry.描述 = cargo.描述 + ' [部分损坏·可修理]';
         if (cond.label === '损坏') entry.描述 = cargo.描述 + ' [严重损坏·可拆解]';
         _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, entry);
       }
-      _.set(vars, 'stat_data.装备.负重.当前', carryWeight.value);
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
-      _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：选择了${selectedCount.value}件物品(总重${totalWeight.value.toFixed(1)}kg)，属性分配完毕`);
+      // 已初始化标记（用于跳过重弹向导）
+      _.set(vars, 'stat_data.$已初始化', true);
+      _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id=>carryChoice[id]!=='cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
     emit('done', { ...attrs }, [...selectedIds.value]);
   }

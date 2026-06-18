@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>银月脉纪：荒野篇 — 前端预览</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4EFEB; --nav:#EADFC9; --border:#8C7E6C; --accent:#A84434; --accent-light:#C95A49;
+  --text:#2C2520; --text-secondary:#615343; --card:#fffdf9; --card-alt:rgba(140,126,108,.06);
+  --danger:#e0493c; --warning:#e28f1b; --success:#4caf50; --info:#348aa7;
+  --font-display:'Noto Serif SC',Georgia,serif; --font-body:'Noto Sans SC',system-ui,sans-serif;
+  --font-data:'SF Mono','Consolas',monospace;
+  --shadow-sm:0 1px 3px rgba(44,37,32,.07); --shadow:0 2px 8px rgba(44,37,32,.12);
+  --shadow-lg:0 6px 24px rgba(44,37,32,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--font-body); color:var(--text);
+  /* 羊皮纸纹理：双层径向 + 细噪点 */
+  background:
+    radial-gradient(circle at 20% 15%, rgba(168,68,52,.04), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(140,126,108,.08), transparent 50%),
+    var(--bg);
+  min-height:100vh; display:flex; justify-content:center; padding:18px;
+}
+/* ───────── 设备外壳（模拟手机/窄屏） ───────── */
+.device{
+  width:100%; max-width:440px; background:var(--bg);
+  border:1px solid var(--border); border-radius:14px; overflow:hidden;
+  box-shadow:var(--shadow-lg); display:flex; flex-direction:column;
+  min-height:760px; position:relative;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(140,126,108,.04) 28px, rgba(140,126,108,.04) 29px);
+}
+/* 顶栏 */
+.topbar{
+  background:var(--text); color:var(--nav); padding:7px 16px; font-size:11px;
+  display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
+  font-family:var(--font-data); letter-spacing:.3px;
+}
+.topbar .battery{display:flex;align-items:center;gap:5px}
+.bat-shell{width:18px;height:9px;border:1px solid var(--nav);border-radius:1px;padding:1px}
+.bat-fill{height:100%;background:var(--success);border-radius:1px}
+/* 主体滚动区 */
+.viewport{flex:1;overflow-y:auto;position:relative}
+.page{padding:16px;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════ HOME 晨页 ═══════════ */
+.home-hero{
+  background:linear-gradient(135deg,#fffdf9,#f6efe4);
+  border:1px solid var(--border); border-left:4px solid var(--accent);
+  border-radius:8px; padding:16px; margin-bottom:14px; box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.home-hero::after{content:'🦊';position:absolute;right:-10px;bottom:-18px;font-size:90px;opacity:.06;transform:rotate(-12deg)}
+.hero-top{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.hero-name{font-family:var(--font-display);font-size:22px;font-weight:900}
+.hero-meta{font-size:11px;color:var(--text-secondary)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 12px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--nav);color:var(--text-secondary);border:1px solid rgba(140,126,108,.3)}
+/* 警报 */
+.alert-row{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.alert{
+  display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;
+  padding:8px 11px;border-radius:6px;border:1px solid;
+}
+.alert.danger{background:rgba(224,73,60,.08);border-color:rgba(224,73,60,.3);color:var(--danger)}
+.alert.warn{background:rgba(226,143,27,.08);border-color:rgba(226,143,27,.3);color:#b06f12}
+.alert .a-ico{font-size:15px}
+/* 4大体征 */
+.vitals-hero{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.vh-card{
+  background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:11px 13px;border-left:3px solid var(--border);box-shadow:var(--shadow-sm);position:relative;
+}
+.vh-card.danger{border-left-color:var(--danger)} .vh-card.warn{border-left-color:var(--warning)}
+.vh-card.good{border-left-color:var(--success)} .vh-card.accent{border-left-color:var(--accent)}
+.vh-top{display:flex;justify-content:space-between;align-items:center}
+.vh-label{font-size:10px;color:var(--text-secondary);letter-spacing:.5px}
+.vh-ico{font-size:16px}
+.vh-val{font-family:var(--font-display);font-size:27px;font-weight:700;line-height:1.1;margin-top:3px}
+.vh-val .u{font-size:13px;font-weight:400;color:var(--text-secondary)}
+.vh-card.danger .vh-val{color:var(--danger)} .vh-card.warn .vh-val{color:#b06f12}
+.vh-bar{height:5px;background:rgba(140,126,108,.14);border-radius:3px;margin-top:7px;overflow:hidden}
+.vh-bar i{display:block;height:100%;border-radius:3px}
+.vh-trend{font-size:10px;color:var(--text-secondary);margin-top:5px}
+/* 副体征行 */
+.sub-vitals{display:flex;gap:8px;margin-bottom:14px}
+.sv{flex:1;background:var(--card-alt);border:1px solid rgba(140,126,108,.2);border-radius:6px;padding:8px 10px;text-align:center}
+.sv .v{font-family:var(--font-display);font-size:18px;font-weight:700}
+.sv .l{font-size:9px;color:var(--text-secondary);margin-top:2px}
+/* 今日近况 */
+.today{
+  background:var(--card);border:1px dashed var(--border);border-radius:7px;
+  padding:11px 13px;margin-bottom:14px;font-size:12px;line-height:1.6;color:var(--text-secondary);
+}
+.today b{color:var(--accent);font-family:var(--font-display)}
+/* 入口网格 */
+.entry-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.entry{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:14px 6px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm);
+  position:relative;
+}
+.entry:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent-light)}
+.entry .e-ico{font-size:26px;display:block;line-height:1}
+.entry .e-label{font-size:11px;margin-top:6px;font-weight:500}
+.entry .e-badge{position:absolute;top:6px;right:6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--accent);color:#fff;font-size:9px;font-weight:bold;display:flex;align-items:center;justify-content:center}
+
+/* ═══════════ 详情页 ═══════════ */
+.detail-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  padding-bottom:10px;border-bottom:2px solid var(--border);
+}
+.back-btn{
+  width:34px;height:34px;border-radius:7px;border:1px solid var(--border);background:var(--card);
+  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.back-btn:hover{background:var(--nav)}
+.detail-title{font-family:var(--font-display);font-size:18px;font-weight:700}
+.detail-sub{font-size:11px;color:var(--text-secondary);margin-left:auto}
+
+.sec-hdr{font-family:var(--font-display);font-size:13px;font-weight:bold;border-bottom:1px solid rgba(140,126,108,.4);padding-bottom:5px;margin:16px 0 10px;display:flex;justify-content:space-between;align-items:flex-end}
+.sec-hdr:first-child{margin-top:0}
+.sec-hdr .sub{font-size:10px;font-weight:normal;color:var(--text-secondary)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:11px 13px;margin-bottom:8px;box-shadow:var(--shadow-sm)}
+.card-accent{border-left:3px solid var(--accent)}
+.card-danger{border-left:3px solid var(--danger)} .card-warn{border-left:3px solid var(--warning)} .card-good{border-left:3px solid var(--success)}
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:bold}
+.badge-good{background:rgba(76,175,80,.13);color:var(--success)} .badge-warn{background:rgba(226,143,27,.14);color:#b06f12}
+.badge-bad{background:rgba(224,73,60,.1);color:var(--danger)} .badge-info{background:rgba(52,138,167,.1);color:var(--info)} .badge-accent{background:rgba(168,68,52,.08);color:var(--accent)}
+.chip{display:inline-block;padding:3px 8px;border-radius:3px;font-size:10px;background:var(--nav);color:var(--text-secondary);border:1px solid rgba(140,126,108,.3)}
+.progress-track{height:9px;background:rgba(140,126,108,.14);border-radius:5px;overflow:hidden}
+.progress-fill{height:100%;border-radius:5px;transition:width .5s}
+
+/* 属性点阵 */
+.attr-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:12px}
+.attr-row .ico{font-size:16px;width:22px;text-align:center}
+.attr-row .nm{width:30px;font-weight:500}
+.dots{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(140,126,108,.2)}
+.dot.on{background:var(--accent)}
+.dot.intel{background:var(--info)}
+.attr-row .lv{font-family:var(--font-data);font-size:11px;color:var(--text-secondary);width:30px;text-align:right}
+.xp-mini{height:3px;background:rgba(140,126,108,.15);border-radius:2px;margin-top:3px;width:100%}
+.xp-mini i{display:block;height:100%;background:var(--accent-light);border-radius:2px}
+
+/* 物品卡 */
+.item{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 11px;margin-bottom:6px;box-shadow:var(--shadow-sm)}
+.item .i-ico{font-size:24px;width:34px;text-align:center;flex-shrink:0}
+.item .i-body{flex:1;min-width:0}
+.item .i-name{font-size:12px;font-weight:bold}
+.item .i-desc{font-size:10px;color:var(--text-secondary);line-height:1.4;margin-top:1px}
+.item .i-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.item .i-side{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.item .i-wt{font-size:11px;color:var(--text-secondary);font-family:var(--font-data)}
+.loc-sel{font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:3px;background:var(--card);color:var(--text)}
+
+/* 负重 */
+.weight-card{background:linear-gradient(135deg,#fffdf9,#f6efe4);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:13px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.weight-top{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.weight-big{font-family:var(--font-display);font-size:28px;font-weight:900}
+.weight-max{color:var(--text-secondary);font-size:13px}
+.weight-pct{margin-left:auto;font-size:11px;color:var(--text-secondary)}
+.load-dist{margin-top:10px;display:grid;gap:5px}
+.ld-row{display:flex;align-items:center;gap:7px;font-size:11px}
+.ld-pos{width:60px;color:var(--text-secondary)}
+.ld-track{flex:1;height:6px;background:rgba(140,126,108,.14);border-radius:3px;overflow:hidden}
+.ld-track i{display:block;height:100%;border-radius:3px}
+.ld-val{width:54px;text-align:right;font-family:var(--font-data);font-size:10px;color:var(--text-secondary)}
+
+/* 罗盘 */
+.compass-wrap{text-align:center;padding:10px 0 4px}
+.weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
+.weather-grid>div{background:var(--card-alt);border:1px solid rgba(140,126,108,.2);border-radius:6px;padding:8px 10px}
+.weather-grid b{font-size:11px}
+.terrain-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.terrain{display:flex;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;box-shadow:var(--shadow-sm)}
+.terrain .t-ico{font-size:24px;flex-shrink:0}
+.terrain .t-dir{font-size:10px;color:#fff;background:var(--accent);border-radius:3px;padding:1px 6px;font-weight:bold}
+.terrain .t-desc{font-size:11px;color:var(--text-secondary);margin-top:4px;line-height:1.4}
+
+/* 营地操作按钮 */
+.op-btn{font-size:11px;padding:5px 11px;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:var(--font-body)}
+.op-btn.ghost{background:var(--card);color:var(--accent)}
+.op-btn:hover{opacity:.88}
+.roll-btn{width:100%;padding:11px;border-radius:7px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:bold;cursor:pointer;box-shadow:var(--shadow-sm)}
+.roll-btn:hover{background:var(--accent-light)}
+.op-line{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+
+.empty{text-align:center;padding:18px;font-size:11px;color:var(--text-secondary);background:var(--card-alt);border:1px dashed var(--border);border-radius:6px;margin-bottom:8px}
+
+/* 底部页签（详情态隐藏，HOME显示快捷返回已够） */
+.preview-note{position:fixed;left:12px;bottom:12px;background:var(--text);color:var(--nav);font-size:10px;padding:5px 10px;border-radius:5px;opacity:.8;font-family:var(--font-data);z-index:99}
+.hidden{display:none}
+
+/* ───────── 术语说明：底部卡片 + 内联ⓘ ───────── */
+.term-card{
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,#f6efe4,#fffdf9);border:1px solid var(--border);
+  border-radius:7px;padding:11px 13px;margin:18px 0 4px;cursor:pointer;
+  box-shadow:var(--shadow-sm);transition:all .15s;
+}
+.term-card:hover{border-color:var(--accent-light);box-shadow:var(--shadow)}
+.term-card .tc-l{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500}
+.term-card .tc-l .tc-ico{font-size:16px}
+.term-card .tc-arrow{font-size:11px;color:var(--accent)}
+.info-i{
+  display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;
+  border-radius:50%;background:var(--info);color:#fff;font-size:9px;font-style:normal;
+  font-weight:bold;cursor:pointer;vertical-align:middle;margin-left:3px;flex-shrink:0;
+}
+.info-i:hover{background:var(--accent)}
+.term-u{border-bottom:1px dotted var(--text-secondary);cursor:help}
+
+/* ───────── 术语悬浮窗 ───────── */
+.gloss-overlay{
+  position:absolute;inset:0;background:rgba(44,37,32,.55);backdrop-filter:blur(2px);
+  display:none;align-items:flex-end;justify-content:center;z-index:200;padding:0;
+}
+.gloss-overlay.open{display:flex;animation:fade .2s ease}
+.gloss-panel{
+  background:var(--bg);border:1px solid var(--border);border-bottom:none;
+  border-radius:14px 14px 0 0;width:100%;max-height:78%;display:flex;flex-direction:column;
+  box-shadow:0 -8px 30px rgba(44,37,32,.3);animation:slideUp .28s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.gloss-head{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;
+  border-bottom:1px solid var(--border);flex-shrink:0;position:relative;
+}
+.gloss-head::before{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:rgba(140,126,108,.4)}
+.gloss-title{font-family:var(--font-display);font-size:16px;font-weight:700}
+.gloss-x{width:28px;height:28px;border:none;background:var(--nav);border-radius:6px;font-size:14px;cursor:pointer;color:var(--text-secondary)}
+.gloss-body{overflow-y:auto;padding:12px 16px 24px}
+.gloss-item{padding:11px 0;border-bottom:1px dashed rgba(140,126,108,.3)}
+.gloss-item:last-child{border-bottom:none}
+.gloss-term{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:bold;font-family:var(--font-display);color:var(--accent)}
+.gloss-term .g-ico{font-size:15px}
+.gloss-desc{font-size:12px;line-height:1.65;color:var(--text-secondary);margin-top:5px}
+.gloss-desc .hl{color:var(--text);font-weight:500}
+
+/* ───────── 精细数值：可折叠详情 + 数据行 ───────── */
+.detail-fold{margin-bottom:8px;border:1px solid rgba(140,126,108,.35);border-radius:6px;overflow:hidden;background:var(--card)}
+.fold-head{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;font-size:11px;color:var(--text-secondary);background:var(--card-alt);user-select:none}
+.fold-head:hover{color:var(--accent)}
+.fold-head .fh-l{display:flex;align-items:center;gap:6px;font-weight:500}
+.fold-head .fh-arr{transition:transform .2s;font-size:10px}
+.detail-fold.open .fh-arr{transform:rotate(90deg)}
+.fold-body{display:none;padding:4px 12px 10px}
+.detail-fold.open .fold-body{display:block;animation:fade .2s ease}
+/* 数据行：标签 — 值（带ⓘ） */
+.data-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(140,126,108,.22);font-size:12px}
+.data-row:last-child{border-bottom:none}
+.dr-label{display:flex;align-items:center;gap:5px;color:var(--text-secondary)}
+.dr-val{font-family:var(--font-data);font-weight:500;text-align:right}
+.dr-val.good{color:var(--success)} .dr-val.warn{color:#b06f12} .dr-val.bad{color:var(--danger)}
+.dr-sub{font-size:10px;color:var(--text-secondary);font-family:var(--font-body);font-weight:normal;margin-left:4px}
+/* 迷你公式条 */
+.formula{font-size:10px;color:var(--text-secondary);background:rgba(140,126,108,.07);border-radius:4px;padding:5px 8px;margin-top:6px;font-family:var(--font-data);line-height:1.5}
+.formula .op{color:var(--accent)}
+/* 滚动操作日志（AI记忆） */
+.oplog{background:linear-gradient(135deg,#f3ece0,#fffdf9);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:10px}
+.oplog-h{font-size:10px;color:var(--text-secondary);display:flex;align-items:center;gap:5px;margin-bottom:7px;letter-spacing:.3px}
+.oplog-h .dot-live{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 2px rgba(76,175,80,.2)}
+.oplog-item{font-size:11px;line-height:1.5;padding:3px 0;display:flex;gap:7px;color:var(--text-secondary)}
+.oplog-item .t{font-family:var(--font-data);font-size:9px;color:var(--accent);flex-shrink:0;padding-top:1px}
+.oplog-item:not(:last-child){border-bottom:1px dotted rgba(140,126,108,.2)}
+/* 双行体征：核心值+精细分解 */
+.metric-split{display:flex;align-items:baseline;gap:6px}
+.metric-split .ms-main{font-family:var(--font-display);font-size:20px;font-weight:700}
+.metric-split .ms-unit{font-size:11px;color:var(--text-secondary)}
+.gauge{height:7px;background:rgba(140,126,108,.14);border-radius:4px;overflow:hidden;margin-top:5px;position:relative}
+.gauge i{display:block;height:100%;border-radius:4px}
+.gauge .mark{position:absolute;top:-2px;width:2px;height:11px;background:var(--danger);border-radius:1px}
+</style>
+</head>
+<body>
+<div class="device">
+  <!-- 顶栏 -->
+  <div class="topbar">
+    <span>📶 无服务 OOS</span>
+    <span>第 3 天 · 黄昏</span>
+    <span class="battery">🔋 62%<span class="bat-shell"><i class="bat-fill" style="width:62%"></i></span></span>
+  </div>
+
+  <div class="viewport">
+    <!-- ════════ HOME ════════ -->
+    <div class="page" id="page-home">
+      <div class="home-hero">
+        <div class="hero-top">
+          <span class="hero-name">晓光</span>
+          <span class="hero-meta">九尾白狐娘 · 坠机第 3 天</span>
+        </div>
+        <div class="hero-tags">
+          <span class="tag">14岁</span><span class="tag">162cm</span><span class="tag">🦊 一尾</span>
+          <span class="tag">灵力稀薄</span><span class="tag">执念·稳固</span>
+        </div>
+        <div class="alert-row">
+          <div class="alert danger"><span class="a-ico">⚠️</span>失温风险偏高 — 狐尾微湿，无篝火，体感 2°C</div>
+          <div class="alert warn"><span class="a-ico">💧</span>口渴度下降至 55% — 该补水了</div>
+        </div>
+      </div>
+
+      <div class="vitals-hero">
+        <div class="vh-card good">
+          <div class="vh-top"><span class="vh-label">健康</span><span class="vh-ico">❤️</span></div>
+          <div class="vh-val">78<span class="u">%</span></div>
+          <div class="vh-bar"><i style="width:78%;background:var(--success)"></i></div>
+          <div class="vh-trend">→ 擦伤结痂中</div>
+        </div>
+        <div class="vh-card">
+          <div class="vh-top"><span class="vh-label">饥饿</span><span class="vh-ico">🍗</span></div>
+          <div class="vh-val">85<span class="u">%</span></div>
+          <div class="vh-bar"><i style="width:85%;background:var(--success)"></i></div>
+          <div class="vh-trend">↓ 缓慢消耗</div>
+        </div>
+        <div class="vh-card warn">
+          <div class="vh-top"><span class="vh-label">口渴</span><span class="vh-ico">💧</span></div>
+          <div class="vh-val">55<span class="u">%</span></div>
+          <div class="vh-bar"><i style="width:55%;background:var(--warning)"></i></div>
+          <div class="vh-trend">↓ 下降中</div>
+        </div>
+        <div class="vh-card warn">
+          <div class="vh-top"><span class="vh-label">精力</span><span class="vh-ico">⚡</span></div>
+          <div class="vh-val">38<span class="u">%</span></div>
+          <div class="vh-bar"><i style="width:38%;background:var(--warning)"></i></div>
+          <div class="vh-trend">↓ 连续劳作</div>
+        </div>
+      </div>
+
+      <div class="sub-vitals">
+        <div class="sv"><div class="v">36.8°</div><div class="l">🌡️ 体温</div></div>
+        <div class="sv"><div class="v">75</div><div class="l">🧠 精神·稳定</div></div>
+        <div class="sv"><div class="v">-13%</div><div class="l">🏃 移速修正</div></div>
+      </div>
+
+      <div class="today">
+        <b>「今日」</b>晓光在南面溪流边发现了模糊的兽迹——比她的脚掌大得多。她攥紧了颈间的铃铛：「主人……这里好像有大家伙。」
+      </div>
+
+      <!-- AI记忆：滚动操作日志（最近5条，超出丢最旧） -->
+      <div class="oplog">
+        <div class="oplog-h"><span class="dot-live"></span>晓光最近的动作 · 同步给AI（保留最近5条）</div>
+        <div class="oplog-item"><span class="t">17:40</span><span>把「猎刀」从背包移到了腰挂，方便随手取用</span></div>
+        <div class="oplog-item"><span class="t">17:22</span><span>喝掉金属水壶里 0.3L 煮沸过的水 → 口渴 48%↑55%</span></div>
+        <div class="oplog-item"><span class="t">16:58</span><span>搜刮货舱：拾取「机载急救箱(完好)」「基础工具箱(部分损坏)」</span></div>
+        <div class="oplog-item"><span class="t">16:30</span><span>把睡袋放入行李舱（暂不计负重，待搜刮）</span></div>
+        <div class="oplog-item"><span class="t">16:10</span><span>用斧头劈柴 → 精力 46%↓38%，肌肉疲劳 +12%</span></div>
+      </div>
+
+      <div class="entry-grid">
+        <div class="entry" onclick="go('status')"><span class="e-ico">📊</span><span class="e-label">状态</span></div>
+        <div class="entry" onclick="go('inventory')"><span class="e-ico">🎒</span><span class="e-label">装备</span><span class="e-badge">12</span></div>
+        <div class="entry" onclick="go('world')"><span class="e-ico">🗺️</span><span class="e-label">世界</span></div>
+        <div class="entry" onclick="go('camp')"><span class="e-ico">🏕️</span><span class="e-label">营地</span></div>
+        <div class="entry" onclick="go('workshop')"><span class="e-ico">🛠️</span><span class="e-label">工坊</span></div>
+        <div class="entry" onclick="go('journal')"><span class="e-ico">📖</span><span class="e-label">图鉴</span><span class="e-badge">3</span></div>
+      </div>
+
+      <div class="term-card" onclick="openGloss('home')">
+        <span class="tc-l"><span class="tc-ico">📖</span>这些数字是什么意思？</span>
+        <span class="tc-arrow">查看术语说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 状态 ════════ -->
+    <div class="page hidden" id="page-status">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">📊 状态</span>
+        <span class="detail-sub">晓光 · 第3天黄昏</span>
+      </div>
+
+      <div class="sec-hdr">📈 身体属性</div>
+      <div class="card">
+        <div class="attr-row"><span class="ico">💪</span><span class="nm">体质</span>
+          <div style="flex:1"><div class="dots" id="d-ti"></div><div class="xp-mini"><i style="width:20%"></i></div></div><span class="lv">Lv.2</span></div>
+        <div class="attr-row"><span class="ico">🏃</span><span class="nm">敏捷</span>
+          <div style="flex:1"><div class="dots" id="d-mj"></div><div class="xp-mini"><i style="width:45%"></i></div></div><span class="lv">Lv.2</span></div>
+        <div class="attr-row"><span class="ico">🧠</span><span class="nm">智力</span>
+          <div style="flex:1"><div class="dots" id="d-zl"></div></div><span class="lv">Lv.8</span></div>
+        <div class="attr-row"><span class="ico">🛡️</span><span class="nm">意志</span>
+          <div style="flex:1"><div class="dots" id="d-yz"></div><div class="xp-mini"><i style="width:10%"></i></div></div><span class="lv">Lv.4</span></div>
+        <div class="attr-row"><span class="ico">👁️</span><span class="nm">感知</span>
+          <div style="flex:1"><div class="dots" id="d-gz"></div><div class="xp-mini"><i style="width:80%"></i></div></div><span class="lv">Lv.4</span></div>
+      </div>
+
+      <div class="sec-hdr">🌡️ 体温与冷暖</div>
+      <div class="card">
+        <div class="metric-split">
+          <span class="ms-main">36.8°<span class="ms-unit"> 核心体温</span></span>
+          <i class="info-i" onclick="openTerm('核心体温')">ⓘ</i>
+          <span class="dr-val warn" style="margin-left:auto">体感温度 2.0°<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></span>
+        </div>
+        <div class="gauge"><i style="width:60%;background:linear-gradient(90deg,var(--danger),var(--success))"></i><span class="mark" style="left:50%"></span></div>
+        <div class="detail-fold">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 冷暖分项细节</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">气温</span><span class="dr-val">7.0 °C</span></div>
+            <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−5.0 °C <span class="dr-sub">风2m/s</span></span></div>
+            <div class="data-row"><span class="dr-label">衣物保暖补偿</span><span class="dr-val good">+0.5 °C <span class="dr-sub">巫女服破损</span></span></div>
+            <div class="data-row"><span class="dr-label">篝火带来的暖意</span><span class="dr-val">+0.0 °C <span class="dr-sub">无火</span></span></div>
+            <div class="data-row"><span class="dr-label">身体每秒散失的热量 <i class="info-i" onclick="openTerm('散热速率')">ⓘ</i></span><span class="dr-val bad">82 W <span class="dr-sub">湿尾散热偏多</span></span></div>
+            <div class="data-row"><span class="dr-label">距离失温还差 <i class="info-i" onclick="openTerm('距失温阈值')">ⓘ</i></span><span class="dr-val warn">+1.8°（约 50 min）</span></div>
+            <div class="formula">体感温度 <span class="op">=</span> 气温7 <span class="op">−</span> 风的拉低5 <span class="op">+</span> 衣物0.5 <span class="op">+</span> 火0 <span class="op">=</span> 2.0°C</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">🍽️ 营养代谢 <span class="sub">入不敷出</span></div>
+      <div class="card">
+        <div class="data-row"><span class="dr-label">今日吃下的热量 <i class="info-i" onclick="openTerm('今日卡路里')">ⓘ</i></span><span class="dr-val warn">1000 / 1740 kcal <span class="dr-sub">入不敷出</span></span></div>
+        <div class="data-row"><span class="dr-label">每日基本耗能 <i class="info-i" onclick="openTerm('基础代谢率')">ⓘ</i></span><span class="dr-val">1450 kcal/天</span></div>
+        <div class="detail-fold">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 三大营养素 / 水分</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">蛋白质 摄入 vs 需求 <i class="info-i" onclick="openTerm('蛋白质平衡')">ⓘ</i></span><span class="dr-val warn">18g 摄入 · 缺口 12g</span></div>
+            <div class="data-row"><span class="dr-label">脂肪 / 碳水</span><span class="dr-val">22g / 180g</span></div>
+            <div class="data-row"><span class="dr-label">体脂储备 <i class="info-i" onclick="openTerm('体脂储备')">ⓘ</i></span><span class="dr-val">18% <span class="dr-sub">正常偏瘦</span></span></div>
+            <div class="data-row"><span class="dr-label">今日水分流失 <i class="info-i" onclick="openTerm('水分流失')">ⓘ</i></span><span class="dr-val warn">约 1900 mL <span class="dr-sub">劳作偏多</span></span></div>
+            <div class="formula">缺口 740 kcal/天 <span class="op">→</span> 动用体脂储备 · 长期将日渐消瘦</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">🩹 伤病</div>
+      <div class="card card-good">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span><span class="badge badge-good">轻微</span> <b>右手擦伤</b></span>
+          <span style="font-size:11px;color:var(--text-secondary)">右手掌外侧</span>
+        </div>
+        <div class="detail-fold" style="margin-top:6px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">🩹 愈合细节</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">愈合阶段 <i class="info-i" onclick="openTerm('伤口愈合阶段')">ⓘ</i></span><span class="dr-val">结痂（3/5）</span></div>
+            <div class="data-row"><span class="dr-label">感染风险 <i class="info-i" onclick="openTerm('感染风险')">ⓘ</i></span><span class="dr-val good">低</span></div>
+            <div class="data-row"><span class="dr-label">预计愈合</span><span class="dr-val">2 天 <span class="dr-sub">灵力稀薄·偏慢</span></span></div>
+            <div class="data-row"><span class="dr-label">行动影响</span><span class="dr-val">抓握稍刺痛</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;font-size:12px">
+          <span>😴 疲劳</span>
+          <span>肌肉 35%<i class="info-i" onclick="openTerm('肌肉疲劳')">ⓘ</i> · 睡眠债务 4h<i class="info-i" onclick="openTerm('睡眠债务')">ⓘ</i> · <b>疲惫</b><i class="info-i" onclick="openTerm('累积负荷')">ⓘ</i></span>
+        </div>
+      </div>
+      <div class="card card-accent">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge badge-good">执念·稳固</span>
+          <span style="font-size:12px">强度 85%</span>
+        </div>
+        <div style="font-size:12px;font-style:italic;margin-top:6px;color:var(--text-secondary)">「铃铛还在就还有家——主人一定在找晓光。」</div>
+      </div>
+
+      <div class="sec-hdr">🦊 狐族特性</div>
+      <div class="card">
+        <div style="font-size:12px;line-height:1.8">
+          狐尾湿度：<span class="badge badge-warn">微湿</span> &nbsp; 九尾状态：<span class="chip">合并一尾</span><br>
+          灵力环境：<span class="badge badge-bad">稀薄</span> &nbsp;<span style="font-size:11px;color:var(--text-secondary)">恢复力降至接近人类</span>
+        </div>
+      </div>
+
+      <div class="term-card" onclick="openGloss('status')">
+        <span class="tc-l"><span class="tc-ico">📖</span>属性 / 疲劳 / 执念 / 狐族术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 装备 ════════ -->
+    <div class="page hidden" id="page-inventory">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">🎒 装备</span>
+        <span class="detail-sub">12 件 · 6.8kg</span>
+      </div>
+
+      <div class="weight-card">
+        <div class="weight-top">
+          <span class="weight-big">6.8</span><span class="weight-max">/ 9.0 kg</span>
+          <i class="info-i" onclick="openTerm('负重')">ⓘ</i>
+          <span class="badge badge-good">安全</span>
+          <span class="weight-pct">76% · 移速 -13%<i class="info-i" onclick="openTerm('移速修正')">ⓘ</i></span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:76%;background:linear-gradient(90deg,var(--success),var(--warning))"></div></div>
+        <div class="load-dist">
+          <div class="ld-row"><span class="ld-pos">🎒 背包</span><div class="ld-track"><i style="width:70%;background:var(--success)"></i></div><span class="ld-val">4.2/6kg</span></div>
+          <div class="ld-row"><span class="ld-pos">🔗 腰挂</span><div class="ld-track"><i style="width:60%;background:var(--success)"></i></div><span class="ld-val">0.9/1.5kg</span></div>
+          <div class="ld-row"><span class="ld-pos">✋ 手持</span><div class="ld-track"><i style="width:80%;background:var(--warning)"></i></div><span class="ld-val">0.8/1kg</span></div>
+          <div class="ld-row"><span class="ld-pos">🦊 尾藏</span><div class="ld-track"><i style="width:30%;background:var(--success)"></i></div><span class="ld-val">0.1/0.3kg</span></div>
+        </div>
+        <div class="detail-fold" style="margin-top:8px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 分布分析（智力Lv.8解锁）</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">安全上限公式 <i class="info-i" onclick="openTerm('负重')">ⓘ</i></span><span class="dr-val">9.0 kg <span class="dr-sub">体质2</span></span></div>
+            <div class="data-row"><span class="dr-label">重心偏移 <i class="info-i" onclick="openTerm('重心偏移')">ⓘ</i></span><span class="dr-val good">+2 cm <span class="dr-sub">良好</span></span></div>
+            <div class="data-row"><span class="dr-label">单点超载 <i class="info-i" onclick="openTerm('单点超载')">ⓘ</i></span><span class="dr-val good">无</span></div>
+            <div class="data-row"><span class="dr-label">货舱待打捞</span><span class="dr-val">3.6 kg <span class="dr-sub">不计负重</span></span></div>
+            <div class="data-row"><span class="dr-label">体能效率</span><span class="dr-val good">82% <span class="dr-sub">良好</span></span></div>
+            <div class="formula">公式：50<span class="op">×</span>0.3<span class="op">×</span>0.6<span class="op">×</span>(1+(体质−1)<span class="op">×</span>0.08) <span class="op">=</span> 9.7kg → 取整 9.0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="font-size:12px">
+        <b>🪓 手持：</b>短柄斧 &nbsp;&nbsp; <b>👘 穿着：</b>破损的巫女服
+      </div>
+
+      <div class="sec-hdr">🎒 物品清单 <span class="sub">点位置可调整 · 同步给AI</span></div>
+      <div class="item">
+        <span class="i-ico">🔥</span>
+        <div class="i-body"><div class="i-name">防风打火机</div><div class="i-desc">可靠的火源——荒野中最珍贵的物品之一</div>
+          <div class="i-meta"><span class="chip">100 次</span></div></div>
+        <div class="i-side"><span class="i-wt">0.05kg</span><select class="loc-sel"><option>🔗腰挂</option><option>🎒背包</option></select></div>
+      </div>
+      <div class="item">
+        <span class="i-ico">🪓</span>
+        <div class="i-body"><div class="i-name">短柄斧</div><div class="i-desc">砍伐、劈柴、防身。荒野中最可靠的伙伴</div>
+          <div class="i-meta"><span class="badge badge-good">耐久 98%</span><span class="chip">锋利 90%</span></div></div>
+        <div class="i-side"><span class="i-wt">0.8kg</span><select class="loc-sel"><option>✋手持</option><option>🎒背包</option></select></div>
+      </div>
+      <div class="item">
+        <span class="i-ico">📱</span>
+        <div class="i-body"><div class="i-name">智能手机</div><div class="i-desc">离线模式——屏幕上主人的照片是珍贵的电量消耗</div>
+          <div class="i-meta"><span class="chip">电量 62%</span></div></div>
+        <div class="i-side"><span class="i-wt">0.2kg</span><select class="loc-sel"><option>🎒背包</option></select></div>
+      </div>
+      <div class="item">
+        <span class="i-ico">🍶</span>
+        <div class="i-body"><div class="i-name">金属水壶 1L</div><div class="i-desc">可直接在篝火上加热——煮沸生水、化雪取水</div>
+          <div class="i-meta"><span class="chip">0.6/1L</span></div></div>
+        <div class="i-side"><span class="i-wt">0.3kg</span><select class="loc-sel"><option>🎒背包</option></select></div>
+      </div>
+
+      <div class="term-card" onclick="openGloss('inventory')">
+        <span class="tc-l"><span class="tc-ico">📖</span>负重 / 负载分布 / 耐久 术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 世界 ════════ -->
+    <div class="page hidden" id="page-world">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">🗺️ 世界</span>
+        <span class="detail-sub">飞机残骸西侧</span>
+      </div>
+
+      <div class="card compass-wrap">
+        <svg width="120" height="120" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(140,126,108,.3)" stroke-width=".5"/>
+          <text x="50" y="14" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="bold">北</text>
+          <text x="50" y="92" text-anchor="middle" font-size="9" fill="var(--text-secondary)">南</text>
+          <text x="90" y="53" text-anchor="middle" font-size="9" fill="var(--text-secondary)">东</text>
+          <text x="10" y="53" text-anchor="middle" font-size="9" fill="var(--text-secondary)">西</text>
+          <g transform="rotate(-45 50 50)">
+            <polygon points="50,16 45,50 50,54 55,50" fill="var(--accent)"/>
+            <polygon points="50,84 45,50 50,46 55,50" fill="var(--text-secondary)"/>
+          </g>
+          <circle cx="50" cy="50" r="3" fill="var(--text)"/>
+        </svg>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">风向西北 · 朝向东北</div>
+      </div>
+
+      <div class="sec-hdr">🌤️ 天气与环境</div>
+      <div class="weather-grid">
+        <div><b>🌡️ 气温</b><br>7°C · 体感 2°C<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></div>
+        <div><b>💨 风</b><br>2m/s 西北</div>
+        <div><b>💧 湿度</b><br>68%</div>
+        <div><b>⚠️ 失温</b><i class="info-i" onclick="openTerm('失温风险')">ⓘ</i><br><span class="badge badge-warn">偏高</span></div>
+        <div><b>📊 气压走势</b><i class="info-i" onclick="openTerm('气压趋势')">ⓘ</i><br>稳定</div>
+        <div><b>🌲 树冠</b><br>65%</div>
+      </div>
+
+      <div class="detail-fold" style="margin-top:6px">
+        <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 失温风险拆解</span><span class="fh-arr">▸</span></div>
+        <div class="fold-body">
+          <div class="data-row"><span class="dr-label">气温</span><span class="dr-val">7.0 °C</span></div>
+          <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−5.0 °C</span></div>
+          <div class="data-row"><span class="dr-label">总保暖值（衣物加权）</span><span class="dr-val">3.5 <span class="dr-sub">湿衣 −20%</span></span></div>
+          <div class="data-row"><span class="dr-label">总防风值</span><span class="dr-val">2.0</span></div>
+          <div class="data-row"><span class="dr-label">湿尾让身体多散热</span><span class="dr-val bad">+18 W</span></div>
+          <div class="data-row"><span class="dr-label">庇护所/篝火补偿</span><span class="dr-val">+0 °C</span></div>
+          <div class="data-row"><span class="dr-label">综合失温风险</span><span class="dr-val warn">偏高 <span class="dr-sub">距阈值 1.8°</span></span></div>
+          <div class="formula">体感温度 <span class="op">=</span> 气温 <span class="op">−</span> 风的拉低 <span class="op">+</span> 衣物保暖×(1−湿度衰减) <span class="op">+</span> 火 <span class="op">+</span> 庇护所</div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">🌙 天体 · 时间</div>
+      <div class="card" style="font-size:12px;line-height:1.8">
+        日出 06:47 · 日落 17:02 · 月相 <span class="chip">残月</span><i class="info-i" onclick="openTerm('月相')">ⓘ</i><br>
+        夜间能见度：月光可辨 · 猎户座清晰
+      </div>
+
+      <div class="sec-hdr">💧 水文</div>
+      <div class="card" style="font-size:12px;line-height:1.8">
+        南侧溪流：<span class="chip">低位</span> · 流速缓慢 · <span class="badge badge-warn">微浊</span><br>
+        雨水收集效率：0 mL/h <span class="dr-sub">（晴天无降水）</span>
+      </div>
+
+      <div class="sec-hdr">🧭 四向地形</div>
+      <div class="terrain-grid">
+        <div class="terrain"><span class="t-ico">🌲</span><div><span class="t-dir">北</span><div class="t-desc">针叶林深处 — 狼群嚎叫方向，松鸡低处活动</div></div></div>
+        <div class="terrain"><span class="t-ico">🌊</span><div><span class="t-dir">南</span><div class="t-desc">草甸与溪流 — 约200m有水声，但鸟群曾惊飞（大型动物?）</div></div></div>
+        <div class="terrain"><span class="t-ico">✈️</span><div><span class="t-dir">东</span><div class="t-desc">飞机残骸 — 行李舱已搜刮，驾驶舱有未读飞行日志</div></div></div>
+        <div class="terrain"><span class="t-ico">⛰️</span><div><span class="t-dir">西</span><div class="t-desc">陡峭碎石坡 — 视野开阔但攀爬消耗极大</div></div></div>
+      </div>
+
+      <div class="sec-hdr">📍 已知地标</div>
+      <div class="card" style="display:flex;justify-content:space-between;font-size:12px">
+        <span><b>飞机残骸</b> <span class="badge badge-info">资源点</span></span>
+        <span style="font-size:11px;color:var(--success)">已探索 · 东·0m</span>
+      </div>
+      <div class="card" style="display:flex;justify-content:space-between;font-size:12px">
+        <span><b>南侧溪流</b> <span class="badge badge-info">水源</span></span>
+        <span style="font-size:11px;color:var(--text-secondary)">未探索 · 南·约200m</span>
+      </div>
+
+      <div class="term-card" onclick="openGloss('world')">
+        <span class="tc-l"><span class="tc-ico">📖</span>失温风险 / 气压 / 月相 术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 营地 ════════ -->
+    <div class="page hidden" id="page-camp">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">🏕️ 营地</span>
+        <span class="detail-sub">尚未建立</span>
+      </div>
+
+      <div class="sec-hdr">🏠 庇护所</div>
+      <div class="empty">尚未搭建庇护所<br>找到合适地点后可搭建临时草铺</div>
+
+      <div class="sec-hdr">🔥 篝火</div>
+      <div class="card">
+        <div class="op-line">
+          <span><span class="badge badge-bad">未点燃</span></span>
+          <button class="op-btn">🔥 生火</button>
+        </div>
+        <div class="detail-fold" style="margin-top:8px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 篝火参数（点燃后激活）</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">火心温度</span><span class="dr-val">— °C <span class="dr-sub">未点燃</span></span></div>
+            <div class="data-row"><span class="dr-label">取暖范围 <i class="info-i" onclick="openTerm('热辐射半径')">ⓘ</i></span><span class="dr-val">— m</span></div>
+            <div class="data-row"><span class="dr-label">燃料类型</span><span class="dr-val">无</span></div>
+            <div class="data-row"><span class="dr-label">还能烧多久 <i class="info-i" onclick="openTerm('燃料余量')">ⓘ</i></span><span class="dr-val">0 min</span></div>
+            <div class="data-row"><span class="dr-label">每分钟耗料</span><span class="dr-val">— g</span></div>
+            <div class="formula">点燃所需：火源 + 引火物 + 干燥燃料 · 雨天难度 +30%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">💧 储水 <span class="sub">操作同步给AI</span></div>
+      <div class="card">
+        <div class="op-line">
+          <span style="font-size:12px"><b>金属水壶</b> — 0.6/1.0 L · <span class="badge badge-warn">生水</span></span>
+          <span><button class="op-btn ghost">煮沸</button> <button class="op-btn ghost">饮用</button></span>
+        </div>
+        <div class="detail-fold" style="margin-top:8px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 水质细节</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">来源</span><span class="dr-val">南侧溪流</span></div>
+            <div class="data-row"><span class="dr-label">收集时间</span><span class="dr-val">第3天 16:40</span></div>
+            <div class="data-row"><span class="dr-label">煮沸状态</span><span class="dr-val warn">未煮沸</span></div>
+            <div class="data-row"><span class="dr-label">饮用风险</span><span class="dr-val bad">寄生虫 23%</span></div>
+            <div class="data-row"><span class="dr-label">煮沸耗燃料</span><span class="dr-val">约 8 min 篝火</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">🥫 食物库存</div>
+      <div class="card">
+        <div class="op-line">
+          <span style="font-size:12px"><b>压缩饼干</b> ×7 · <span class="badge badge-good">安全</span></span>
+          <button class="op-btn ghost">食用</button>
+        </div>
+        <div class="detail-fold" style="margin-top:8px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 营养与保质</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">单块热量</span><span class="dr-val">300 kcal</span></div>
+            <div class="data-row"><span class="dr-label">蛋白/脂/碳水</span><span class="dr-val">8g / 12g / 38g</span></div>
+            <div class="data-row"><span class="dr-label">保质期剩余</span><span class="dr-val good">180 天</span></div>
+            <div class="data-row"><span class="dr-label">腐败风险 <i class="info-i" onclick="openTerm('腐败风险')">ⓘ</i></span><span class="dr-val good">安全</span></div>
+            <div class="data-row"><span class="dr-label">副作用</span><span class="dr-val warn">极度吸水 · 口渴 −5%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="term-card" onclick="openGloss('camp')">
+        <span class="tc-l"><span class="tc-ico">📖</span>腐败风险 / 失温 术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 工坊 ════════ -->
+    <div class="page hidden" id="page-workshop">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">🛠️ 工坊</span>
+        <span class="detail-sub">智力 Lv.8</span>
+      </div>
+
+      <div class="card card-accent" style="font-size:12px">
+        🧠 <b>思维加速可用</b> — 晓光能在脑海中推演物品制作方法。发现材料或尝试制作时自动解锁配方。
+      </div>
+
+      <div class="sec-hdr">✈️ 搜刮残骸 <span class="sub">感知影响发现概率</span></div>
+      <div class="card">
+        <p style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">飞机货舱中的物品——坠机冲击下有些可能还没损坏。</p>
+        <button class="roll-btn">🎲 搜索货舱残骸</button>
+      </div>
+      <!-- 4级损坏展示样例 -->
+      <div class="item">
+        <span class="i-ico">🏥</span>
+        <div class="i-body"><div class="i-name">机载急救箱 <span class="badge badge-good">完好</span></div><div class="i-desc">夹板、止血钳、烧伤敷料、吗啡×2</div>
+          <div class="i-meta"><span class="chip">耐久 100%<i class="info-i" onclick="openTerm('耐久度')">ⓘ</i></span><span class="chip">易损度 10</span></div></div>
+        <div class="i-side"><span class="i-wt">1.5kg</span><button class="op-btn">+拾取</button></div>
+      </div>
+      <div class="item">
+        <span class="i-ico">🧰</span>
+        <div class="i-body"><div class="i-name">基础工具箱 <span class="badge badge-warn">部分损坏 · 可修</span></div><div class="i-desc">螺丝刀套装、小锤、活动扳手</div>
+          <div class="i-meta"><span class="chip">耐久 18%<i class="info-i" onclick="openTerm('耐久度')">ⓘ</i></span><span class="chip">易损度 5</span><span class="chip">需材料：金属片×2</span></div></div>
+        <div class="i-side"><span class="i-wt">1.2kg</span><button class="op-btn ghost">+拾取</button></div>
+      </div>
+      <div class="item" style="opacity:.6">
+        <span class="i-ico">📡</span>
+        <div class="i-body"><div class="i-name">紧急定位发射器 <span class="badge badge-bad">损坏 · 可拆解</span></div><div class="i-desc">已损坏，但电池、天线、电路板可拆用</div>
+          <div class="i-meta"><span class="chip">耐久 0%</span><span class="chip">易损度 30</span><span class="chip">拆解产出：电池×1·铜线×3</span></div></div>
+        <div class="i-side"><span class="i-wt">0.4kg</span><button class="op-btn ghost">拆解</button></div>
+      </div>
+
+      <div class="detail-fold" style="margin-top:8px">
+        <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 搜刮判定</span><span class="fh-arr">▸</span></div>
+        <div class="fold-body">
+          <div class="data-row"><span class="dr-label">基础掷骰</span><span class="dr-val">1d100</span></div>
+          <div class="data-row"><span class="dr-label">感知加成</span><span class="dr-val good">+9 <span class="dr-sub">感知4 → (4-1)×3</span></span></div>
+          <div class="data-row"><span class="dr-label">易损度减项</span><span class="dr-val warn">−物品易损度</span></div>
+          <div class="data-row"><span class="dr-label">≥80 完好 / ≥55 少耐久 / ≥30 部分损坏 / &lt;30 损坏</span></div>
+          <div class="formula">最终 = 1d100 + (感知−1)×3 − 物品易损度</div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">🕸️ 陷阱网络</div>
+      <div class="empty">尚未布置任何陷阱<br>制作绳索陷阱后可放置在兽径上</div>
+
+      <div class="term-card" onclick="openGloss('workshop')">
+        <span class="tc-l"><span class="tc-ico">📖</span>思维加速 / 耐久 术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+    <!-- ════════ 图鉴 ════════ -->
+    <div class="page hidden" id="page-journal">
+      <div class="detail-head">
+        <button class="back-btn" onclick="home()">‹</button>
+        <span class="detail-title">📖 图鉴</span>
+        <span class="detail-sub">AI 自动补充</span>
+      </div>
+
+      <div class="sec-hdr">🐾 野兽图鉴</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <b>松鸡</b><span class="badge badge-good">无害</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">晨昏低处活动 · 小型 · 可弹弓捕猎 · 北面针叶林</div>
+      </div>
+
+      <div class="sec-hdr">🌿 草药药典</div>
+      <div class="empty">尚未识别任何药用植物</div>
+
+      <div class="sec-hdr">👣 足迹与痕迹</div>
+      <div class="card">
+        <b>不明大型动物</b> · <span class="badge badge-warn">较新</span> · 朝南
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">南侧溪流边 — 比晓光的脚掌大得多</div>
+        <div class="detail-fold" style="margin-top:6px">
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 痕迹分析</span><span class="fh-arr">▸</span></div>
+          <div class="fold-body">
+            <div class="data-row"><span class="dr-label">新鲜度</span><span class="dr-val warn">较新（约 4 小时前）</span></div>
+            <div class="data-row"><span class="dr-label">推测体型</span><span class="dr-val">大型 · 估重 60-80kg</span></div>
+            <div class="data-row"><span class="dr-label">推测足长</span><span class="dr-val">约 12cm</span></div>
+            <div class="data-row"><span class="dr-label">疑似</span><span class="dr-val">熊科？犬科？<span class="dr-sub">尚不能确定</span></span></div>
+            <div class="data-row"><span class="dr-label">威胁评估 <i class="info-i" onclick="openTerm('感染风险')">ⓘ</i></span><span class="dr-val bad">高 · 建议绕行</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hdr">📝 日志</div>
+      <div class="card">
+        <b style="font-family:var(--font-display)">第3天 · 黄昏</b>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;line-height:1.6">在溪边发现兽迹，没敢靠近。回到残骸旁，用斧头劈了些木料。天快黑了，得想办法生火……主人，晓光今天也活下来了。</div>
+      </div>
+
+      <div class="term-card" onclick="openGloss('journal')">
+        <span class="tc-l"><span class="tc-ico">📖</span>图鉴相关术语</span>
+        <span class="tc-arrow">查看说明 ›</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 术语悬浮窗（挂在 device 内，覆盖整个设备） -->
+  <div class="gloss-overlay" id="gloss" onclick="if(event.target===this)closeGloss()">
+    <div class="gloss-panel">
+      <div class="gloss-head">
+        <span class="gloss-title" id="gloss-title">术语说明</span>
+        <button class="gloss-x" onclick="closeGloss()">✕</button>
+      </div>
+      <div class="gloss-body" id="gloss-body"></div>
+    </div>
+  </div>
+</div>
+
+<div class="preview-note">预览 · 模拟数据 · 点入口/返回/术语卡试试</div>
+
+<script>
+// ───────── 术语库 ─────────
+const GLOSSARY={
+  健康:['❤️','身体的整体机能状态。受伤口、疾病、失温、长期营养不良拖累；休息、进食、治疗可缓慢回升。<span class="hl">归零=死亡</span>。'],
+  饥饿:['🍗','体内能量储备。随时间和体力消耗下降，进食回升。<span class="hl">过低会持续扣健康</span>，并降低体温维持能力。'],
+  口渴:['💧','体内水分。比饥饿下降更快，<span class="hl">脱水比饥饿更快致命</span>。需饮用煮沸/净化过的水补充，喝生水有患病风险。'],
+  精力:['⚡','当日可支配的体力。劳作、移动、战斗消耗，<span class="hl">睡眠是主要恢复手段</span>。精力低时行动效率下降、易受伤。'],
+  体温:['🌡️','核心体温，正常约 36.8°C。<span class="hl">低于 35° 进入失温</span>，会扣健康、判断力下降。受气温、风、湿衣物、篝火、庇护所共同影响。'],
+  精神:['🧠','心理状态。孤独、恐惧、伤痛拉低，安全感、小确幸、与铃铛的联系回升。分为<span class="hl">稳定/压抑/临界/崩溃</span>四档，过低会触发精神危机。'],
+  移速修正:['🏃','当前移动速度相对正常的增减百分比。受<span class="hl">负重、负载分布、狐尾湿度</span>影响。负值越大，移动越慢、越费精力。'],
+  体质:['💪','影响<span class="hl">负重上限、伤病抵抗、体力恢复</span>。每点体质提升各身体位置的承重舒适上限。'],
+  敏捷:['🏃','影响<span class="hl">移动、闪避、捕猎与攀爬</span>成功率。狩猎掷骰的主要加成属性之一。'],
+  智力:['🧠','固定属性（起始8，不随经验成长）。决定<span class="hl">配方解锁广度、思维加速、负载均衡分析</span>。≥6 解锁负载分析，≥8 解锁思维加速。'],
+  意志:['🛡️','影响<span class="hl">精神耐力与孤独抗性</span>。意志越高，面对长期独处与精神危机时越稳。'],
+  感知:['👁️','影响<span class="hl">环境察觉、搜刮发现率、追踪与危险预警</span>。搜刮和狩猎掷骰的关键加成。'],
+  经验XP:['📈','属性成长进度条。<span class="hl">仅在做成没做过的事、或在极端条件下挺过来时才增加</span>，极为稀缺。攒满后属性升一级，进度清零。'],
+  睡眠债务:['😴','累积的睡眠亏空（小时）。长期睡不够会<span class="hl">累加债务，拖累精力恢复、判断力和健康</span>。一次充分睡眠可偿还部分债务。'],
+  肌肉疲劳:['💪','肌肉的累积劳损（百分比）。砍柴、攀爬、负重行军会升高。<span class="hl">过高时力量下降、更易拉伤</span>，需休息缓解。'],
+  累积负荷:['⚖️','身体总体的疲惫等级（轻松/正常/疲惫/透支/极限），综合<span class="hl">肌肉疲劳+睡眠债务+精力</span>的状态总览。'],
+  执念:['🔔','晓光"主人一定在找我"的核心信念，是她在荒野撑下去的精神支柱。强度越高越稳；<span class="hl">动摇或崩溃会引发严重精神危机</span>。颈间铃铛是她的锚点。'],
+  狐尾湿度:['🦊','尾巴的干湿程度（干燥/微湿/湿透）。<span class="hl">湿尾大幅增加散热、加重失温、拖慢移速</span>，且让晓光情绪低落。需擦干或烤干。'],
+  九尾状态:['🦊','九条尾巴的展开程度。荒野中灵力稀薄，<span class="hl">通常合并为一尾</span>。完全展开可裹身保暖，但耗灵力。'],
+  灵力环境:['✨','周遭灵气浓度（稀薄/正常/充沛）。荒野远离灵脉，<span class="hl">灵力稀薄→恢复力降至接近人类</span>，伤口愈合变慢、狐火难以维持。'],
+  负重:['🎒','随身物品总重。<span class="hl">超过安全上限会降低移速、加速体力消耗</span>。放入行李舱（待搜刮）的物品暂不计入。安全上限由体质决定。'],
+  负载分布:['⚖️','各身体位置（背包/腰挂/手持/尾藏等）的承重占比。<span class="hl">分布不均或单点超载会额外降低移速、加速疲劳</span>。智力≥6 解锁此分析。'],
+  耐久度:['🔧','工具/装备的完好程度。使用、坠机冲击会磨损，<span class="hl">归零则损坏失效</span>。可用材料修理，或拆解取零件。'],
+  锋利度:['🔪','刃具的锋利程度，影响砍伐/分割效率。变钝后需用磨刀石恢复。'],
+  失温风险:['❄️','当前失温的危险等级，综合<span class="hl">气温、风速、衣物保暖、湿衣物/湿尾、篝火、庇护所</span>计算。偏高/高/极高时需立即取暖。'],
+  气压趋势:['📊','大气压变化方向。<span class="hl">气压下降常预示天气转坏</span>（降雨、暴风雪），是晓光预判天气的依据。'],
+  月相:['🌙','月亮盈亏阶段，影响<span class="hl">夜间能见度与夜行安全</span>，也是天体导航判断日期的参考。'],
+  腐败风险:['🥫','食物的变质程度（安全/需尽快食用/即将腐败/已腐败）。受温度、湿度、保存方式影响。<span class="hl">吃下腐败食物有患病风险</span>。'],
+  思维加速:['🧠','智力≥8 解锁。晓光能在脑海中快速推演制作方法，<span class="hl">更易解锁复杂配方</span>。'],
+  // ── 精细物理量 ──
+  核心体温:['🌡️','身体内脏的真实温度，正常 36.8°C，是判断失温的依据。<span class="hl">和体感温度不同——体感是皮肤上感受到的环境冷暖，核心体温是身体内部真正的温度</span>。核心体温下降比体感慢，但一旦下降就很危险。'],
+  体感温度:['🥶','环境作用在皮肤上的冷热程度 = 气温 − 风的拉低 + 衣物/篝火的保暖。<span class="hl">体感越冷，核心体温流失越快</span>。这是你能通过穿衣、生火、避风直接改善的量。'],
+  风寒指数:['💨','风让人感觉比实际气温更冷的程度。<span class="hl">风越大，皮肤上的体感就比温度计读数低几度</span>（湿身时更甚）。避风、用庇护所挡风可消除大部分风寒。'],
+  散热速率:['♨️','身体每秒钟流失多少热量（用瓦特表示——和家用电器功率单位一样）。<span class="hl">湿尾、湿衣、大风、皮肤裸露都会让散热加快</span>；多穿、蜷缩、靠近篝火可以变慢。散热比产热快时体温就会下降。'],
+  基础代谢率:['🔥','身体维持基本活命每天最少消耗的热量（kcal）。约 1450。<span class="hl">就算什么都不做也在烧能量</span>，寒冷和劳作还会进一步增加消耗。吃得不够这个数，就要动用体脂、慢慢消瘦。'],
+  今日卡路里:['🍽️','今天已经吃下的热量。<span class="hl">需 ≥ 每日基本耗能 + 活动消耗</span>，否则入不敷出。荒野中很难吃够，长期入不敷出会动用体脂、慢慢消瘦。'],
+  蛋白质平衡:['🥩','蛋白质的吃下与消耗的盈亏。<span class="hl">长期不足 → 肌肉流失、伤口愈合变慢</span>。光吃野果糖类不够，需要肉/蛋/坚果补蛋白。'],
+  体脂储备:['🧈','身体储存的脂肪（%），是热量入不敷出时的"备用粮仓"，也影响抗寒。<span class="hl">过低 → 怕冷、虚弱；耗尽 → 开始消耗肌肉</span>。'],
+  水分流失:['💧','每天经排汗、呼吸、排泄流失的水（mL）。<span class="hl">劳作和高温让流失加快</span>，必须靠饮水补回，否则口渴度下降、脱水。'],
+  重心偏移:['⚖️','负重在身上分布不均导致的重心偏离。<span class="hl">偏移大→步态不稳、攀爬危险、移速下降</span>。把重物放背包贴近背部、避免单侧堆积可改善。'],
+  单点超载:['🎒','某个身体位置的负重超过它能承受的极限。<span class="hl">会额外降低移速、加速该部位疲劳×1.5</span>。例如手持超过3kg。需要重新分配到背包。'],
+  距失温阈值:['❄️','当前核心体温距离"开始失温"（35°C）还差多少度，以及按现在的散热速度估计多久会触及。<span class="hl">这是最该盯紧的安全余量</span>。'],
+  伤口愈合阶段:['🩹','伤口的恢复进程：出血→凝血→结痂→愈合中→已愈合/留疤。<span class="hl">灵力稀薄时愈合变慢</span>，清洁和包扎能降低感染风险、加速愈合。'],
+  感染风险:['🦠','伤口被细菌感染的概率（低/中/高/已感染）。<span class="hl">不处理的脏伤口风险升高，感染会持续扣健康</span>，需清洁、抗生素或草药。'],
+  燃料余量:['🪵','篝火当前的燃料还能烧多少分钟。<span class="hl">烧完会转为余烬再熄灭</span>，保暖和煮食都依赖它。需持续添柴维持。'],
+  热辐射半径:['🔥','篝火能有效供暖的范围（米）。<span class="hl">在范围内才能取暖、烘干衣物</span>。火越旺范围越大。'],
+};
+// 每页展示哪些术语
+const PAGE_TERMS={
+  status:['体质','敏捷','智力','意志','感知','经验XP','核心体温','体感温度','基础代谢率','今日卡路里','蛋白质平衡','体脂储备','水分流失','睡眠债务','肌肉疲劳','累积负荷','执念','伤口愈合阶段','感染风险','狐尾湿度','九尾状态','灵力环境'],
+  inventory:['负重','负载分布','重心偏移','单点超载','耐久度','锋利度','移速修正'],
+  world:['失温风险','体感温度','风寒指数','散热速率','距失温阈值','气压趋势','月相'],
+  camp:['燃料余量','热辐射半径','腐败风险','失温风险'],
+  workshop:['思维加速','耐久度'],
+  journal:['执念'],
+  home:['健康','饥饿','口渴','精力','核心体温','精神','移速修正'],
+};
+function openGloss(scope){
+  const terms=Array.isArray(scope)?scope:(PAGE_TERMS[scope]||[]);
+  let h='';
+  terms.forEach(t=>{const g=GLOSSARY[t];if(!g)return;
+    h+=`<div class="gloss-item"><div class="gloss-term"><span class="g-ico">${g[0]}</span>${t}</div><div class="gloss-desc">${g[1]}</div></div>`});
+  document.getElementById('gloss-body').innerHTML=h;
+  document.getElementById('gloss-title').textContent=Array.isArray(scope)?'术语说明':'本页术语说明';
+  document.getElementById('gloss').classList.add('open');
+}
+function openTerm(t){openGloss([t])}
+function closeGloss(){document.getElementById('gloss').classList.remove('open')}
+function toggleFold(el){el.closest('.detail-fold').classList.toggle('open')}
+
+// 属性点阵渲染
+function dots(id,val,max,cls){
+  const el=document.getElementById(id); if(!el)return;
+  let h='';for(let i=0;i<max;i++){h+=`<span class="dot ${i<val?(cls||'on'):''}"></span>`}
+  el.innerHTML=h;
+}
+dots('d-ti',2,20);dots('d-mj',2,20);dots('d-zl',8,20,'intel');dots('d-yz',4,20);dots('d-gz',4,20);
+
+const pages=['home','status','inventory','world','camp','workshop','journal'];
+function show(p){pages.forEach(x=>{document.getElementById('page-'+x).classList.toggle('hidden',x!==p)});document.querySelector('.viewport').scrollTop=0}
+function go(p){show(p)} function home(){show('home')}
+</script>
+</body>
+</html>
