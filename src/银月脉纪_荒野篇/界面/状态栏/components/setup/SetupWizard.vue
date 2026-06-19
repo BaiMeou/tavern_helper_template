@@ -66,7 +66,7 @@
         <div v-for="cat in (activeCategory ? [activeCategory] : categories)" :key="cat" :ref="el => catRefs[cat] = el">
           <div class="cat-header">{{ catEmoji(cat) }} {{ cat }} <span class="subtle">{{ categoryCount(cat) }}件 · 已选{{ categorySelected(cat) }}</span></div>
           <div class="item-grid">
-            <div v-for="item in itemsByCategory(cat)" :key="item.id" :class="['item-select-card', { selected: selectedIds.has(item.id) }]" @click="openItemPicker(item)">
+            <div v-for="item in itemsByCategory(cat)" :key="item.id" :class="['item-select-card', { selected: selectedIds.has(item.id) }]" @click="openItemPicker(item, $event)">
               <div class="is-icon">{{ item.icon }}</div>
               <div class="is-name">{{ item.名称 }}</div>
               <div class="is-weight">{{ item.重量 }}kg</div>
@@ -89,11 +89,10 @@
         </div>
       </section>
 
-      <!-- 物品选择弹窗：点物品卡时浮出，让玩家一站式决定「随身/行李舱 + 位置」 -->
-      <!-- Teleport 到 body：避开 wizard-card 父容器影响，弹窗永远居中浮在视口内 -->
-      <Teleport to="body">
+      <!-- 物品选择弹窗：点物品卡时浮出，紧贴被点击的物品卡出现（iframe 内 position:fixed 会锚定到被撑高的文档，
+           而非可视区，故改用 absolute 锚定到点击卡片附近，无论 iframe 多高都在玩家眼前） -->
       <div v-if="pickerItem" class="picker-mask" @click.self="closeItemPicker">
-        <div class="picker-card">
+        <div class="picker-card" ref="pickerCardEl" :style="pickerCardStyle">
           <div class="picker-head">
             <span class="pk-icon">{{ pickerItem.icon }}</span>
             <div class="pk-title-wrap">
@@ -147,7 +146,6 @@
           </div>
         </div>
       </div>
-      </Teleport>
 
       <!-- 开始求生按钮（空手/硬核模式允许 0 件物品，仅要求属性点分配完毕）-->
       <!-- 货舱搜刮在求生开始后于「工坊 → ✈️搜刮残骸」中进行,向导阶段不掷骰 -->
@@ -159,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, nextTick } from 'vue';
 
 const emit = defineEmits<{ done: [] }>();
 
@@ -385,13 +383,40 @@ function toggleItem(item: ItemOption) {
 }
 
 // ─── 物品选择弹窗：点物品卡时浮出，一站式决定「随身/行李舱 + 位置」 ───
+// iframe 内 position:fixed 会锚定到被撑高的文档而非可视区，故弹窗用 absolute 锚定到
+// 被点击卡片正下方：无论 iframe 多高，弹窗都紧贴玩家刚点的那张卡出现，必在视野内。
 const pickerItem = ref<ItemOption | null>(null);
-function openItemPicker(item: ItemOption) {
+const pickerCardEl = ref<HTMLElement | null>(null);
+const pickerTop = ref(0);   // 弹窗相对 .wizard-card 的 top（px）
+function openItemPicker(item: ItemOption, ev?: MouseEvent) {
   pickerItem.value = item;
+  // 计算被点卡片相对滚动容器(.wizard-card)的位置，把弹窗放到卡片正下方
+  const card = (ev?.currentTarget as HTMLElement) || null;
+  nextTick(() => {
+    if (card) {
+      // wizard-card 是 .picker-mask(absolute) 的定位父级；用 offset 链算出卡片底部相对它的 y
+      const maskParent = card.closest('.wizard-card') as HTMLElement | null;
+      if (maskParent) {
+        const cardRect = card.getBoundingClientRect();
+        const parentRect = maskParent.getBoundingClientRect();
+        // 卡片底部相对 wizard-card 顶部的距离 + 间距
+        pickerTop.value = (cardRect.bottom - parentRect.top) + 8;
+      }
+    }
+    // 兜底：打开后把弹窗滚入可视区（iframe 内 scrollIntoView 会请求宿主滚动）
+    pickerCardEl.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
 }
 function closeItemPicker() {
   pickerItem.value = null;
 }
+// 弹窗卡片定位样式：absolute 锚定到被点卡片下方，水平居中于 wizard-card
+const pickerCardStyle = computed(() => ({
+  position: 'absolute' as const,
+  top: pickerTop.value + 'px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+}));
 function addItem(item: ItemOption, mode: 'carry' | 'cargo') {
   if (selectedCount.value >= 20 && !selectedIds.value.has(item.id)) {
     toastr.warning('最多只能选 20 件');
@@ -495,7 +520,7 @@ function confirm() {
 
 <style scoped>
 .wizard { width: 100%; min-height: 100%; background: var(--bg); display: flex; justify-content: center; padding: 16px; }
-.wizard-card { width: 100%; max-width: 680px; }
+.wizard-card { width: 100%; max-width: 680px; position: relative; }
 .wizard-title { font-family: var(--font-display); font-size: 22px; color: var(--accent); text-align: center; margin-bottom: 4px; }
 .wizard-sub { text-align: center; color: var(--text-secondary); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
 .subtle { font-weight: normal; font-size: 11px; color: var(--text-secondary); }
@@ -557,9 +582,9 @@ function confirm() {
 .is-tag { position: absolute; top: 6px; left: 8px; font-size: 16px; background: rgba(255,255,255,.85); border: 1px solid var(--border); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 
 /* ─── Picker Modal ─── */
-.picker-mask { position: fixed; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; animation: pkFadeIn .15s ease-out; }
+.picker-mask { position: absolute; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; animation: pkFadeIn .15s ease-out; }
 @keyframes pkFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.18); animation: pkSlideUp .2s ease-out; }
+.picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; max-width: 460px; width: calc(100% - 32px); max-height: 480px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.18); animation: pkSlideUp .2s ease-out; z-index: 1001; }
 @keyframes pkSlideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .picker-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(168,68,52,.04), transparent); }
 .pk-icon { font-size: 32px; }
