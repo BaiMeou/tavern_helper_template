@@ -384,13 +384,14 @@ function toggleItem(item: ItemOption) {
 
 // ─── 物品选择弹窗：点物品卡时浮出，一站式决定「随身/行李舱 + 位置」 ───
 // iframe 内 position:fixed 会锚定到被撑高的文档而非可视区，故弹窗用 absolute 锚定到
-// 被点击卡片正下方：无论 iframe 多高，弹窗都紧贴玩家刚点的那张卡出现，必在视野内。
+// 被点击卡片附近：无论 iframe 多高，弹窗都紧贴玩家刚点的那张卡出现，必在视野内。
 const pickerItem = ref<ItemOption | null>(null);
 const pickerCardEl = ref<HTMLElement | null>(null);
 const pickerTop = ref(0);   // 弹窗相对 .wizard-card 的 top（px）
+const pickerFlip = ref(false); // true=弹窗在卡片上方（空间不足时翻转）
+const PICKER_MAX_H = 480;
 function openItemPicker(item: ItemOption, ev?: MouseEvent) {
   pickerItem.value = item;
-  // 计算被点卡片相对滚动容器(.wizard-card)的位置，把弹窗放到卡片正下方
   const card = (ev?.currentTarget as HTMLElement) || null;
   nextTick(() => {
     if (card) {
@@ -398,10 +399,18 @@ function openItemPicker(item: ItemOption, ev?: MouseEvent) {
       if (maskParent) {
         const cardRect = card.getBoundingClientRect();
         const parentRect = maskParent.getBoundingClientRect();
-        pickerTop.value = (cardRect.bottom - parentRect.top) + 8;
+        const cardBottomY = cardRect.bottom - parentRect.top + 8;
+        const parentH = maskParent.clientHeight;
+        // 空间不足：弹窗放在卡片上方（底部对齐卡片顶部 - 8px）
+        if (cardBottomY + PICKER_MAX_H > parentH) {
+          pickerTop.value = Math.max(0, (cardRect.top - parentRect.top) - 8 - PICKER_MAX_H);
+          pickerFlip.value = true;
+        } else {
+          pickerTop.value = cardBottomY;
+          pickerFlip.value = false;
+        }
       }
     }
-    // 不做自动滚动——弹窗锚定在被点卡片旁，用户视线就在那里
   });
 }
 function closeItemPicker() {
@@ -579,10 +588,10 @@ function confirm() {
 .is-tag { position: absolute; top: 6px; left: 8px; font-size: 16px; background: rgba(255,255,255,.85); border: 1px solid var(--border); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 
 /* ─── Picker Modal ─── */
-.picker-mask { position: absolute; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; animation: pkFadeIn .15s ease-out; }
+.picker-mask { position: absolute; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; animation: pkFadeIn .15s ease-out; overflow-y: auto; }
 @keyframes pkFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; max-width: 460px; width: calc(100% - 32px); max-height: 480px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.18); animation: pkSlideUp .2s ease-out; z-index: 1001; }
-@keyframes pkSlideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes pkSlideUp { from { transform: translateX(-50%) translateY(8px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
 .picker-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(168,68,52,.04), transparent); }
 .pk-icon { font-size: 32px; }
 .pk-title-wrap { flex: 1; min-width: 0; }
