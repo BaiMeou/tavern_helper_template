@@ -394,17 +394,14 @@ function openItemPicker(item: ItemOption, ev?: MouseEvent) {
   const card = (ev?.currentTarget as HTMLElement) || null;
   nextTick(() => {
     if (card) {
-      // wizard-card 是 .picker-mask(absolute) 的定位父级；用 offset 链算出卡片底部相对它的 y
       const maskParent = card.closest('.wizard-card') as HTMLElement | null;
       if (maskParent) {
         const cardRect = card.getBoundingClientRect();
         const parentRect = maskParent.getBoundingClientRect();
-        // 卡片底部相对 wizard-card 顶部的距离 + 间距
         pickerTop.value = (cardRect.bottom - parentRect.top) + 8;
       }
     }
-    // 兜底：打开后把弹窗滚入可视区（iframe 内 scrollIntoView 会请求宿主滚动）
-    pickerCardEl.value?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    // 不做自动滚动——弹窗锚定在被点卡片旁，用户视线就在那里
   });
 }
 function closeItemPicker() {
