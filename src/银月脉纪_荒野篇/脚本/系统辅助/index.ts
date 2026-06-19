@@ -100,8 +100,13 @@ async function init() {
       case '搜刮': {
         const 感知 = 基础属性.感知 ?? 4;
         const bonus = (感知 - 1) * 3;
-        // 对每个候选物品按 易损度 掷骰
-        const 候选 = Array.isArray(req.物品) ? req.物品 : [];
+        // 候选物品来源：req.物品（AI/前端显式提供） 或 stat_data.$待搜刮货舱（向导阶段记录的行李舱物品）
+        let 候选 = Array.isArray(req.物品) ? req.物品 : [];
+        const usingPending = 候选.length === 0;
+        if (usingPending) {
+          const pending = _.get(variables, 'stat_data.$待搜刮货舱', []);
+          候选 = Array.isArray(pending) ? pending : [];
+        }
         const 拾取 = 候选.map((it: any) => {
           const r = roll();
           const adj = r + bonus - (it.易损度 || 0);
@@ -109,10 +114,28 @@ async function init() {
             : adj >= 55 ? { 标签: '少耐久', 耐久: 40 + Math.floor(Math.random() * 30), 可修: false, 可拆: false }
             : adj >= 30 ? { 标签: '部分损坏', 耐久: 10 + Math.floor(Math.random() * 20), 可修: true, 可拆: true }
             : { 标签: '损坏', 耐久: 0, 可修: false, 可拆: true };
-          return { id: it.id, 名称: it.名称, 重量: it.重量, r, adj, ...cond };
+          return { id: it.id, 名称: it.名称, 重量: it.重量, 描述: it.描述, 分类: it.分类, r, adj, ...cond };
         });
-        结果 = { 拾取 };
-        同步给AI = `搜刮掷骰完成：感知加成+${bonus}，共${拾取.length}件候选，存活${拾取.filter((x: any) => x.标签 !== '损坏').length}件（${拾取.map((x: any) => `${x.名称}(${x.标签}·${x.耐久}%)`).join('、')}）`;
+        // 行李舱搜刮：把存活的物品自动入物品栏，并清空 $待搜刮货舱
+        if (usingPending && 拾取.length > 0) {
+          for (const item of 拾取) {
+            if (item.标签 === '损坏') continue;
+            const entry: any = {
+              名称: item.名称,
+              分类: item.分类 || '特殊',
+              重量: item.重量,
+              位置: '背包',
+              描述: item.描述 || '',
+              耐久度: item.耐久,
+            };
+            if (item.可修) entry.描述 = (entry.描述 || '') + ' [部分损坏·可修理]';
+            if (item.可拆 && !item.可修) entry.描述 = (entry.描述 || '') + ' [严重损坏·可拆解]';
+            _.set(variables, `stat_data.装备.物品栏.cargo_${item.id}`, entry);
+          }
+          _.set(variables, 'stat_data.$待搜刮货舱', []);
+        }
+        结果 = { 拾取, 来源: usingPending ? '行李舱搜刮' : 'AI候选' };
+        同步给AI = `搜刮掷骰完成：感知加成+${bonus}，共${拾取.length}件候选，存活${拾取.filter((x: any) => x.标签 !== '损坏').length}件（${拾取.map((x: any) => `${x.名称}(${x.标签}·${x.耐久}%)`).join('、')}）${usingPending ? '——已将存活物品自动收入物品栏' : ''}`;
         break;
       }
       case '狩猎': {

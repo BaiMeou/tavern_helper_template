@@ -6,10 +6,11 @@
       <div class="subtle">晓光能在脑海中推演物品制作方法。发现材料或尝试制作时自动解锁配方。</div>
     </div>
 
-    <div class="sec-hdr">✈️ 搜刮残骸 <span class="sub">感知影响发现概率</span></div>
+    <div class="sec-hdr">✈️ 搜刮残骸 <span class="sub">{{ pendingCargoCount }} 件待打捞 · 感知影响发现概率</span></div>
     <div class="card">
-      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">飞机货舱中的物品——坠机冲击下有些可能还没损坏。点击搜索，看看还能找到什么能用的。</p>
-      <button class="roll-btn" @click="scavenge">🎲 搜索货舱残骸</button>
+      <p v-if="pendingCargoCount > 0" style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">飞机货舱中你之前选定放入的物品共 {{ pendingCargoCount }} 件——坠机冲击下有些可能还没损坏。点击搜索一次性掷骰所有待打捞物品。</p>
+      <p v-else style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">坠机时没有放入行李舱的物品——荒野里偶尔也能找到失落的残骸，让晓光留意周围吧。</p>
+      <button class="roll-btn" @click="scavenge">🎲 {{ pendingCargoCount > 0 ? `搜索货舱残骸 (${pendingCargoCount}件)` : '搜索货舱残骸' }}</button>
       <DetailFold title="搜刮判定">
         <DataRow label="基础掷骰" value="1d100" />
         <DataRow label="感知加成" :value="`+${(感知-1)*3}`" kind="good" />
@@ -64,6 +65,10 @@ const 感知 = computed(() => d.value.晓光?.基础属性?.感知 ?? 4);
 const recipes = computed(() => d.value.工坊?.配方 ?? {});
 const recipeCount = computed(() => Object.keys(recipes.value).filter(k => recipes.value[k].已解锁).length);
 const traps = computed(() => d.value.工坊?.陷阱 ?? {});
+const pendingCargoCount = computed(() => {
+  const cargo = (d.value as any).$待搜刮货舱;
+  return Array.isArray(cargo) ? cargo.length : 0;
+});
 
 function trapBadge(s: string) {
   if (s === '捕获成功') return 'badge-good';

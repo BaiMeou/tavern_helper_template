@@ -90,6 +90,8 @@
       </section>
 
       <!-- 物品选择弹窗：点物品卡时浮出，让玩家一站式决定「随身/行李舱 + 位置」 -->
+      <!-- Teleport 到 body：避开 wizard-card 父容器影响，弹窗永远居中浮在视口内 -->
+      <Teleport to="body">
       <div v-if="pickerItem" class="picker-mask" @click.self="closeItemPicker">
         <div class="picker-card">
           <div class="picker-head">
@@ -145,13 +147,10 @@
           </div>
         </div>
       </div>
-      <!-- Step 4: 搜刮残骸 -->
-      <section v-if="selectedCount > 0" style="margin-top:20px;">
-        <div class="sec-hdr">✈️ 搜刮残骸 <span class="subtle">感知影响发现概率</span></div>
-        <div v-if="!cargoRolled"><p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">飞机货舱中的物品——坠机冲击下有些可能还没损坏。</p><button class="roll-btn" @click="rollCargo">🎲 搜索货舱残骸</button></div>
-        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="['cargo-card', cargo.survived ? 'survived' : 'destroyed']"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span> <span :class="condBadge(cargo.condition)">{{ cargo.condition?.label || (cargo.survived ? '完好' : '损坏') }} {{ cargo.condition ? cargo.condition.durabilityPct + '%' : '' }}</span></div><div class="cargo-desc">{{ cargo.描述 }}<span v-if="cargo.condition?.repairable" class="cargo-hint"> · 🔧 可修理</span><span v-else-if="cargo.condition?.dismantlable" class="cargo-hint"> · 🛠️ 可拆解取材</span></div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
-      </section>
-      <!-- 确认按钮（空手/硬核模式允许 0 件物品，仅要求属性点分配完毕） -->
+      </Teleport>
+
+      <!-- 开始求生按钮（空手/硬核模式允许 0 件物品，仅要求属性点分配完毕）-->
+      <!-- 货舱搜刮在求生开始后于「工坊 → ✈️搜刮残骸」中进行,向导阶段不掷骰 -->
       <button class="confirm-btn" :disabled="remainingPoints !== 0" @click="confirm">
         {{ remainingPoints !== 0 ? `还需分配 ${remainingPoints} 个属性点` : `🦊 开始求生 (${selectedCount}/20件 · ${totalWeight.toFixed(1)}kg)` }}
       </button>
@@ -357,55 +356,9 @@ const cargoHoldWeight = computed(() => totalWeight.value - carryWeight.value);
 
 function hardcoreMode() {
   selectedIds.value = new Set();
-  cargoRolled.value = true;
-  cargoResults.value = [];
   toastr.info('硬核模式：晓光将空手面对荒野。祝你好运。');
 }
 function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
-
-// Cargo salvage
-const cargoRolled = ref(false);
-const cargoTakenItems = ref<Array<{重量:number}>>([]);
-const cargoResults = ref<Array<{id:string;icon:string;名称:string;重量:number;描述:string;survived:boolean;taken:boolean;分类?:string;condition?:{label:string;durabilityPct:number;repairable:boolean;dismantlable:boolean}}>>([]);
-const CARGO_POOL = [
-  // 易损度: 越大越易在坠机中损坏(作为掷骰减项)。金属/液体容器结实(低)，电子/精密件脆(高)
-  { id:'备用燃油',icon:'⛽',名称:'备用燃油(小型1L)',重量:1.2,描述:'航空燃油——引火加速、清洗油污、简易火把',易损度:20},
-  { id:'大型急救箱',icon:'🏥',名称:'机载急救箱(大型)',重量:1.5,描述:'比个人急救包全面——夹板、止血钳、烧伤敷料、吗啡x2',易损度:10},
-  { id:'工具箱',icon:'🧰',名称:'基础工具箱',重量:1.2,描述:'螺丝刀套装、小锤、活动扳手',易损度:5},
-  { id:'救生衣',icon:'🦺',名称:'飞机救生衣',重量:0.3,描述:'可充气——用作浮具、枕头、或拆开取用面料',易损度:8},
-  { id:'座椅垫',icon:'💺',名称:'座椅垫(阻燃)',重量:0.5,描述:'阻燃材料——可剪裁用作跪垫、隔热垫',易损度:3},
-  { id:'航空毛毯',icon:'🧣',名称:'航空毛毯x2',重量:0.8,描述:'阻燃航空毛毯——更轻更保暖。深秋荒野的救命层',易损度:3},
-  { id:'定位发射器',icon:'📡',名称:'紧急定位发射器(损坏)',重量:0.4,描述:'已损坏但零件可用——电池、天线、电路板',易损度:30},
-  { id:'灭火器',icon:'🧯',名称:'机载灭火器(小型)',重量:1.5,描述:'仍有压力——灭火、巨响吓退野兽、金属罐改造容器',易损度:8},
-];
-function cargoCondition(roll: number, bonus: number, fragility: number = 0): {label:string, durabilityPct:number, repairable:boolean, dismantlable:boolean} {
-  const adjusted = roll + bonus - (fragility || 0);
-  if (adjusted >= 80) return {label:'完好',durabilityPct:100,repairable:false,dismantlable:false};
-  if (adjusted >= 55) return {label:'少耐久',durabilityPct:40+Math.floor(Math.random()*30),repairable:false,dismantlable:false};
-  if (adjusted >= 30) return {label:'部分损坏',durabilityPct:10+Math.floor(Math.random()*20),repairable:true,dismantlable:true};
-  return {label:'损坏',durabilityPct:0,repairable:false,dismantlable:true};
-}
-function rollCargo() {
-  cargoRolled.value = true;
-  const perception = attrs['感知'];
-  const bonus = (perception - 1) * 3;
-  const playerCargoItems = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id] === 'cargo');
-  const allCargo = [...playerCargoItems, ...CARGO_POOL];
-  cargoResults.value = allCargo.map(item => {
-    const roll = Math.floor(Math.random() * 100) + 1;
-    const cond = cargoCondition(roll, bonus, (item as any).易损度 || 0);
-    return { ...item, survived: cond.label !== '损坏', condition: cond, taken: false };
-  });
-}
-function cargoTaken(cargo: any) { return cargo.taken; }
-function condBadge(cond: any) {
-  if (!cond) return 'badge badge-good';
-  if (cond.label === '完好') return 'badge badge-good';
-  if (cond.label === '少耐久') return 'badge badge-warn';
-  if (cond.label === '部分损坏') return 'badge badge-bad';
-  return 'badge badge-bad';
-}
-function takeCargo(cargo: any) { cargo.taken = true; cargoTakenItems.value.push(cargo); }
 
 
 const totalWeight = computed(() =>
@@ -514,7 +467,7 @@ function confirm() {
       // isSetupDone 仅依赖此标记，避免硬核模式无法跳过向导。
       _.set(vars, 'stat_data.$已初始化', true);
       for (const [key, val] of Object.entries({ ...attrs })) { _.set(vars, `stat_data.晓光.基础属性.${key}`, val); }
-      // 只把【随身】物品写入物品栏。货舱物品延迟到搜刮存活后才入库（避免重复+让"货舱不减负重"逻辑成立）
+      // 只把【随身】物品写入物品栏。货舱物品延迟到求生开始后玩家在「工坊→搜刮残骸」中掷骰存活后才入库
       for (const id of selectedIds.value) {
         if (carryChoice[id] === 'cargo') continue;
         const item = ITEM_POOL.find(i => i.id === id);
@@ -529,17 +482,9 @@ function confirm() {
         if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
         _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
       }
-      // 货舱：只写存活的；同时为玩家选中的cargo（无论存活与否）补一份"待打捞"记录到$待搜刮货舱供AI参考
+      // 货舱：玩家选中的cargo记录到 $待搜刮货舱 供后续工坊「搜刮残骸」按钮掷骰
       const cargoCarried = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id]==='cargo');
-      _.set(vars, 'stat_data.$待搜刮货舱', cargoCarried.map(i => ({ id:i.id, 名称:i.名称, 重量:i.重量 })));
-      for (const cargo of cargoResults.value.filter((c:any) => c.taken)) {
-        const cond = cargo.condition || {label:'完好',durabilityPct:100};
-        const entry: any = { 名称: cargo.名称, 分类: cargo.分类 || '特殊', 重量: cargo.重量, 位置: '背包', 描述: cargo.描述 };
-        entry.耐久度 = cond.durabilityPct || 0;
-        if (cond.label === '部分损坏') entry.描述 = cargo.描述 + ' [部分损坏·可修理]';
-        if (cond.label === '损坏') entry.描述 = cargo.描述 + ' [严重损坏·可拆解]';
-        _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, entry);
-      }
+      _.set(vars, 'stat_data.$待搜刮货舱', cargoCarried.map(i => ({ id:i.id, 名称:i.名称, 重量:i.重量, 描述:i.描述, 分类:i.分类, icon:i.icon, 易损度:(i as any).易损度 ?? 0 })));
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
       _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id=>carryChoice[id]!=='cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
