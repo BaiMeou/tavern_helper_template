@@ -424,7 +424,10 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
           new HtmlWebpackPlugin({
             template: path.join(import.meta.dirname, entry.html),
             filename: path.parse(entry.html).base,
+<<<<<<< HEAD
             inject: 'body',
+=======
+>>>>>>> 55b9a5c73448dafe8d865d5c0df9801d4b33774f
             scriptLoading: 'module',
             cache: false,
           }),
