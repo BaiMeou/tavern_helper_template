@@ -26,7 +26,7 @@
         <div class="weight-bar-card">
           <div class="weight-bar-row">
             <span class="wbr-label">⚖️ 负重</span>
-            <span class="wbr-value">{{ carryWeight.toFixed(1) }} / {{ safeLimit.value.toFixed(1) }} kg</span><span v-if="cargoHoldWeight > 0" style="font-size:11px;color:var(--text-secondary);margin-left:4px;"> 📦+{{ cargoHoldWeight.toFixed(1) }}kg待打捞</span>
+            <span class="wbr-value">{{ carryWeight.toFixed(1) }} / {{ safeLimit.toFixed(1) }} kg</span><span v-if="cargoHoldWeight > 0" style="font-size:11px;color:var(--text-secondary);margin-left:4px;"> 📦+{{ cargoHoldWeight.toFixed(1) }}kg待打捞</span>
             <span :class="['wbr-badge', weightRatio > 100 ? 'over' : weightRatio > 80 ? 'warn' : 'safe']">
               {{ weightRatio > 100 ? '⚠️ 超重' : weightRatio > 80 ? '满载' : '安全' }}
             </span>
