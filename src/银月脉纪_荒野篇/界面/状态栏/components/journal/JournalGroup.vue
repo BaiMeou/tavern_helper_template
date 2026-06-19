@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
-    <div class="sec-hdr">🐾 野兽图鉴 <span class="sub">AI 自动补充</span></div>
-    <div v-if="Object.keys(beasts).length === 0" class="empty-state">尚未遭遇任何生物<br>首次遭遇后 AI 自动创建图鉴条目</div>
+    <div class="sec-hdr">🐾 野兽图鉴 <span class="sub">自动收录</span></div>
+    <div v-if="Object.keys(beasts).length === 0" class="empty-state">尚未遭遇任何生物<br>首次遭遇后会自动收录图鉴条目</div>
     <div v-for="(b, key) in beasts" :key="key" class="card">
       <div class="beast-head">
         <strong>{{ b.名称 }}</strong>

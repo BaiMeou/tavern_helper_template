@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=../../schema.json
 # 银月脉纪：荒野篇 — 变量初始值
+# ⚠️ 已废弃·勿作真源：实际生效的开局 initvar 内联在「第一条消息/1.txt」的 <UpdateVariable><initvar> 块中
+#    （本卡对应世界书条目「[initvar]变量初始化勿开」在 index.yaml 中 启用:false，不参与运行）。
+#    本文件仅作历史模板/schema 校验参考，内容可能与 1.txt 漂移（如伤口数/初始物品），改开局状态请改 1.txt。
 # 晓光的坠机初始状态——第0天清晨
 晓光:
   基础属性:

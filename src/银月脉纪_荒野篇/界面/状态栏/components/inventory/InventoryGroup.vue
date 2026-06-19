@@ -25,8 +25,8 @@
       <b>🪓 手持：</b>{{ 手持 || '空手' }} &nbsp;&nbsp; <b>👘 穿着：</b>{{ 穿着 || '破损的巫女服' }}
     </div>
 
-    <div class="sec-hdr">🎒 物品清单 <span class="sub">点位置可调整 · 同步给AI</span></div>
-    <div v-if="count === 0" class="empty-state">物品栏为空<br>AI 会在探索、搜刮、制作时自动添加物品条目</div>
+    <div class="sec-hdr">🎒 物品清单 <span class="sub">点位置可调整</span></div>
+    <div v-if="count === 0" class="empty-state">物品栏为空<br>探索、搜刮、制作时会自动收入新物品</div>
     <ItemCard
       v-for="(item, key) in items" :key="key"
       :item-key="String(key)" :editable="true"

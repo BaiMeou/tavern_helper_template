@@ -8,7 +8,7 @@
 
     <div class="sec-hdr">✈️ 搜刮残骸 <span class="sub">感知影响发现概率</span></div>
     <div class="card">
-      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">飞机货舱中的物品——坠机冲击下有些可能还没损坏。点击发起搜刮（AI会判定发现什么）。</p>
+      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:9px">飞机货舱中的物品——坠机冲击下有些可能还没损坏。点击搜索，看看还能找到什么能用的。</p>
       <button class="roll-btn" @click="scavenge">🎲 搜索货舱残骸</button>
       <DetailFold title="搜刮判定">
         <DataRow label="基础掷骰" value="1d100" />
@@ -20,7 +20,7 @@
     </div>
 
     <div class="sec-hdr">🛠️ 配方 <span class="sub">{{ recipeCount }} 个已解锁 · 点可合成</span></div>
-    <div v-if="recipeCount === 0" class="empty-state">尚未解锁任何配方<br>发现材料或尝试制作时 AI 自动解锁</div>
+    <div v-if="recipeCount === 0" class="empty-state">尚未掌握任何配方<br>在荒野中发现材料或尝试制作后会逐渐摸索出新方法</div>
     <div v-for="(r, key) in recipes" :key="key" class="recipe-card">
       <div class="rc-head">
         <span class="rc-name">{{ key }}</span>

@@ -87,7 +87,7 @@ async function init() {
   });
 
   // ─── 掷骰引擎：AI 写 stat_data.$掷骰请求 = { 类型, ... } 触发 ───
-  // 类型：'搜刮' | '狩猎' | '铃铛' | '饮生水' | '陷阱' | '生火' | '攀爬'
+  // 类型：'搜刮' | '狩猎' | '铃铛' | '饮生水' | '生火' | '攀爬'（陷阱不走即时掷骰，由过夜结算自动判定）
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     const req = variables?.stat_data?.$掷骰请求;
     if (!req || typeof req !== 'object') return;
@@ -164,18 +164,6 @@ async function init() {
         } else {
           同步给AI = `饮生水掷骰(${r})：侥幸无事，但反复饮用生水风险累积`;
         }
-        break;
-      }
-      case '陷阱': {
-        // req.陷阱类型 → 按概率推进状态
-        const 类型概率: Record<string, number> = {
-          '绳索陷阱': 0.30, '钢丝锯陷阱': 0.18, '弹性拉索陷阱': 0.18,
-          '落穴陷阱': 0.35, '网陷阱': 0.25, '简易钓钩': 0.40, '藤蔓陷阱': 0.22,
-        };
-        const p = 类型概率[req.陷阱类型] ?? 0.20;
-        const 成功 = Math.random() < p;
-        结果 = { 成功, 概率: Math.round(p * 100) };
-        同步给AI = `陷阱结算(${req.陷阱类型}·${req.陷阱标识 ?? ''})：${成功 ? '捕获成功' : '未触发/逃脱'}`;
         break;
       }
       case '生火': {
@@ -411,6 +399,9 @@ async function init() {
       if (推进 === '夜晚' && 床铺 === '无') {
         _.set(variables, 'stat_data.晓光.睡眠.睡眠债务', Math.min(48, 债务 + 2));
       }
+    } else {
+      // 未识别的推进值：不结算，仅警告（避免静默吞掉，提示 AI 用合法值或直接改 世界.时间.时段）
+      console.warn(`[系统辅助] $推进时段="${推进}" 非法（仅支持 次日/黄昏/夜晚），未做任何代谢结算。纯叙事时段切换请直接改 世界.时间.时段`);
     }
     // 清除触发字段
     _.set(variables, 'stat_data.$推进时段', null);

@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class="sec-hdr">🔥 篝火 <span class="sub">操作同步给AI</span></div>
+      <div class="sec-hdr">🔥 篝火 <span class="sub">可操作</span></div>
       <div class="card">
         <div class="op-line">
           <span><span :class="['badge', fireBadge]">{{ fire.状态 }}</span></span>
@@ -33,7 +33,7 @@
         </DetailFold>
       </div>
 
-      <div class="sec-hdr">💧 储水 <span class="sub">操作同步给AI</span></div>
+      <div class="sec-hdr">💧 储水 <span class="sub">可操作</span></div>
       <div v-if="Object.keys(water).length === 0" class="empty-state">尚无储水</div>
       <div v-for="(wt, key) in water" :key="key" class="card">
         <div class="op-line">
@@ -46,7 +46,7 @@
         <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">来源：{{ wt.来源 || wt.收集日期 }}</div>
       </div>
 
-      <div class="sec-hdr">🥫 食物库存 <span class="sub">操作同步给AI</span></div>
+      <div class="sec-hdr">🥫 食物库存 <span class="sub">可操作</span></div>
       <div v-if="Object.keys(food).length === 0" class="empty-state">尚无库存</div>
       <div v-for="(fd, key) in food" :key="key" class="card">
         <div class="op-line">
