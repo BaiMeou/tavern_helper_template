@@ -1163,6 +1163,29 @@
         }
       }
     },
+    "$待搜刮货舱": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "名称": {
+            "type": "string"
+          },
+          "重量": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "名称",
+          "重量"
+        ]
+      }
+    },
     "工坊": {
       "default": {},
       "type": "object",
