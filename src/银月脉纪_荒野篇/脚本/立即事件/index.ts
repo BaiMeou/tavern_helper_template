@@ -10,8 +10,10 @@ async function init() {
       role: 'system',
       content: '【【精神危机】】',
       filter: () => {
-        const vars = getVariables({ type: 'message', message_id: getCurrentMessageId() });
-        return _.get(vars, 'stat_data.晓光.执念.状态') === '崩溃';
+        try {
+          const vars = getVariables({ type: 'message' });
+          return _.get(vars, 'stat_data.晓光.执念.状态') === '崩溃';
+        } catch { return false; }
       },
       should_scan: true,
     },
@@ -22,10 +24,13 @@ async function init() {
       role: 'system',
       content: '【【铃铛奇迹】】',
       filter: () => {
-        const vars = getVariables({ type: 'message', message_id: getCurrentMessageId() });
-        const 精神 = _.get(vars, 'stat_data.晓光.生存状态.精神');
-        const 上次铃铛 = _.get(vars, 'stat_data.$上次铃铛结果') || '';
-        return 精神 < 15 && 上次铃铛.includes('回响');
+        try {
+          const vars = getVariables({ type: 'message' });
+          const 精神 = _.get(vars, 'stat_data.晓光.生存状态.精神', 100);
+          const 上次铃铛 = _.get(vars, 'stat_data.$上次铃铛结果') || '';
+          // 一次性守护：每次"回响奇迹"只在它发生后触发一次（靠掷骰清空$上次铃铛结果保证稀缺）
+          return 精神 < 15 && 上次铃铛.includes('回响');
+        } catch { return false; }
       },
       should_scan: true,
     },

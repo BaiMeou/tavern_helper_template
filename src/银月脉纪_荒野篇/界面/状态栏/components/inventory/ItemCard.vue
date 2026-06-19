@@ -1,5 +1,5 @@
 <template>
-  <div :class="['item-card', hasAccent ? 'item-accent' : '']">
+  <div class="item-card">
     <span class="item-icon">{{ icon }}</span>
     <div class="item-body">
       <div class="item-name">{{ name }}</div>
@@ -26,13 +26,16 @@ import { useDataStore } from '../../store';
 const props = defineProps<{
   icon: string; name: string; desc: string; weight?: string; location?: string;
   badges?: { text: string; kind: 'good' | 'warn' | 'bad' | 'info' | 'accent' }[];
-  chips?: string[]; hasAccent?: boolean; editable?: boolean; itemKey?: string;
+  chips?: string[]; editable?: boolean; itemKey?: string;
 }>();
 
+// 必须与 schema.ts 装备.物品栏.*.位置 的 z.enum 完整一致（8 个值），
+// 否则被 AI 置于缺失位置的物品在 <select> 找不到匹配 option（显示失真且无法移回）。
 const positions = [
   { value: '背包', short: '🎒背包' }, { value: '腰挂', short: '🔗腰挂' },
   { value: '手持', short: '✋手持' }, { value: '尾藏', short: '🦊尾藏' },
   { value: '颈间', short: '💎颈间' }, { value: '穿着', short: '👘穿着' },
+  { value: '营地存储', short: '🏕️存储' }, { value: '地面', short: '🌍地面' },
 ];
 
 const store = useDataStore();
@@ -42,7 +45,15 @@ function onPosChange(e: Event) {
   if (props.itemKey) {
     const oldPos = _.get(store.data, `装备.物品栏.${props.itemKey}.位置`, '背包');
     _.set(store.data, `装备.物品栏.${props.itemKey}.位置`, newPos);
-    _.set(store.data, '$前端操作', `玩家将「${props.name || props.itemKey}」从${oldPos}移动到${newPos}`);
+    const desc = `玩家将「${props.name || props.itemKey}」从${oldPos}移动到${newPos}`;
+    // 维护 $近期操作 环形缓冲（保留 5 条），与 CampGroup/WorkshopGroup/ChoiceModal 模式一致
+    const 天数 = _.get(store.data, '世界.时间.天数', 0);
+    const 时段 = _.get(store.data, '世界.时间.时段', '');
+    const ops = _.get(store.data, '$近期操作', []) as any[];
+    ops.push({ t: `第${天数}天 ${时段}`, text: desc });
+    while (ops.length > 5) ops.shift();
+    _.set(store.data, '$近期操作', ops);
+    _.set(store.data, '$前端操作', desc);
   }
 }
 </script>

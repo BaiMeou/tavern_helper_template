@@ -41,13 +41,14 @@
     <div v-for="(t, key) in traps" :key="key" class="card">
       <strong>{{ key }}</strong> — {{ t.类型 }} · {{ t.位置 }}
       <span :class="['badge', trapBadge(t.状态)]">{{ t.状态 }}</span>
-      <div v-if="t.布置天数" style="font-size:10px;color:var(--text-secondary);margin-top:2px">已布置 {{ t.布置天数 }} 天 · {{ t.捕获物 || '未捕获' }}</div>
+      <div v-if="t.布置天数 != null" style="font-size:10px;color:var(--text-secondary);margin-top:2px">已布置 {{ t.布置天数 }} 天 · {{ t.捕获物 || '未捕获' }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { Schema } from '../../../../schema';
 import { useDataStore } from '../../store';
 import DetailFold from '../shared/DetailFold.vue';
 import DataRow from '../shared/DataRow.vue';
@@ -55,7 +56,7 @@ import Formula from '../shared/Formula.vue';
 import InfoI from '../shared/InfoI.vue';
 
 const store = useDataStore();
-const d = computed<any>(() => store.data);
+const d = computed<Schema>(() => store.data);
 
 const intellect = computed(() => d.value.晓光?.基础属性?.智力 ?? 8);
 const thinkAccel = computed(() => d.value.晓光?.$思维加速可用 ?? false);
@@ -80,7 +81,6 @@ function pushOp(text: string) {
   ops.push({ t: nowLabel(), text });
   while (ops.length > 5) ops.shift();
   _.set(store.data, '$近期操作', ops);
-  _.set(store.data, '$前端操作', text);
 }
 
 function scavenge() {

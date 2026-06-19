@@ -63,7 +63,6 @@ import InfoI from '../shared/InfoI.vue';
 const store = useDataStore();
 const d = computed<any>(() => store.data);
 
-const equip = computed(() => d.value.装备 ?? {});
 const items = computed(() => d.value.装备?.物品栏 ?? {});
 const containers = computed(() => d.value.装备?.容器 ?? {});
 const garments = computed(() => d.value.装备?.衣物 ?? {});
@@ -71,7 +70,7 @@ const 手持 = computed(() => d.value.装备?.手持 ?? '');
 const 穿着 = computed(() => d.value.装备?.穿着 ?? '');
 
 const count = computed(() => Object.keys(items.value).length);
-const 当前负重 = computed(() => d.value.$当前负重 ?? _.get(d.value, '装备.负重.当前', 7.5));
+const 当前负重 = computed(() => d.value.$当前负重 ?? 0);
 const 安全上限 = computed(() => _.get(d.value, '装备.负重.安全上限', 9));
 const 负重比 = computed(() => Math.round((当前负重.value / 安全上限.value) * 100));
 const 移速修正 = computed(() => d.value.$移动速度总修正 ?? 0);

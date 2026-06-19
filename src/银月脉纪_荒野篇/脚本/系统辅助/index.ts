@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
 // 系统辅助脚本 — 引擎核心
 //  · XP 稀缺硬保证（限流+递增阈值+连升）
+//  · 精神危机硬保证：崩溃最多 3 轮后强制回升至动摇（精神 ≥25%）
 //  · 掷骰：AI 写 $掷骰请求 字段 → 此处读取并掷骰回写结果（不暴露前端掷骰）
 //  · 时间与代谢推进：AI 写 $推进时段 时按规则结算生存状态
 //  · 伤病演化：伤口随天数推进愈合、感染风险演化；饮生水/腐食掷骰生病
@@ -10,7 +11,7 @@
 
 // XP 升级阈值随等级递增（越高越难）
 function xpThreshold(level: number): number {
-  return Math.round(100 * Math.pow(1.35, level - 1)); // Lv1→100, Lv2→135, Lv3→182, Lv5→332, Lv10→1297
+  return Math.round(100 * Math.pow(1.15, level - 1)); // Lv1→100 Lv5→175 Lv10→352 Lv19→1230，平缓且clamp(99999)可达
 }
 // 单轮每项 XP 增量上限（硬限流，防 AI 滥发）
 const XP_PER_ROUND_CAP = 8;
@@ -20,15 +21,29 @@ const xpRecentGain: Record<string, number> = {};
 async function init() {
   await waitGlobalInitialized('Mvu');
 
-  // ─── XP 自动升级（稀缺硬保证） ───
+  // ─── XP 限流 + 自动升级（单监听器，先限流后升级，顺序确定无竞态） ───
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     if (!variables?.stat_data?.晓光) return;
     const 属性 = ['体质', '敏捷', '意志', '感知']; // 智力固定，不参与 XP
     for (const 名称 of 属性) {
       const xpKey = `${名称}XP`;
+      // ── 第一步：硬限流（拦截本轮超额 XP 增量）──
+      const cur = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0) ?? 0;
+      const prev = xpRecentGain[xpKey + ':prev'] ?? cur;
+      let delta = cur - prev;
+      if (delta > XP_PER_ROUND_CAP) {
+        _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, prev + XP_PER_ROUND_CAP);
+        console.warn(`[系统辅助] ${xpKey} 本轮增量 ${delta} 超上限，截断为 ${XP_PER_ROUND_CAP}`);
+        delta = XP_PER_ROUND_CAP;
+      }
+      // 连续追加衰减：连续≥3轮加同一项，后续减半
+      xpRecentGain[xpKey + ':streak'] = (delta > 0 ? (xpRecentGain[xpKey + ':streak'] ?? 0) + 1 : 0);
+      if ((xpRecentGain[xpKey + ':streak'] ?? 0) >= 3 && delta > 0) {
+        _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, prev + Math.floor(delta / 2));
+      }
+      // ── 第二步：升级（连升，用限流后的真实 XP）──
       const xp = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0);
       const level = _.get(variables, `stat_data.晓光.基础属性.${名称}`, 1);
-      // 连升
       if (xp >= xpThreshold(level) && level < 20) {
         let remaining = xp;
         let newLevel = level;
@@ -41,33 +56,33 @@ async function init() {
         toastr.success(`${名称} 升级！${level} → ${newLevel}`);
         console.info(`[系统辅助] ${名称}升级: ${level}→${newLevel}, XP余: ${remaining}`);
       }
+      // ── 第三步：记录本轮基线（升级后的值，供下轮限流对比）──
+      xpRecentGain[xpKey + ':prev'] = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0);
     }
   });
 
-  // ─── XP 硬限流：解析前拦截超出上限的 XP 增量 ───
-  // 通过保存"上一轮各 XP 值"，对比本轮增量是否超上限
+  // ─── 精神危机硬保证：崩溃最多持续 3 轮后自动回升至“动摇” ───
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     if (!variables?.stat_data?.晓光) return;
-    const 属性 = ['体质', '敏捷', '意志', '感知'];
-    for (const 名称 of 属性) {
-      const xpKey = `${名称}XP`;
-      const cur = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0) ?? 0;
-      const prev = xpRecentGain[xpKey + ':prev'] ?? cur; // 上轮值（首次=当前值）
-      let delta = cur - prev;
-      if (delta > XP_PER_ROUND_CAP) {
-        // 超额：截断到上限
-        const capped = prev + XP_PER_ROUND_CAP;
-        _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, capped);
-        console.warn(`[系统辅助] ${xpKey} 本轮增量 ${delta} 超上限，截断为 ${XP_PER_ROUND_CAP}`);
-        delta = XP_PER_ROUND_CAP;
+    const 执念 = variables.stat_data.晓光.执念 || {};
+    if (执念.状态 === '崩溃') {
+      const 轮次 = Number(variables.stat_data.$崩溃轮次 ?? 0) + 1;
+      variables.stat_data.$崩溃轮次 = 轮次;
+      if (轮次 >= 3) {
+        variables.stat_data.晓光.执念 = {
+          ...执念,
+          状态: '动摇',
+          近期波动: '崩溃超过 3 轮后被动回升至动摇',
+        };
+        const 当前精神 = Number(variables.stat_data.晓光.生存状态?.精神 ?? 75);
+        variables.stat_data.晓光.生存状态 = {
+          ...(variables.stat_data.晓光.生存状态 || {}),
+          精神: Math.max(当前精神, 25),
+        };
+        variables.stat_data.$崩溃轮次 = 0;
       }
-      // 连续追加衰减：连续 3 轮都加同一项时，后续减半
-      xpRecentGain[xpKey + ':streak'] = (delta > 0 ? (xpRecentGain[xpKey + ':streak'] ?? 0) + 1 : 0);
-      if ((xpRecentGain[xpKey + ':streak'] ?? 0) >= 3 && delta > 0) {
-        const halved = Math.floor(delta / 2);
-        _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, prev + halved);
-      }
-      xpRecentGain[xpKey + ':prev'] = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0);
+    } else {
+      if (variables.stat_data.$崩溃轮次) variables.stat_data.$崩溃轮次 = 0;
     }
   });
 
@@ -126,6 +141,8 @@ async function init() {
         else if (adj >= 3) label = '铃铛轻响了一声——微弱，但确实响了';
         else label = '铃铛无声——和之前几次一样，森林依旧沉默';
         结果 = { 文字: label, 骰值: adj, 回响: adj >= 5 };
+        // 闭环：立即事件/铃铛奇迹 filter 读 $上次铃铛结果 并 .includes('回响')
+        _.set(variables, 'stat_data.$上次铃铛结果', adj >= 5 ? '回响' : adj >= 3 ? '轻响' : '无声');
         同步给AI = `铃铛掷骰(d6+灵力修正=${修正})：${label}`;
         break;
       }
@@ -302,9 +319,8 @@ async function init() {
       _.set(variables, 'stat_data.世界.时间.时段', '清晨');
       // 一夜代谢：基础代谢率消耗（约 1450kcal/夜按睡眠8h计约 480kcal）
       const bmr = 营养.基础代谢率 ?? 1450;
-      const 夜耗 = Math.round(bmr * 0.33);
       const 摄入 = _.get(营养, '今日摄入.卡路里', 0);
-      // 入不敷出 → 动用体脂
+      // 入不敷出 → 动用体脂（全天摄入 vs 全天基础代谢）
       if (摄入 < bmr) {
         const 缺口 = bmr - 摄入;
         const 体脂 = _.get(营养, '体脂储备', 18);

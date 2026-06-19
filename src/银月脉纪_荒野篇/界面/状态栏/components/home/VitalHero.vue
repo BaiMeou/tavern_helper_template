@@ -4,7 +4,7 @@
       <span class="vh-label">{{ label }}<InfoI v-if="term" :term="term" /></span>
       <span class="vh-ico">{{ icon }}</span>
     </div>
-    <div class="vh-val">{{ display }}<span class="u">%</span></div>
+    <div class="vh-val">{{ display }}<span class="u" v-if="unit">{{ unit }}</span></div>
     <div class="vh-bar"><i :style="{ width: pct + '%', background: barColor }"></i></div>
     <div class="vh-trend">{{ trend }}</div>
   </div>
@@ -18,7 +18,10 @@ const props = defineProps<{
   value: number; max?: number;
   kind?: 'good' | 'warn' | 'bad';
   term?: string; trend?: string;
+  unit?: string;
 }>();
+
+const unit = computed(() => props.unit ?? '%');
 
 const display = computed(() => Math.round(props.value));
 const pct = computed(() => {
@@ -59,7 +62,7 @@ function trendByValue(v: number) {
 }
 .vh-val .u { font-size: 13px; font-weight: 400; color: var(--text-secondary); }
 .vh-card.bad .vh-val { color: var(--danger); }
-.vh-card.warn .vh-val { color: #b06f12; }
+.vh-card.warn .vh-val { color: var(--warning); }
 .vh-bar {
   height: 5px; background: rgba(140,126,108,.14); border-radius: 3px;
   margin-top: 7px; overflow: hidden;

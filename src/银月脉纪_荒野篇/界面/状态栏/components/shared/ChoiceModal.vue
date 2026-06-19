@@ -1,16 +1,22 @@
 <template>
   <Teleport to="body">
     <div v-if="visible" class="modal-overlay" @click.self="close">
-      <div class="modal-card">
-        <div class="modal-title">{{ choiceData.标题 || '发现物品' }}</div>
-        <div class="modal-subtle" v-if="choiceData.多选">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="choice-modal-title">
+        <div id="choice-modal-title" class="modal-title">{{ choiceData.标题 || '发现物品' }}</div>
+        <div v-if="choiceData.多选" class="modal-subtle">
           可多选 · 最多{{ choiceData.最大数量 || 5 }}件 · 当前 {{ totalPickWeight.toFixed(1) }}kg
         </div>
 
         <div class="choice-grid">
-          <div v-for="opt in choiceData.选项" :key="opt.id"
+          <div
+            v-for="opt in choiceData.选项" :key="opt.id"
             :class="['choice-card', { selected: selected.has(opt.id), disabled: !selected.has(opt.id) && atLimit }]"
-            @click="toggleOpt(opt)">
+            role="button" tabindex="0"
+            :aria-pressed="selected.has(opt.id)"
+            :aria-disabled="!selected.has(opt.id) && atLimit"
+            @click="toggleOpt(opt)"
+            @keydown.enter.prevent="toggleOpt(opt)"
+            @keydown.space.prevent="toggleOpt(opt)">
             <span class="choice-icon">{{ opt.icon || '📦' }}</span>
             <div class="choice-body">
               <div class="choice-name">
@@ -34,7 +40,7 @@
 
         <div class="modal-actions">
           <button class="modal-btn cancel" @click="close">取消（什么都不捡）</button>
-          <button class="modal-btn confirm" @click="confirm" :disabled="selected.size === 0">
+          <button class="modal-btn confirm" :disabled="selected.size === 0" @click="confirm">
             确认 ({{ selected.size }}件 · {{ totalPickWeight.toFixed(2) }}kg)
           </button>
         </div>
@@ -44,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useDataStore } from '../../store';
 
 const store = useDataStore();
@@ -72,6 +78,16 @@ watch(() => _.get(store.data, '$前端选择'), (newVal: any) => {
   }
 }, { deep: true });
 
+// 键盘无障碍：弹窗可见时按 ESC 关闭（等价于「什么都不捡」）
+function onKeydown(e: KeyboardEvent) {
+  if (visible.value && e.key === 'Escape') {
+    e.preventDefault();
+    close();
+  }
+}
+onMounted(() => window.addEventListener('keydown', onKeydown));
+onUnmounted(() => window.removeEventListener('keydown', onKeydown));
+
 function toggleOpt(opt: any) {
   if (selected.value.has(opt.id)) {
     selected.value.delete(opt.id);
@@ -96,6 +112,9 @@ const FIELD_WHITELIST = ['名称','分类','重量','位置','描述','耐久度
   '保质期天','锋利度','电量','使用次数剩余','保暖值','防风值','防水性','湿度','破损度',
   '燃烧时长分钟','结构强度','材料类型','易损度','损坏标签','可修理','可拆解'];
 
+// 损坏物品处理规则（与世界书《前端交互系统》损坏物品文档对照的单一真源）
+const DAMAGED_RULES: Record<string, any> = { 耐久度: 0, 可拆解: true };
+
 function confirm() {
   const picked = (choiceData.value.选项 || []).filter((o: any) => selected.value.has(o.id));
   for (const opt of picked) {
@@ -105,9 +124,8 @@ function confirm() {
     }
     if (!entry.分类) entry.分类 = '特殊';
     if (entry.损坏标签 === '损坏') {
-      // 损坏物品耐久归零、标记可拆解
-      entry.耐久度 = 0;
-      entry.可拆解 = true;
+      // 损坏物品按统一规则处理（耐久归零、标记可拆解）
+      Object.assign(entry, DAMAGED_RULES);
     }
     _.set(store.data, `装备.物品栏.${opt.id}`, entry);
   }
@@ -118,14 +136,14 @@ function confirm() {
   }).join('、');
   _.set(store.data, '$玩家选择', {
     已选: picked.map((o: any) => ({ id: o.id, 名称: o.名称, 损坏标签: o.损坏标签 || '完好' })),
-    时间: new Date().toISOString(),
+    时间: nowLabel(),
   });
   // 追加到 AI 操作记忆（环形5条）
   const ops = _.get(store.data, '$近期操作', []) as any[];
   ops.push({ t: nowLabel(), text: `从「${choiceData.value.标题}」中拾取：${摘要}（+${totalPickWeight.value.toFixed(1)}kg）` });
   while (ops.length > 5) ops.shift();
   _.set(store.data, '$近期操作', ops);
-  _.set(store.data, '$前端操作', `玩家从「${choiceData.value.标题}」中选择了：${摘要}（共${picked.length}件·${totalPickWeight.value.toFixed(1)}kg，已自动入库）`);
+  _.set(store.data, '$前端操作', `玩家从「${choiceData.value.标题}」中拾取了：${摘要}（${picked.length}件·${totalPickWeight.value.toFixed(1)}kg）`);
   _.set(store.data, '$前端选择', null);
   visible.value = false;
 }

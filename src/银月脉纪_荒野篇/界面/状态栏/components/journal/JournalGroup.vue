@@ -22,7 +22,7 @@
     <div v-for="(h, key) in herbs" :key="key" class="card">
       <strong>{{ h.名称 }}</strong>
       <div class="beast-detail">{{ h.药用功效 }} · 采集{{ h.采集部位 }} · {{ h.处理方式 }}</div>
-      <div class="beast-detail" v-if="h.禁忌" style="color:var(--danger)">禁忌：{{ h.禁忌 }}</div>
+      <div class="beast-detail" v-if="h.禁忌 && h.禁忌 !== '未知'" style="color:var(--danger)">禁忌：{{ h.禁忌 }}</div>
     </div>
 
     <div class="sec-hdr">👣 足迹与痕迹</div>

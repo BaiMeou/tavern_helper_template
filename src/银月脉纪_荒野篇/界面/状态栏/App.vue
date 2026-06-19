@@ -52,17 +52,15 @@ import { openGlossary } from './glossary';
 import { useDataStore } from './store';
 
 const store = useDataStore();
-// 初始化判定：根据存档内容推断（避免每次刷新都重弹向导清档）
-// 1) 显式标记 $已初始化  2) 物品栏非空  3) 天数 > 0
+// 初始化判定：仅依赖显式标记 $已初始化。
+// 不再用"物品栏非空 / 天数>0"推断——否则 mvu initvar 或首轮 updatevariable
+// 给物品栏塞入任何条目就会误判为已初始化，导致向导被跳过、玩家失去属性分配与初始物品选择入口。
 const isSetupDone = computed(() => {
   const d: any = store.data;
-  if (d?.$已初始化) return true;
-  if (d?.装备?.物品栏 && Object.keys(d.装备.物品栏).length > 0) return true;
-  if ((d?.世界?.时间?.天数 ?? 0) > 0) return true;
-  return false;
+  return !!d?.$已初始化;
 });
 
-function onSetupDone(_attrs: Record<string, number>, _selectedItemIds: string[]) {
+function onSetupDone() {
   // SetupWizard 内部已写入 $已初始化，computed 自然变 true，无需额外处理
   toastr.success('准备好了！荒野求生——开始！');
 }
@@ -87,10 +85,7 @@ const currentTab = computed(() => tabs.find(t => t.id === activeTab.value) || ta
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(168,68,52,.04), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(140,126,108,.08), transparent 50%),
-    var(--bg);
+  background-color: var(--bg);
   background-image:
     radial-gradient(circle at 20% 15%, rgba(168,68,52,.04), transparent 45%),
     radial-gradient(circle at 85% 80%, rgba(140,126,108,.08), transparent 50%),

@@ -1,12 +1,12 @@
 <template>
   <div class="panel">
     <div class="card compass-wrap">
-      <SVGCompass :location="当前位置" />
+      <SVGCompass :location="当前位置" :direction="w.风向" />
     </div>
 
     <div class="sec-hdr">🌤️ 天气与环境</div>
     <div class="weather-grid">
-      <div><b>🌡️ 气温</b><br>{{ w.温度 }}°C · 体感 {{ 体感 }}°C<InfoI term="体感温度" /></div>
+      <div><b>🌡️ 气温</b><br>{{ fmt(w.温度) }}°C · 体感 {{ fmt(体感) }}°C<InfoI term="体感温度" /></div>
       <div><b>💨 风</b><br>{{ w.风速 }}m/s {{ w.风向 }}</div>
       <div><b>💧 湿度</b><br>{{ w.湿度 }}%</div>
       <div><b>⚠️ 失温</b><InfoI term="失温风险" /><br><span :class="['badge', 失温Badge]">{{ 失温风险 }}</span></div>
@@ -17,14 +17,14 @@
     </div>
 
     <DetailFold title="失温风险拆解">
-      <DataRow label="气温" :value="`${w.温度}°C`" />
-      <DataRow label="风把体感拉低" :value="`${风寒}°C`" kind="warn" term="风寒指数" />
+      <DataRow label="气温" :value="`${fmt(w.温度)}°C`" />
+      <DataRow label="风把体感拉低" :value="`${fmt(风寒)}°C`" kind="warn" term="风寒指数" />
       <DataRow label="总保暖值（衣物加权）" :value="保暖.toFixed(1)" kind="good" />
       <DataRow label="总防风值" :value="防风.toFixed(1)" />
       <DataRow label="湿尾让身体多散热" :value="湿尾?'+18W':'0'" :kind="湿尾?'bad':'good'" />
       <DataRow label="庇护所/篝火补偿" :value="`${(庇护补偿+火补偿)}°C`" />
       <DataRow label="综合失温风险" :value="失温风险" :kind="失温风险==='极高'||失温风险==='高'?'bad':失温风险==='偏高'?'warn':'good'" />
-      <Formula>体感温度 = 气温 − 风的拉低 + 衣物保暖×(1−湿度衰减) + 火 + 庇护所</Formula>
+      <Formula>体感温度 = 气温 − 风的拉低 + 衣物保暖×层次权重×(1−湿度衰减)×(1−破损度) + 火 + 庇护所</Formula>
     </DetailFold>
 
     <div class="sec-hdr">🌙 天体 · 时间</div>
@@ -71,7 +71,10 @@ import Formula from '../shared/Formula.vue';
 import InfoI from '../shared/InfoI.vue';
 
 const store = useDataStore();
-const d = computed<any>(() => store.data);
+const d = computed(() => store.data);
+
+// 统一数字显示：保留一位小数，与失温拆解中的 .toFixed(1) 风格一致
+const fmt = (n: unknown) => (typeof n === 'number' ? n.toFixed(1) : (n ?? ''));
 
 const 当前位置 = computed(() => d.value.世界?.地形?.当前位置 ?? '');
 const w = computed(() => d.value.世界?.天气详情 ?? {});

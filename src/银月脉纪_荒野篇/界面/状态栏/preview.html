@@ -301,7 +301,7 @@ body{
           <span class="tag">灵力稀薄</span><span class="tag">执念·稳固</span>
         </div>
         <div class="alert-row">
-          <div class="alert danger"><span class="a-ico">⚠️</span>失温风险偏高 — 狐尾微湿，无篝火，体感 2°C</div>
+          <div class="alert danger"><span class="a-ico">⚠️</span>失温风险偏高 — 狐尾微湿，无篝火，体感 5.9°C</div>
           <div class="alert warn"><span class="a-ico">💧</span>口渴度下降至 55% — 该补水了</div>
         </div>
       </div>
@@ -395,19 +395,19 @@ body{
         <div class="metric-split">
           <span class="ms-main">36.8°<span class="ms-unit"> 核心体温</span></span>
           <i class="info-i" onclick="openTerm('核心体温')">ⓘ</i>
-          <span class="dr-val warn" style="margin-left:auto">体感温度 2.0°<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></span>
+          <span class="dr-val warn" style="margin-left:auto">体感温度 5.9°<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></span>
         </div>
         <div class="gauge"><i style="width:60%;background:linear-gradient(90deg,var(--danger),var(--success))"></i><span class="mark" style="left:50%"></span></div>
         <div class="detail-fold">
           <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 冷暖分项细节</span><span class="fh-arr">▸</span></div>
           <div class="fold-body">
             <div class="data-row"><span class="dr-label">气温</span><span class="dr-val">7.0 °C</span></div>
-            <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−5.0 °C <span class="dr-sub">风2m/s</span></span></div>
+            <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−1.6 °C <span class="dr-sub">风2m/s</span></span></div>
             <div class="data-row"><span class="dr-label">衣物保暖补偿</span><span class="dr-val good">+0.5 °C <span class="dr-sub">巫女服破损</span></span></div>
             <div class="data-row"><span class="dr-label">篝火带来的暖意</span><span class="dr-val">+0.0 °C <span class="dr-sub">无火</span></span></div>
-            <div class="data-row"><span class="dr-label">身体每秒散失的热量 <i class="info-i" onclick="openTerm('散热速率')">ⓘ</i></span><span class="dr-val bad">82 W <span class="dr-sub">湿尾散热偏多</span></span></div>
-            <div class="data-row"><span class="dr-label">距离失温还差 <i class="info-i" onclick="openTerm('距失温阈值')">ⓘ</i></span><span class="dr-val warn">+1.8°（约 50 min）</span></div>
-            <div class="formula">体感温度 <span class="op">=</span> 气温7 <span class="op">−</span> 风的拉低5 <span class="op">+</span> 衣物0.5 <span class="op">+</span> 火0 <span class="op">=</span> 2.0°C</div>
+            <div class="data-row"><span class="dr-label">身体每秒散失的热量 <i class="info-i" onclick="openTerm('散热速率')">ⓘ</i></span><span class="dr-val bad">56 W <span class="dr-sub">微湿尾散热偏多</span></span></div>
+            <div class="data-row"><span class="dr-label">距离失温还差 <i class="info-i" onclick="openTerm('距失温阈值')">ⓘ</i></span><span class="dr-val warn">+1.8°（约 93 min）</span></div>
+            <div class="formula">体感温度 <span class="op">=</span> 气温7 <span class="op">−</span> 风的拉低1.6 <span class="op">+</span> 衣物0.5 <span class="op">+</span> 火0 <span class="op">+</span> 庇护0 <span class="op">=</span> 5.9°C</div>
           </div>
         </div>
       </div>
@@ -477,32 +477,32 @@ body{
       <div class="detail-head">
         <button class="back-btn" onclick="home()">‹</button>
         <span class="detail-title">🎒 装备</span>
-        <span class="detail-sub">12 件 · 6.8kg</span>
+        <span class="detail-sub">12 件 · 7.5kg</span>
       </div>
 
       <div class="weight-card">
         <div class="weight-top">
-          <span class="weight-big">6.8</span><span class="weight-max">/ 9.0 kg</span>
+          <span class="weight-big">7.5</span><span class="weight-max">/ 9.0 kg</span>
           <i class="info-i" onclick="openTerm('负重')">ⓘ</i>
           <span class="badge badge-good">安全</span>
-          <span class="weight-pct">76% · 移速 -13%<i class="info-i" onclick="openTerm('移速修正')">ⓘ</i></span>
+          <span class="weight-pct">83% · 移速 -13%<i class="info-i" onclick="openTerm('移速修正')">ⓘ</i></span>
         </div>
-        <div class="progress-track"><div class="progress-fill" style="width:76%;background:linear-gradient(90deg,var(--success),var(--warning))"></div></div>
+        <div class="progress-track"><div class="progress-fill" style="width:83%;background:linear-gradient(90deg,var(--success),var(--warning))"></div></div>
         <div class="load-dist">
-          <div class="ld-row"><span class="ld-pos">🎒 背包</span><div class="ld-track"><i style="width:70%;background:var(--success)"></i></div><span class="ld-val">4.2/6kg</span></div>
+          <div class="ld-row"><span class="ld-pos">🎒 背包</span><div class="ld-track"><i style="width:95%;background:var(--success)"></i></div><span class="ld-val">5.7/6kg</span></div>
           <div class="ld-row"><span class="ld-pos">🔗 腰挂</span><div class="ld-track"><i style="width:60%;background:var(--success)"></i></div><span class="ld-val">0.9/1.5kg</span></div>
           <div class="ld-row"><span class="ld-pos">✋ 手持</span><div class="ld-track"><i style="width:80%;background:var(--warning)"></i></div><span class="ld-val">0.8/1kg</span></div>
           <div class="ld-row"><span class="ld-pos">🦊 尾藏</span><div class="ld-track"><i style="width:30%;background:var(--success)"></i></div><span class="ld-val">0.1/0.3kg</span></div>
         </div>
         <div class="detail-fold" style="margin-top:8px">
-          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 分布分析（智力Lv.8解锁）</span><span class="fh-arr">▸</span></div>
+          <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 分布分析（智力≥6解锁）</span><span class="fh-arr">▸</span></div>
           <div class="fold-body">
             <div class="data-row"><span class="dr-label">安全上限公式 <i class="info-i" onclick="openTerm('负重')">ⓘ</i></span><span class="dr-val">9.0 kg <span class="dr-sub">体质2</span></span></div>
             <div class="data-row"><span class="dr-label">重心偏移 <i class="info-i" onclick="openTerm('重心偏移')">ⓘ</i></span><span class="dr-val good">+2 cm <span class="dr-sub">良好</span></span></div>
             <div class="data-row"><span class="dr-label">单点超载 <i class="info-i" onclick="openTerm('单点超载')">ⓘ</i></span><span class="dr-val good">无</span></div>
             <div class="data-row"><span class="dr-label">货舱待打捞</span><span class="dr-val">3.6 kg <span class="dr-sub">不计负重</span></span></div>
             <div class="data-row"><span class="dr-label">体能效率</span><span class="dr-val good">82% <span class="dr-sub">良好</span></span></div>
-            <div class="formula">公式：50<span class="op">×</span>0.3<span class="op">×</span>0.6<span class="op">×</span>(1+(体质−1)<span class="op">×</span>0.08) <span class="op">=</span> 9.7kg → 取整 9.0</div>
+            <div class="formula">公式：50<span class="op">×</span>0.3<span class="op">×</span>0.6<span class="op">×</span>(1+(体质−1)<span class="op">×</span>0.08) <span class="op">=</span> 9.72kg → 向下取整 9.0</div>
           </div>
         </div>
       </div>
@@ -570,7 +570,7 @@ body{
 
       <div class="sec-hdr">🌤️ 天气与环境</div>
       <div class="weather-grid">
-        <div><b>🌡️ 气温</b><br>7°C · 体感 2°C<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></div>
+        <div><b>🌡️ 气温</b><br>7°C · 体感 5.9°C<i class="info-i" onclick="openTerm('体感温度')">ⓘ</i></div>
         <div><b>💨 风</b><br>2m/s 西北</div>
         <div><b>💧 湿度</b><br>68%</div>
         <div><b>⚠️ 失温</b><i class="info-i" onclick="openTerm('失温风险')">ⓘ</i><br><span class="badge badge-warn">偏高</span></div>
@@ -582,7 +582,7 @@ body{
         <div class="fold-head" onclick="toggleFold(this)"><span class="fh-l">📊 失温风险拆解</span><span class="fh-arr">▸</span></div>
         <div class="fold-body">
           <div class="data-row"><span class="dr-label">气温</span><span class="dr-val">7.0 °C</span></div>
-          <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−5.0 °C</span></div>
+          <div class="data-row"><span class="dr-label">风把体感拉低 <i class="info-i" onclick="openTerm('风寒指数')">ⓘ</i></span><span class="dr-val warn">−1.6 °C</span></div>
           <div class="data-row"><span class="dr-label">总保暖值（衣物加权）</span><span class="dr-val">3.5 <span class="dr-sub">湿衣 −20%</span></span></div>
           <div class="data-row"><span class="dr-label">总防风值</span><span class="dr-val">2.0</span></div>
           <div class="data-row"><span class="dr-label">湿尾让身体多散热</span><span class="dr-val bad">+18 W</span></div>

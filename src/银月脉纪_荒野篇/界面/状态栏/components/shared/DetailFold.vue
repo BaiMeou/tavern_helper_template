@@ -1,7 +1,7 @@
 <template>
   <div class="detail-fold" :class="{ open }">
     <div class="fold-head" @click="open = !open">
-      <span class="fh-l">📊 <slot name="title">详细数据</slot></span>
+      <span class="fh-l">📊 <slot name="title">{{ title ?? '详细数据' }}</slot></span>
       <span class="fh-arr">▸</span>
     </div>
     <div class="fold-body" v-show="open">
@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+defineProps<{ title?: string }>();
 const open = ref(false);
 </script>
 

@@ -1,9 +1,11 @@
 <template>
   <div class="top-bar">
-    <div>📶 无服务 (OOS)</div>
+    <!-- 荒野永远无信号（恒定）：磁场混乱+无基站，见世界书 场景设定/手机助手系统 -->
+    <div>📶 无信号</div>
     <div class="time">{{ timeDisplay }}</div>
-    <div class="battery">
-      <span>🔋 {{ battery }}%</span>
+    <!-- 无手机条目时隐藏电量区；电量=0 表示手机关机 -->
+    <div v-if="battery !== null" class="battery">
+      <span>{{ battery === 0 ? '📵 关机' : (battery < 10 ? '🪫 ' + battery + '%' : '🔋 ' + battery + '%') }}</span>
       <div class="battery-fill">
         <div class="battery-level" :style="{ width: battery + '%' }"></div>
       </div>
@@ -17,13 +19,13 @@ import { useDataStore } from '../../store';
 
 const store = useDataStore();
 
-const battery = computed(() => {
+const battery = computed<number | null>(() => {
   const 物品栏 = store.data.装备?.物品栏 ?? {};
-  // 手机是物品栏里的电子条目，找第一个带电量的电子设备（手机）
-  const 手机 = Object.values(物品栏 as Record<string, any>).find(
-    (it: any) => it && it.电量 !== undefined && (it.分类 === '电子' || String(it.名称 || '').includes('手机')),
-  );
-  return 手机?.电量 ?? 96;
+  // 用稳定 key '手机' 定位手机条目（向导写入时 key 即物品 id，见 SetupWizard）
+  // 不靠 名称/分类 模糊匹配，避免把头灯/营地灯等其他电子设备的电量误当成手机电量
+  const 手机 = (物品栏 as Record<string, any>)['手机'];
+  // 无手机条目时返回 null → 顶栏隐藏电量区，而非硬编码 96%
+  return 手机?.电量 ?? null;
 });
 const timeDisplay = computed(() => {
   const 时段 = store.data.世界?.时间?.时段 ?? '清晨';

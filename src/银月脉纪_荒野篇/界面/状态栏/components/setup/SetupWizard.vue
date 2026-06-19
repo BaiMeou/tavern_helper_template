@@ -103,7 +103,7 @@
             <button :class="['carry-btn', 'cargo', { active: carryChoice[id] === 'cargo' }]" @click="carryChoice[id]='cargo'">📦 行李舱</button>
           </div>
         </div>
-        <button class="confirm-btn" style="margin-top:12px;background:var(--accent);" @click="carryAssigned=true" :disabled="Object.keys(carryChoice).length < selectedCount">确认分配 → 下一步</button>
+        <button class="confirm-btn" style="margin-top:12px;background:var(--accent);" @click="carryAssigned=true" :disabled="Object.keys(carryChoice).length !== selectedCount">确认分配 → 下一步</button>
       </section>
 
       <!-- Step 4: 物品定位 -->
@@ -122,10 +122,10 @@
       <section v-if="selectedCount > 0" style="margin-top:20px;">
         <div class="sec-hdr">✈️ 搜刮残骸 <span class="subtle">感知影响发现概率</span></div>
         <div v-if="!cargoRolled"><p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">飞机货舱中的物品——坠机冲击下有些可能还没损坏。</p><button class="roll-btn" @click="rollCargo">🎲 搜索货舱残骸</button></div>
-        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="[`cargo-card`, cargo.survived ? `survived` : `destroyed`]"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span></div><div class="cargo-desc">{{ cargo.描述 }}</div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
+        <div v-else><div v-for="cargo in cargoResults" :key="cargo.id" :class="['cargo-card', cargo.survived ? 'survived' : 'destroyed']"><span class="cargo-icon">{{ cargo.icon }}</span><div class="cargo-body"><div class="cargo-name">{{ cargo.名称 }} <span class="cargo-weight">{{ cargo.重量 }}kg</span> <span :class="condBadge(cargo.condition)">{{ cargo.condition?.label || (cargo.survived ? '完好' : '损坏') }} {{ cargo.condition ? cargo.condition.durabilityPct + '%' : '' }}</span></div><div class="cargo-desc">{{ cargo.描述 }}<span v-if="cargo.condition?.repairable" class="cargo-hint"> · 🔧 可修理</span><span v-else-if="cargo.condition?.dismantlable" class="cargo-hint"> · 🛠️ 可拆解取材</span></div></div><div v-if="cargo.survived"><button v-if="!cargoTaken(cargo)" class="take-btn" @click="takeCargo(cargo)">+ 拾取</button><span v-else class="badge badge-good">已拾取</span></div><span v-else class="badge badge-bad">已损坏</span></div></div>
       </section>
-      <!-- 确认按钮 -->
-      <button class="confirm-btn" :disabled="selectedCount < 1 || remainingPoints !== 0" @click="confirm">
+      <!-- 确认按钮（空手/硬核模式允许 0 件物品，仅要求属性点分配完毕） -->
+      <button class="confirm-btn" :disabled="remainingPoints !== 0" @click="confirm">
         {{ remainingPoints !== 0 ? `还需分配 ${remainingPoints} 个属性点` : `🦊 开始求生 (${selectedCount}/20件 · ${totalWeight.toFixed(1)}kg)` }}
       </button>
     </div>
@@ -135,7 +135,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 
-const emit = defineEmits<{ done: [attrs: Record<string,number>, items: string[]] }>();
+const emit = defineEmits<{ done: [] }>();
 
 // ─── 属性 ───
 const attrs = reactive<Record<string,number>>({ 体质: 2, 敏捷: 2, 智力: 8, 意志: 4, 感知: 4 });
@@ -295,14 +295,20 @@ const catRefs = reactive<Record<string, any>>({});
 
 const categories = ['工具','容器','食物','庇护','武器','医疗','电子','特殊','材料','烹饪'];
 const selectedCount = computed(() => selectedIds.value.size);
-const availablePositions = [
-  { value: '背包', label: '🎒 背包 (舒适6kg/上限12kg)' },
-  { value: '腰挂', label: '🔗 腰挂 (舒适1.5kg/上限3kg)' },
-  { value: '手持', label: '✋ 手持 (舒适1kg/上限3kg)' },
-  { value: '尾藏', label: '🦊 尾藏 (舒适0.3kg/上限1kg)' },
-  { value: '颈间', label: '💎 颈间 (舒适0.1kg/上限0.3kg)' },
-  { value: '穿着', label: '👘 穿着 (舒适2kg/上限5kg)' },
-];
+// 位置容量单一数据源（舒适/绝对上限），与 schema.ts 的 POS_CAPS 保持一致。
+// availablePositions 标签与 loadPositions 上限均从此派生，避免多处硬编码不同步。
+const POS_CAPS: Record<string, { 舒适: number; 绝对: number; icon: string }> = {
+  '背包': { 舒适: 6, 绝对: 12, icon: '🎒' },
+  '腰挂': { 舒适: 1.5, 绝对: 3, icon: '🔗' },
+  '手持': { 舒适: 1, 绝对: 3, icon: '✋' },
+  '尾藏': { 舒适: 0.3, 绝对: 1, icon: '🦊' },
+  '颈间': { 舒适: 0.1, 绝对: 0.3, icon: '💎' },
+  '穿着': { 舒适: 2, 绝对: 5, icon: '👘' },
+};
+const availablePositions = Object.entries(POS_CAPS).map(([value, c]) => ({
+  value,
+  label: `${c.icon} ${value} (舒适${c.舒适}kg/上限${c.绝对}kg)`,
+}));
 const itemPositions = reactive<Record<string, string>>({});
 const carryChoice = reactive<Record<string, string>>({});
 const carryAssigned = ref(false);
@@ -332,7 +338,7 @@ function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
 // Cargo salvage
 const cargoRolled = ref(false);
 const cargoTakenItems = ref<Array<{重量:number}>>([]);
-const cargoResults = ref<Array<{id:string;icon:string;名称:string;重量:number;描述:string;survived:boolean;taken:boolean}>>([]);
+const cargoResults = ref<Array<{id:string;icon:string;名称:string;重量:number;描述:string;survived:boolean;taken:boolean;分类?:string;condition?:{label:string;durabilityPct:number;repairable:boolean;dismantlable:boolean}}>>([]);
 const CARGO_POOL = [
   // 易损度: 越大越易在坠机中损坏(作为掷骰减项)。金属/液体容器结实(低)，电子/精密件脆(高)
   { id:'备用燃油',icon:'⛽',名称:'备用燃油(小型1L)',重量:1.2,描述:'航空燃油——引火加速、清洗油污、简易火把',易损度:20},
@@ -400,7 +406,7 @@ function toggleItem(item: ItemOption) {
 // ─── 负载均衡分析 (智力≥6) ───
 const loadPositions = computed(() => {
   const positions: Record<string, number> = { '手持':0, '背包':0, '腰挂':0, '尾藏':0, '颈间':0, '穿着':0, '其他':0 };
-  const caps: Record<string,number> = { '手持':3, '背包':12, '腰挂':3, '尾藏':1, '颈间':0.3, '穿着':5, '其他':5 };
+  const caps: Record<string,number> = { ..._.mapValues(POS_CAPS, c => c.绝对), '其他':5 };
   for (const id of selectedIds.value) {
     const item = ITEM_POOL.find(i => i.id === id);
     if (!item) continue;
@@ -442,6 +448,9 @@ const efficiency = computed(() => {
 function confirm() {
   if (remainingPoints.value === 0) {
     updateVariablesWith(vars => {
+      // 无条件写入已初始化标记：确保任何完成向导的路径（含空手/硬核 0 物品）都能落库，
+      // isSetupDone 仅依赖此标记，避免硬核模式无法跳过向导。
+      _.set(vars, 'stat_data.$已初始化', true);
       for (const [key, val] of Object.entries({ ...attrs })) { _.set(vars, `stat_data.晓光.基础属性.${key}`, val); }
       // 只把【随身】物品写入物品栏。货舱物品延迟到搜刮存活后才入库（避免重复+让"货舱不减负重"逻辑成立）
       for (const id of selectedIds.value) {
@@ -470,11 +479,9 @@ function confirm() {
         _.set(vars, `stat_data.装备.物品栏.cargo_${cargo.id}`, entry);
       }
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
-      // 已初始化标记（用于跳过重弹向导）
-      _.set(vars, 'stat_data.$已初始化', true);
       _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id=>carryChoice[id]!=='cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
-    emit('done', { ...attrs }, [...selectedIds.value]);
+    emit('done');
   }
 }
 </script>
@@ -566,6 +573,21 @@ function confirm() {
 .cond-good { background:rgba(76,175,80,.12);color:var(--success); }
 .cond-warn { background:rgba(226,143,27,.12);color:var(--warning); }
 .cond-bad { background:rgba(224,73,60,.1);color:var(--danger); }
+
+/* Cargo salvage */
+.roll-btn { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: var(--font-display); }
+.roll-btn:hover { filter: brightness(1.08); }
+.cargo-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; margin-bottom: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; }
+.cargo-card.survived { border-left: 3px solid var(--success); }
+.cargo-card.destroyed { border-left: 3px solid var(--danger); opacity: 0.6; }
+.cargo-icon { font-size: 24px; width: 30px; text-align: center; flex-shrink: 0; }
+.cargo-body { flex: 1; min-width: 0; }
+.cargo-name { font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cargo-weight { font-size: 11px; color: var(--text-secondary); font-family: var(--font-data); font-weight: normal; }
+.cargo-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.3; margin-top: 2px; }
+.cargo-hint { color: var(--accent); }
+.take-btn { padding: 5px 12px; border-radius: 3px; border: 1px solid var(--success); background: rgba(76,175,80,0.1); color: var(--success); font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.take-btn:hover { background: var(--success); color: #fff; }
 
 
 </style>

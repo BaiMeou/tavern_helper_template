@@ -1,11 +1,11 @@
-import "https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js";
+import "https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate@c1ae3a921bdab2e33b1afc745e5474b9b07fc070/artifact/bundle.js";
 
 var __webpack_modules__ = {
-  445() {
-    eval('{\n;// external "https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js"\n\n;// ./src/银月脉纪_荒野篇/脚本/MVU/index.ts\n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiNDQ1LmpzIiwibWFwcGluZ3MiOiI7Ozs7QUNBMEYiLCJzb3VyY2VzIjpbInNyYzovL3RhdmVybl9oZWxwZXJfdGVtcGxhdGUvZXh0ZXJuYWwgbW9kdWxlIFwiaHR0cHM6Ly90ZXN0aW5nY2YuanNkZWxpdnIubmV0L2doL01hZ2ljYWxBc3Ryb2d5L01hZ1ZhclVwZGF0ZS9hcnRpZmFjdC9idW5kbGUuanNcIiIsInNyYzovL3RhdmVybl9oZWxwZXJfdGVtcGxhdGUvc3JjL+mTtuaciOiEiee6ql/ojZLph47nr4cv6ISa5pysL01WVS9pbmRleC50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIiLCJpbXBvcnQgJ2h0dHBzOi8vdGVzdGluZ2NmLmpzZGVsaXZyLm5ldC9naC9NYWdpY2FsQXN0cm9neS9NYWdWYXJVcGRhdGUvYXJ0aWZhY3QvYnVuZGxlLmpzJztcbiJdLCJuYW1lcyI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///445\n\n}');
+  389() {
+    eval('{\n;// external "https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate@c1ae3a921bdab2e33b1afc745e5474b9b07fc070/artifact/bundle.js"\n\n;// ./src/银月脉纪_荒野篇/脚本/MVU/index.ts\n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiMzg5LmpzIiwibWFwcGluZ3MiOiI7Ozs7QUNBbUkiLCJzb3VyY2VzIjpbInNyYzovL3RhdmVybl9oZWxwZXJfdGVtcGxhdGUvZXh0ZXJuYWwgbW9kdWxlIFwiaHR0cHM6Ly90ZXN0aW5nY2YuanNkZWxpdnIubmV0L2doL01hZ2ljYWxBc3Ryb2d5L01hZ1ZhclVwZGF0ZUBjMWFlM2E5MjFiZGFiMmUzM2IxYWZjNzQ1ZTU0NzRiOWIwN2ZjMDcwL2FydGlmYWN0L2J1bmRsZS5qc1wiIiwic3JjOi8vdGF2ZXJuX2hlbHBlcl90ZW1wbGF0ZS9zcmMv6ZO25pyI6ISJ57qqX+iNkumHjuevhy/ohJrmnKwvTVZVL2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIiIsImltcG9ydCAnaHR0cHM6Ly90ZXN0aW5nY2YuanNkZWxpdnIubmV0L2doL01hZ2ljYWxBc3Ryb2d5L01hZ1ZhclVwZGF0ZUBjMWFlM2E5MjFiZGFiMmUzM2IxYWZjNzQ1ZTU0NzRiOWIwN2ZjMDcwL2FydGlmYWN0L2J1bmRsZS5qcyc7XG4iXSwibmFtZXMiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///389\n\n}');
   }
 };
 
 var __webpack_exports__ = {};
 
-__webpack_modules__[445]();
+__webpack_modules__[389]();

@@ -39,7 +39,7 @@
       <DataRow label="篝火带来的暖意" :value="`${火补偿}°C`" />
       <DataRow label="每秒散失的热量" :value="`${散热速率}W`" :kind="散热速率>80?'bad':散热速率>60?'warn':'good'" term="散热速率" />
       <DataRow label="距离失温还差" :value="失温余量" :kind="失温余量.includes('危险')?'bad':失温余量.includes('注意')?'warn':'good'" term="距失温阈值" />
-      <Formula>体感温度 = 气温 − 风的拉低 + 衣物保暖 + 火 + 庇护所</Formula>
+      <Formula>体感温度 = 气温 − 风的拉低 + 衣物保暖×层次权重×(1−湿度衰减)×(1−破损度) + 火 + 庇护所</Formula>
     </DetailFold>
 
     <DetailFold title="营养代谢（入不敷出）">
@@ -108,12 +108,11 @@ const 衣物补偿 = computed(() => d.value.$衣物补偿 ?? 0.5);
 const 火补偿 = computed(() => d.value.$火补偿 ?? 0);
 const 散热速率 = computed(() => d.value.$散热速率 ?? 82);
 const 气温 = computed(() => _.get(d.value, '世界.天气详情.温度', 7));
-const 失温风险 = computed(() => d.value.$失温风险等级 ?? '正常');
 const 失温余量 = computed(() => {
   const 阈值 = d.value.$距失温阈值 ?? 1.8;
-  const 分 = d.value.$预计失温分钟;
-  if (失温风险.value === '极高' || 失温风险.value === '高') return `危险 ${阈值}°C`;
-  if (失温风险.value === '偏高') return `注意 ${阈值}°C`;
+  const 风险 = d.value.$失温风险等级 ?? '正常';
+  if (风险 === '极高' || 风险 === '高') return `危险 ${阈值}°C`;
+  if (风险 === '偏高') return `注意 ${阈值}°C`;
   return `安全 ${阈值}°C`;
 });
 
@@ -148,9 +147,9 @@ const 脂肪 = computed(() => 摄入.value.脂肪克 ?? 0);
 const 碳水 = computed(() => 摄入.value.碳水克 ?? 0);
 const bmr = computed(() => 营养.value.基础代谢率 ?? 1450);
 const 活动 = computed(() => f('肌肉疲劳', 35) > 50 ? 600 : 300);
-const 蛋白需求 = computed(() => 45);
+const 蛋白需求 = computed(() => d.value.$蛋白质需求 ?? Math.round(0.9 * a('体质', 2) * 5));
 const 体脂 = computed(() => 营养.value.体脂储备 ?? 18);
-const 水分 = computed(() => 1900);
+const 水分 = computed(() => d.value.$水分流失 ?? (1300 + (f('肌肉疲劳', 35) > 50 ? 600 : f('肌肉疲劳', 35) > 25 ? 300 : 0) + (气温.value > 20 ? (气温.value - 20) * 40 : 0)));
 
 const 睡眠债务 = computed(() => _.get(d.value, '晓光.睡眠.睡眠债务', f('睡眠债务', 4)));
 const 狐尾湿度 = computed(() => _.get(d.value, '晓光.狐类特性.狐尾湿度', '干燥'));

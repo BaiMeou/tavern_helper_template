@@ -4,7 +4,10 @@ import './global.css';
 
 async function init() {
   await waitGlobalInitialized('Mvu');
-  await waitUntil(() => _.has(getVariables({ type: 'message' }), 'stat_data'));
+  await waitUntil(
+    () => _.has(getVariables({ type: 'message', message_id: getCurrentMessageId() }), 'stat_data'),
+    { timeout: Number.POSITIVE_INFINITY },
+  );
   createApp(App).use(createPinia()).mount('#app');
 }
 

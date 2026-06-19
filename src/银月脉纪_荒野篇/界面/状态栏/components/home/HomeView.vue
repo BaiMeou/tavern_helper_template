@@ -52,7 +52,7 @@
     <!-- AI 操作记忆 -->
     <div v-if="recentOps.length" class="oplog">
       <div class="oplog-h"><span class="dot-live"></span>晓光最近的动作 · 同步给AI（最近{{ recentOps.length }}条）</div>
-      <div v-for="op in recentOps" :key="op.t + op.text" class="oplog-item">
+      <div v-for="(op, i) in recentOps" :key="i" class="oplog-item">
         <span class="t">{{ op.t }}</span>
         <span>{{ op.text }}</span>
       </div>

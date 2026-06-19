@@ -66,7 +66,7 @@ import DataRow from '../shared/DataRow.vue';
 import Formula from '../shared/Formula.vue';
 
 const store = useDataStore();
-const d = computed<any>(() => store.data);
+const d = computed(() => store.data);
 const shelter = computed(() => d.value.营地?.庇护所 ?? {});
 const fire = computed(() => d.value.营地?.篝火 ?? {});
 const water = computed(() => d.value.营地?.储水 ?? {});
@@ -102,7 +102,7 @@ function op(action: string, desc: string) {
   ops.push({ t: ts, text: desc });
   while (ops.length > 5) ops.shift();
   _.set(store.data, '$近期操作', ops);
-  _.set(store.data, '$前端操作', `玩家操作：${desc}`);
+  _.set(store.data, '$前端操作', desc);
   if (action === '生火') {
     _.set(store.data, '$掷骰请求', { 类型: '生火', 雨天: (d.value.世界?.时间?.天气 ?? '').includes('雨'), 引火物: true, 时间: ts });
   }

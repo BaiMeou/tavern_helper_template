@@ -9,6 +9,9 @@
         <span style="font-size:11px;color:var(--text-secondary);">{{ dz.阶段 }}</span>
       </div>
       <div class="wound-detail">症状：{{ dz.症状 }}</div>
+      <div class="wound-detail" v-if="dz.传染性 !== '无'">
+        <DotBadge :kind="dz.传染性 === '高' ? 'bad' : dz.传染性 === '中' ? 'warn' : 'info'">{{ dz.传染性 }}</DotBadge> 传染性
+      </div>
       <div class="wound-detail" v-if="dz.处理方式">处理：{{ dz.处理方式 }}</div>
     </div>
   </template>
@@ -26,11 +29,13 @@ const count = computed(() => Object.keys(diseases.value).length);
 function severityClass(s: string) {
   if (s === '危急' || s === '严重') return 'card-danger';
   if (s === '中度') return 'card-warn';
+  if (s === '潜伏期') return 'card-info';
   return 'card-good';
 }
 function severityBadge(s: string): 'good' | 'warn' | 'bad' | 'info' | 'accent' {
   if (s === '危急' || s === '严重') return 'bad';
   if (s === '中度') return 'warn';
+  if (s === '潜伏期') return 'info';
   return 'good';
 }
 </script>

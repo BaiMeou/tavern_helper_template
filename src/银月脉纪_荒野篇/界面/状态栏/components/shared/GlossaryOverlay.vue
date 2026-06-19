@@ -26,6 +26,8 @@ const items = ref<{ term: string; ico: string; desc: string }[]>([]);
 
 function open(payload: GlossaryPayload) {
   title.value = payload.title || '术语说明';
+  const unknown = payload.terms.filter(t => !GLOSSARY[t]);
+  if (unknown.length) console.warn('[glossary] 未在 GLOSSARY 中找到术语，已跳过（词典可能与 schema 漂移）:', unknown);
   items.value = payload.terms
     .map(t => GLOSSARY[t] ? { term: t, ico: GLOSSARY[t][0], desc: GLOSSARY[t][1] } : null)
     .filter(Boolean) as any;

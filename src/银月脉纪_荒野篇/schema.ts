@@ -34,10 +34,10 @@ export const Schema = z
 
         属性成长: z
           .object({
-            体质XP: z.coerce.number().prefault(20).transform(v => _.clamp(v, 0, 100)),
-            敏捷XP: z.coerce.number().prefault(45).transform(v => _.clamp(v, 0, 100)),
-            意志XP: z.coerce.number().prefault(10).transform(v => _.clamp(v, 0, 100)),
-            感知XP: z.coerce.number().prefault(80).transform(v => _.clamp(v, 0, 100)),
+            体质XP: z.coerce.number().prefault(20).transform(v => _.clamp(v, 0, 99999)),
+            敏捷XP: z.coerce.number().prefault(45).transform(v => _.clamp(v, 0, 99999)),
+            意志XP: z.coerce.number().prefault(10).transform(v => _.clamp(v, 0, 99999)),
+            感知XP: z.coerce.number().prefault(80).transform(v => _.clamp(v, 0, 99999)),
           })
           .prefault({}),
 
@@ -311,6 +311,11 @@ export const Schema = z
             燃烧时长分钟: z.coerce.number().optional(),
             结构强度: z.coerce.number().optional(),
             材料类型: z.enum(['硬木', '软木', '燧石', '花岗岩', '石灰岩', '砂岩', '黏土', '骨', '筋', '皮', '纤维', '金属', '布料', '塑料']).optional(),
+            // 物品状态（前端拾取弹窗 ChoiceModal 透传字段，正式纳入校验避免被 strip）
+            易损度: z.coerce.number().optional(),
+            损坏标签: z.enum(['完好', '少耐久', '部分损坏', '损坏']).optional(),
+            可修理: z.boolean().optional(),
+            可拆解: z.boolean().optional(),
           }))
           .prefault({}),
 
@@ -341,6 +346,16 @@ export const Schema = z
         穿着: z.string().prefault('破损的巫女服'),
       })
       .prefault({}),
+
+    // ── 待搜刮货舱：SetupWizard 初始化时写入的持久参考数据（玩家选入行李舱、暂不计随身负重的物品）。
+    //    $ 前缀但非派生：纳入 schema 契约以防 passthrough 被移除或重新 parse 时静默丢失。
+    $待搜刮货舱: z
+      .array(z.object({
+        id: z.string(),
+        名称: z.string(),
+        重量: z.coerce.number(),
+      }))
+      .prefault([]),
 
     // ═══════════════════════════════════════════════════════
     // 工坊 — 配方 + 陷阱
@@ -514,11 +529,10 @@ export const Schema = z
     const $装备总重 = _(物品栏)
       .values()
       .sumBy((item: any) => (item.重量 || 0) * (item.数量 || 1));
-    // ── 当前随身负重：排除 营地存储/地面，且排除 cargo_ 前缀的待打捞货舱物品（设计上货舱开局应只在搜刮存活后才入库）
+    // ── 当前随身负重：所有物品一律按位置过滤（营地存储/地面不计入随身）
     const $当前负重 = _(物品栏)
       .entries()
-      .filter(([key, item]: [string, any]) => {
-        if (String(key).startsWith('cargo_')) return true; // 已搜刮存活的cargo_ 已经在物品栏里，按当前位置算
+      .filter(([, item]: [string, any]) => {
         return item.位置 !== '营地存储' && item.位置 !== '地面';
       })
       .sumBy(([, item]: [string, any]) => (item.重量 || 0) * (item.数量 || 1));
@@ -626,9 +640,23 @@ export const Schema = z
     if (data.世界?.天体) data.世界.天体.月相 = 月相真值 as any;
 
     // ── 距失温阈值 / 预计时间（散热速率 > 0 时）──
-    const $散热速率 = Math.round(((45 + Math.max(0, 7 - 气温) * 2.5) * 湿衣加倍 + (狐尾湿透 ? 18 : 0)) * 10) / 10;
+    // 散热速率(W) 纳入风速/保暖/篝火/庇护，与体感温度同向：冷环境散热高、暖环境散热低
+    const 环境冷度 = Math.max(0, 10 - $体感温度); // 体感越低散热越快
+    const $散热速率 = Math.round(Math.max(15, (40 + 环境冷度 * 4) * 湿衣加倍 + (狐尾湿透 ? 18 : 0)) * 10) / 10;
     const $距失温阈值 = Math.max(0, Math.round((体温 - 35) * 10) / 10);
-    const $预计失温分钟 = $散热速率 > 0 ? Math.round((($距失温阈值 * 3600) / 200) / 60) : Infinity;
+    // 物理一致：时间 = 热容(J) × ΔT / 功率(W) / 60。人体热容 ≈ 体重50kg × 3500 J/kg·°C
+    const 热容J_per_C = 50 * 3500;
+    const $预计失温分钟 = $散热速率 > 0 ? Math.round(($距失温阈值 * 热容J_per_C) / $散热速率 / 60) : Infinity;
+
+    // ── 营养需求派生（随体质/气温/活动动态变化，消除前端硬编码常量）──
+    // 蛋白需求：随体质成长增加（0.9 × 体质 × 5），体质越高肌肉维持成本越高
+    const 体质_营养 = data.晓光?.基础属性?.体质 ?? 2;
+    const $蛋白质需求 = Math.round(0.9 * 体质_营养 * 5);
+    // 水分流失：基础 + 活动量（肌肉疲劳越高代表劳作越多）+ 高温额外排汗
+    const 肌肉疲劳_水 = data.晓光?.疲劳?.肌肉疲劳 ?? 0;
+    const 活动加成 = 肌肉疲劳_水 > 50 ? 600 : 肌肉疲劳_水 > 25 ? 300 : 0;
+    const 高温加成 = 气温 > 20 ? (气温 - 20) * 40 : 0;
+    const $水分流失 = Math.round(1300 + 活动加成 + 高温加成);
 
     return {
       ...data,
@@ -647,12 +675,14 @@ export const Schema = z
       $体感温度,
       $风寒拉低: Math.round(风寒拉低 * 10) / 10,
       $衣物补偿: Math.round(衣物补偿 * 10) / 10,
-      $庇护补偿,
-      $火补偿,
+      $庇护补偿: 庇护补偿,
+      $火补偿: 火补偿,
       $散热速率,
       $恢复倍率,
       $距失温阈值,
       $预计失温分钟,
+      $蛋白质需求,
+      $水分流失,
     };
   });
 

@@ -31,11 +31,13 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { computed } from 'vue';
+
+const props = withDefaults(
   defineProps<{
     size?: number;
-    needleRotation?: number;
     location?: string;
+    direction?: string;
     bg?: string;
     border?: string;
     accentColor?: string;
@@ -43,14 +45,37 @@ withDefaults(
   }>(),
   {
     size: 160,
-    needleRotation: 15,
     location: '',
+    direction: '',
     bg: '#F4EFEB',
     border: '#8C7E6C',
     accentColor: '#A84434',
     accentLight: '#C95A49',
   },
 );
+
+// 将方位文字映射为指针角度（北=0°、东=90°、南=180°、西=270°）
+const DIRECTION_ANGLE: Record<string, number> = {
+  北: 0, 北风: 0, N: 0,
+  东北: 45, 东北风: 45, NE: 45,
+  东: 90, 东风: 90, E: 90,
+  东南: 135, 东南风: 135, SE: 135,
+  南: 180, 南风: 180, S: 180,
+  西南: 225, 西南风: 225, SW: 225,
+  西: 270, 西风: 270, W: 270,
+  西北: 315, 西北风: 315, NW: 315,
+};
+
+const needleRotation = computed(() => {
+  const raw = (props.direction ?? '').trim();
+  if (!raw) return 0;
+  if (raw in DIRECTION_ANGLE) return DIRECTION_ANGLE[raw];
+  // 容错：从含方位的描述中提取首个匹配方位（先长后短，避免“东南”被“东”截断）
+  for (const key of ['东北', '东南', '西北', '西南', '北', '东', '南', '西']) {
+    if (raw.includes(key)) return DIRECTION_ANGLE[key];
+  }
+  return 0;
+});
 </script>
 
 <style scoped>
