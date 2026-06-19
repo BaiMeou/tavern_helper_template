@@ -66,7 +66,7 @@
         <div v-for="cat in (activeCategory ? [activeCategory] : categories)" :key="cat" :ref="el => catRefs[cat] = el">
           <div class="cat-header">{{ catEmoji(cat) }} {{ cat }} <span class="subtle">{{ categoryCount(cat) }}件 · 已选{{ categorySelected(cat) }}</span></div>
           <div class="item-grid">
-            <div v-for="item in itemsByCategory(cat)" :key="item.id" :class="['item-select-card', { selected: selectedIds.has(item.id) }]" @click="toggleItem(item)">
+            <div v-for="item in itemsByCategory(cat)" :key="item.id" :class="['item-select-card', { selected: selectedIds.has(item.id) }]" @click="openItemPicker(item)">
               <div class="is-icon">{{ item.icon }}</div>
               <div class="is-name">{{ item.名称 }}</div>
               <div class="is-weight">{{ item.重量 }}kg</div>
@@ -78,46 +78,73 @@
                 <span v-if="item.容量" class="chip">{{ item.容量 }}L</span>
                 <span v-if="item.保暖值" class="chip">保暖{{ item.保暖值 }}</span>
               </div>
+              <!-- 已选物品的位置标识：右上角徽章 -->
+              <div v-if="selectedIds.has(item.id)" class="is-tag">
+                <span v-if="carryChoice[item.id] === 'cargo'" title="行李舱">📦</span>
+                <span v-else :title="`随身·${itemPositions[item.id] || '背包'}`">{{ posIcon(itemPositions[item.id] || '背包') }}</span>
+              </div>
               <div v-if="selectedIds.has(item.id)" class="is-check">✓</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Step 3: 随身 vs 行李舱 -->
-      <section v-if="selectedCount > 0 && !carryAssigned" style="margin-top:20px;">
-        <div class="sec-hdr">✈️ 随身携带 vs 放入行李舱</div>
-        <div class="risk-warning">
-          ⚠️ <strong>行李舱风险</strong>：坠机冲击可能损坏行李舱中的物品。感知越高，物品幸存概率越大。随身携带的物品<strong>100%保留</strong>但计入当前负重。
-        </div>
-        <div class="weight-split">
-          <span>🟢 随身: {{ carryWeight.toFixed(1) }}kg</span>
-          <span>📦 行李舱: {{ cargoHoldWeight.toFixed(1) }}kg（暂不计入负重）</span>
-        </div>
-        <div v-for="id in [...selectedIds]" :key="id" class="carry-row">
-          <span class="carry-icon">{{ getItemById(id)?.icon || '📦' }}</span>
-          <span class="carry-name">{{ getItemById(id)?.名称 || id }}</span>
-          <span class="carry-weight">{{ getItemById(id)?.重量 || 0 }}kg</span>
-          <div class="carry-actions">
-            <button :class="['carry-btn', 'on-person', { active: carryChoice[id] === 'carry' }]" @click="carryChoice[id]='carry'">✋ 随身</button>
-            <button :class="['carry-btn', 'cargo', { active: carryChoice[id] === 'cargo' }]" @click="carryChoice[id]='cargo'">📦 行李舱</button>
+      <!-- 物品选择弹窗：点物品卡时浮出，让玩家一站式决定「随身/行李舱 + 位置」 -->
+      <div v-if="pickerItem" class="picker-mask" @click.self="closeItemPicker">
+        <div class="picker-card">
+          <div class="picker-head">
+            <span class="pk-icon">{{ pickerItem.icon }}</span>
+            <div class="pk-title-wrap">
+              <div class="pk-title">{{ pickerItem.名称 }}</div>
+              <div class="pk-sub">{{ pickerItem.重量 }}kg · {{ pickerItem.分类 }}</div>
+            </div>
+            <button class="pk-close" @click="closeItemPicker">✕</button>
+          </div>
+          <div class="pk-desc">{{ pickerItem.描述 }}</div>
+
+          <!-- 已选 → 提供「移除」按钮 -->
+          <div v-if="selectedIds.has(pickerItem.id)" class="pk-section">
+            <div class="pk-label">放在哪里</div>
+            <div class="pk-row">
+              <button :class="['pk-pill','large', { active: carryChoice[pickerItem.id] !== 'cargo' }]"
+                      @click="setCarry(pickerItem.id, 'carry')">✋ 随身携带</button>
+              <button :class="['pk-pill','large', { active: carryChoice[pickerItem.id] === 'cargo' }]"
+                      @click="setCarry(pickerItem.id, 'cargo')">📦 放入行李舱</button>
+            </div>
+            <div class="pk-hint" v-if="carryChoice[pickerItem.id] === 'cargo'">
+              📦 行李舱物品坠机时可能损坏（感知越高存活率越高），但<strong>不计入随身负重</strong>
+            </div>
+
+            <template v-if="carryChoice[pickerItem.id] !== 'cargo'">
+              <div class="pk-label" style="margin-top:14px;">具体位置</div>
+              <div class="pk-pos-grid">
+                <button v-for="p in availablePositions" :key="p.value"
+                        :class="['pk-pos', { active: (itemPositions[pickerItem.id] || '背包') === p.value }]"
+                        @click="itemPositions[pickerItem.id] = p.value">
+                  <span class="pk-pos-icon">{{ p.icon }}</span>
+                  <span class="pk-pos-name">{{ p.value }}</span>
+                  <span class="pk-pos-cap">{{ p.舒适 }}/{{ p.绝对 }}kg</span>
+                </button>
+              </div>
+            </template>
+
+            <div class="pk-actions">
+              <button class="pk-remove" @click="removeItem(pickerItem.id)">移除此物品</button>
+              <button class="pk-confirm" @click="closeItemPicker">完成</button>
+            </div>
+          </div>
+
+          <!-- 未选 → 主按钮就是「加入随身」/「加入行李舱」 -->
+          <div v-else class="pk-section">
+            <div class="pk-label">把它带上吗？</div>
+            <div class="pk-row">
+              <button class="pk-pill large action" @click="addItem(pickerItem, 'carry')">✋ 加入随身</button>
+              <button class="pk-pill large action ghost" @click="addItem(pickerItem, 'cargo')">📦 加入行李舱</button>
+            </div>
+            <div class="pk-hint">行李舱物品<strong>暂不计入负重</strong>，但坠机时可能损坏</div>
           </div>
         </div>
-        <button class="confirm-btn" style="margin-top:12px;background:var(--accent);" @click="carryAssigned=true" :disabled="Object.keys(carryChoice).length !== selectedCount">确认分配 → 下一步</button>
-      </section>
-
-      <!-- Step 4: 物品定位 -->
-      <section v-if="selectedCount > 0" style="margin-top:20px;">
-        <div class="sec-hdr">📌 物品定位 <span class="subtle">选择每件物品的放置位置——影响负重分布</span></div>
-        <div v-for="id in [...selectedIds]" :key="id" class="pos-row">
-          <span class="pos-item-icon">{{ getItemById(id)?.icon || "📦" }}</span>
-          <span class="pos-item-name">{{ getItemById(id)?.名称 || id }}</span>
-          <span class="pos-item-weight">{{ getItemById(id)?.重量 || 0 }}kg</span>
-          <select v-model="itemPositions[id]" class="pos-select">
-            <option v-for="p in availablePositions" :key="p.value" :value="p.value">{{ p.label }}</option>
-          </select>
-        </div>
-      </section>
+      </div>
       <!-- Step 4: 搜刮残骸 -->
       <section v-if="selectedCount > 0" style="margin-top:20px;">
         <div class="sec-hdr">✈️ 搜刮残骸 <span class="subtle">感知影响发现概率</span></div>
@@ -307,11 +334,13 @@ const POS_CAPS: Record<string, { 舒适: number; 绝对: number; icon: string }>
 };
 const availablePositions = Object.entries(POS_CAPS).map(([value, c]) => ({
   value,
+  icon: c.icon,
+  舒适: c.舒适,
+  绝对: c.绝对,
   label: `${c.icon} ${value} (舒适${c.舒适}kg/上限${c.绝对}kg)`,
 }));
 const itemPositions = reactive<Record<string, string>>({});
 const carryChoice = reactive<Record<string, string>>({});
-const carryAssigned = ref(false);
 
 // Weight calculations for carry-on vs cargo hold
 const carryWeight = computed(() => {
@@ -328,7 +357,6 @@ const cargoHoldWeight = computed(() => totalWeight.value - carryWeight.value);
 
 function hardcoreMode() {
   selectedIds.value = new Set();
-  carryAssigned.value = true;
   cargoRolled.value = true;
   cargoResults.value = [];
   toastr.info('硬核模式：晓光将空手面对荒野。祝你好运。');
@@ -401,6 +429,40 @@ function toggleItem(item: ItemOption) {
   if (selectedIds.value.has(item.id)) { selectedIds.value.delete(item.id); }
   else { if (selectedCount.value >= 20) return; selectedIds.value.add(item.id); }
   selectedIds.value = new Set(selectedIds.value);
+}
+
+// ─── 物品选择弹窗：点物品卡时浮出，一站式决定「随身/行李舱 + 位置」 ───
+const pickerItem = ref<ItemOption | null>(null);
+function openItemPicker(item: ItemOption) {
+  pickerItem.value = item;
+}
+function closeItemPicker() {
+  pickerItem.value = null;
+}
+function addItem(item: ItemOption, mode: 'carry' | 'cargo') {
+  if (selectedCount.value >= 20 && !selectedIds.value.has(item.id)) {
+    toastr.warning('最多只能选 20 件');
+    return;
+  }
+  selectedIds.value.add(item.id);
+  selectedIds.value = new Set(selectedIds.value);
+  carryChoice[item.id] = mode;
+  if (mode === 'carry' && !itemPositions[item.id]) {
+    itemPositions[item.id] = '背包';
+  }
+}
+function setCarry(id: string, mode: 'carry' | 'cargo') {
+  carryChoice[id] = mode;
+  if (mode === 'carry' && !itemPositions[id]) {
+    itemPositions[id] = '背包';
+  }
+}
+function removeItem(id: string) {
+  selectedIds.value.delete(id);
+  selectedIds.value = new Set(selectedIds.value);
+  delete carryChoice[id];
+  delete itemPositions[id];
+  closeItemPicker();
 }
 
 // ─── 负载均衡分析 (智力≥6) ───
@@ -547,6 +609,43 @@ function confirm() {
 .is-desc { font-size: 10px; color: var(--text-secondary); margin: 2px 0; line-height: 1.3; }
 .is-meta { display: flex; gap: 3px; margin-top: 3px; }
 .is-check { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+.is-tag { position: absolute; top: 6px; left: 8px; font-size: 16px; background: rgba(255,255,255,.85); border: 1px solid var(--border); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+/* ─── Picker Modal ─── */
+.picker-mask { position: fixed; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; animation: pkFadeIn .15s ease-out; }
+@keyframes pkFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.18); animation: pkSlideUp .2s ease-out; }
+@keyframes pkSlideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.picker-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(168,68,52,.04), transparent); }
+.pk-icon { font-size: 32px; }
+.pk-title-wrap { flex: 1; min-width: 0; }
+.pk-title { font-family: var(--font-display); font-size: 16px; font-weight: bold; color: var(--text); }
+.pk-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; font-family: var(--font-data); }
+.pk-close { background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-secondary); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pk-close:hover { background: rgba(0,0,0,.06); color: var(--text); }
+.pk-desc { padding: 12px 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.5; border-bottom: 1px solid rgba(140,126,108,.15); }
+.pk-section { padding: 14px 16px; }
+.pk-label { font-size: 11px; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.pk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pk-pill { padding: 12px 14px; border-radius: 5px; border: 2px solid var(--border); background: var(--card); cursor: pointer; font-size: 13px; font-weight: bold; color: var(--text); transition: all .12s; font-family: var(--font-body); }
+.pk-pill:hover { border-color: var(--accent-light); }
+.pk-pill.large { font-size: 14px; padding: 14px 16px; }
+.pk-pill.active { border-color: var(--accent); background: rgba(168,68,52,0.08); color: var(--accent); }
+.pk-pill.action { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pk-pill.action.ghost { background: var(--card); color: var(--text); border-color: var(--border); }
+.pk-pill.action.ghost:hover { border-color: var(--accent); }
+.pk-hint { font-size: 11px; color: var(--text-secondary); margin-top: 8px; padding: 6px 10px; background: rgba(226,143,27,.06); border-radius: 3px; border-left: 2px solid var(--warning); line-height: 1.4; }
+.pk-pos-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.pk-pos { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 4px; border-radius: 4px; border: 2px solid var(--border); background: var(--card); cursor: pointer; transition: all .12s; }
+.pk-pos:hover { border-color: var(--accent-light); }
+.pk-pos.active { border-color: var(--accent); background: rgba(168,68,52,0.08); }
+.pk-pos-icon { font-size: 18px; }
+.pk-pos-name { font-size: 11px; font-weight: bold; color: var(--text); }
+.pk-pos-cap { font-size: 9px; color: var(--text-secondary); font-family: var(--font-data); }
+.pk-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(140,126,108,.15); }
+.pk-remove { flex: 0 0 auto; padding: 10px 14px; background: transparent; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; color: var(--danger); cursor: pointer; }
+.pk-remove:hover { background: rgba(255,72,72,.06); border-color: var(--danger); }
+.pk-confirm { flex: 1; padding: 10px 14px; background: var(--accent); border: none; border-radius: 4px; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer; font-family: var(--font-display); }
 
 /* Confirm */
 .confirm-btn { width: 100%; padding: 14px; margin-top: 20px; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; font-family: var(--font-display); }
