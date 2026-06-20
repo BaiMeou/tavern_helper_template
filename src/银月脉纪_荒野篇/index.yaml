@@ -640,7 +640,7 @@
         ```
         <body>
         <script>
-        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@7a64181/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
+        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@cac1e0d/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
         </script>
         </body>
         ```
@@ -665,18 +665,18 @@
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@7a64181/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/变量结构/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@cac1e0d/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/变量结构/index.js';
 
       - 名称: 系统辅助
         id: 3a91c882-e501-4d77-b123-8cd02f3456a7
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@7a64181/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/系统辅助/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@cac1e0d/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/系统辅助/index.js';
 
       - 名称: 立即事件
         id: 7b32d941-f612-5e88-c234-9de03f4568b8
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@7a64181/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/立即事件/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@cac1e0d/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/立即事件/index.js';
