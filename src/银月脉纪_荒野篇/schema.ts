@@ -357,19 +357,6 @@ export const Schema = z
       }))
       .prefault([]),
 
-    // 引擎/前端依赖的 $ 字段（非 transform 派生，由脚本/前端直接写入，显式声明避免 passthrough 移除后丢失）
-    $崩溃轮次: z.number().prefault(0),
-    $上次掷骰: z.any().optional(),
-    $近期操作: z.array(z.any()).prefault([]),
-    $前端操作: z.string().optional(),
-    $上次合成: z.any().optional(),
-    $前端选择: z.any().optional(),
-    $已初始化: z.boolean().prefault(false),
-    $上次铃铛结果: z.string().optional(),
-    $掷骰请求: z.any().optional(),
-    $合成请求: z.any().optional(),
-    $推进时段: z.string().optional(),
-
     // ═══════════════════════════════════════════════════════
     // 工坊 — 配方 + 陷阱
     // ═══════════════════════════════════════════════════════
