@@ -81,6 +81,23 @@
       <span class="tc-l"><span class="tc-ico">📖</span>这些数字是什么意思？</span>
       <span class="tc-arrow">查看术语说明 ›</span>
     </div>
+
+    <!-- 危险操作：重置存档（始终放最底，低调红字 + 内联展开确认） -->
+    <div class="danger-zone">
+      <span v-if="!resetIntent" class="dz-link" @click="resetIntent = true">⚠️ 重置存档（从头开始）</span>
+      <div v-else class="reset-card">
+        <div class="rc-title">⚠️ 确定要重置存档吗？</div>
+        <div class="rc-body">
+          <p>此操作会<b>清空当前消息楼层与聊天的全部变量</b>：体征、装备、营地、图鉴、坐标、操作记录……一切都会归零。</p>
+          <p class="rc-warn">此操作<b>无法撤销</b>。</p>
+          <p>清空之后，请前往酒馆主菜单<b>开一个新聊天</b>，初始化向导会重新出现。</p>
+        </div>
+        <div class="rc-actions">
+          <button class="rc-btn cancel" @click="resetIntent = false">取消</button>
+          <button class="rc-btn confirm" @click="performReset">我已了解，重置</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -165,6 +182,24 @@ function 失温建议(d: any): string {
   if (湿尾) return '湿尾散热多，先擦干';
   if (火 === '未点燃' || 火 === '熄灭') return '该生火了';
   return '注意保暖';
+}
+
+// ─── 重置存档 ───
+const resetIntent = ref(false);
+function performReset() {
+  try {
+    // 清空当前消息楼层 + chat 级变量。第一条消息楼层（id=0）的 mvu initvar
+    // 会在「开新聊天」时重新执行；这里先把当前楼层与 chat 的 stat_data 抹掉，
+    // 防止任何残留再被读到。提醒玩家手动开新聊天，让 mvu 走完整 initvar。
+    const mid = getCurrentMessageId();
+    replaceVariables({}, { type: 'message', message_id: mid });
+    try { replaceVariables({}, { type: 'chat' }); } catch { /* chat 变量类型可能不可写，忽略 */ }
+    toastr.success('已清空当前楼层与聊天变量。请前往酒馆主菜单 → 开一个新聊天，重新开始你的旅程。', '存档已重置', { timeOut: 8000 });
+  } catch (e) {
+    console.error('[reset]', e);
+    toastr.error('重置失败：' + ((e as any)?.message ?? e));
+  }
+  resetIntent.value = false;
 }
 </script>
 
@@ -272,4 +307,41 @@ function 失温建议(d: any): string {
 .term-card .tc-l { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; }
 .term-card .tc-l .tc-ico { font-size: 16px; }
 .term-card .tc-arrow { font-size: 11px; color: var(--accent); }
+
+/* 危险操作区：低调放页面最底；点击后内联展开确认面板（不用 fixed/absolute，避开 iframe 定位坑） */
+.danger-zone { margin-top: 22px; padding-top: 14px; border-top: 1px dashed rgba(140,126,108,.25); text-align: center; }
+.dz-link { font-size: 11px; color: var(--danger, #b8403a); cursor: pointer; opacity: .65; user-select: none; transition: opacity .15s; display: inline-block; padding: 4px 10px; }
+.dz-link:hover { opacity: 1; text-decoration: underline; }
+
+.reset-card {
+  background: var(--card, #fffdf9); border: 2px solid var(--danger, #b8403a);
+  border-radius: 10px; padding: 16px; margin: 4px 0 8px;
+  text-align: left;
+  box-shadow: 0 4px 18px rgba(184, 64, 58, .15);
+  animation: cardIn .2s ease;
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.rc-title {
+  font-family: var(--font-display); font-size: 15px; font-weight: 700;
+  color: var(--danger, #b8403a); margin-bottom: 10px; text-align: center;
+}
+.rc-body { font-size: 12px; line-height: 1.7; color: var(--text); }
+.rc-body p { margin: 0 0 6px; }
+.rc-body p:last-child { margin-bottom: 0; }
+.rc-warn { color: var(--danger, #b8403a); font-weight: 600; }
+.rc-actions { display: flex; gap: 8px; margin-top: 12px; }
+.rc-btn {
+  flex: 1; padding: 8px 10px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; cursor: pointer; border: 1px solid;
+  transition: all .12s; font-family: inherit;
+}
+.rc-btn.cancel {
+  background: var(--card-alt, #f6efe4); color: var(--text);
+  border-color: var(--border);
+}
+.rc-btn.cancel:hover { background: var(--nav, #ebe2d2); }
+.rc-btn.confirm {
+  background: var(--danger, #b8403a); color: #fff; border-color: var(--danger, #b8403a);
+}
+.rc-btn.confirm:hover { background: #9a3329; border-color: #9a3329; }
 </style>
