@@ -107,6 +107,7 @@ function op(action: string, desc: string) {
     _.set(store.data, '$掷骰请求', { 类型: '生火', 雨天: (d.value.世界?.时间?.天气 ?? '').includes('雨'), 引火物: true, 时间: ts });
   }
   // 其余操作（添柴/煮沸/饮用/食用）只表达意图，由 AI 下一轮叙事推进，前端不直接改状态
+  toastr.info('已记录，等待晓光行动…');
 }
 </script>
 

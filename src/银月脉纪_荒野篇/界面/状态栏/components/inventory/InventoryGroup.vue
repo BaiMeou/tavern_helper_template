@@ -2,7 +2,7 @@
   <div class="panel">
     <div class="weight-card">
       <div class="weight-top">
-        <span class="weight-big">{{ 当前负重.toFixed(1) }}</span>
+        <span class="weight-big">{{ (当前负重 ?? 0).toFixed(1) }}</span>
         <span class="weight-max">/ {{ 安全上限 }} kg</span>
         <InfoI term="负重" />
         <span :class="['badge', ratioBadge]">{{ ratioLabel }}</span>
@@ -22,7 +22,7 @@
     </div>
 
     <div class="card" style="font-size:12px">
-      <b>🪓 手持：</b>{{ 手持 || '空手' }} &nbsp;&nbsp; <b>👘 穿着：</b>{{ 穿着 || '破损的巫女服' }}
+      <b>🪓 手持：</b>{{ 手持 || '空手' }} &nbsp;&nbsp; <b>👘 穿着：</b>{{ 穿着 || '无' }}
     </div>
 
     <div class="sec-hdr">🎒 物品清单 <span class="sub">点位置可调整</span></div>
@@ -72,7 +72,7 @@ const 穿着 = computed(() => d.value.装备?.穿着 ?? '');
 const count = computed(() => Object.keys(items.value).length);
 const 当前负重 = computed(() => d.value.$当前负重 ?? 0);
 const 安全上限 = computed(() => _.get(d.value, '装备.负重.安全上限', 9));
-const 负重比 = computed(() => Math.round((当前负重.value / 安全上限.value) * 100));
+const 负重比 = computed(() => d.value.$负重比 ?? Math.round((当前负重.value / Math.max(安全上限.value, 0.1)) * 100));
 const 移速修正 = computed(() => d.value.$移动速度总修正 ?? 0);
 
 const ratioBadge = computed(() => 负重比.value > 120 ? 'badge-bad' : 负重比.value > 100 ? 'badge-warn' : 'badge-good');
@@ -85,10 +85,10 @@ const 货舱重 = computed(() => {
 });
 
 // 各位置负载分布
-const POS_CAPS: Record<string, { cap: number; comfort: number; icon: string }> = {
-  '手持': { cap: 3, comfort: 1, icon: '✋' }, '背包': { cap: 12, comfort: 6, icon: '🎒' },
-  '腰挂': { cap: 3, comfort: 1.5, icon: '🔗' }, '尾藏': { cap: 1, comfort: 0.3, icon: '🦊' },
-  '颈间': { cap: 0.3, comfort: 0.1, icon: '💎' }, '穿着': { cap: 5, comfort: 2, icon: '👘' },
+const POS_CAPS: Record<string, { comfort: number; cap: number; icon: string }> = {
+  '手持': { comfort: 1, cap: 3, icon: '✋' }, '背包': { comfort: 6, cap: 12, icon: '🎒' },
+  '腰挂': { comfort: 1.5, cap: 3, icon: '🔗' }, '尾藏': { comfort: 0.3, cap: 1, icon: '🦊' },
+  '颈间': { comfort: 0.1, cap: 0.3, icon: '💎' }, '穿着': { comfort: 2, cap: 5, icon: '👘' },
 };
 const loadPositions = computed(() => {
   const pos重: Record<string, number> = {};
@@ -98,7 +98,7 @@ const loadPositions = computed(() => {
   }
   return Object.entries(POS_CAPS).map(([k, v]) => {
     const w = pos重[k] || 0;
-    return { key: k, label: k, icon: v.icon, weight: w, cap: v.comfort, over: w > v.cap, overComfort: w > v.comfort && w <= v.cap };
+    return { key: k, label: k, icon: v.icon, weight: w, cap: v.cap, over: w > v.cap, overComfort: w > v.comfort && w <= v.cap };
   });
 });
 const 单点超载 = computed(() => loadPositions.value.some(p => p.over));

@@ -7,7 +7,7 @@
 
       <!-- Step 1: 属性分配 -->
       <section>
-        <div class="sec-hdr">📈 分配属性点 <span class="subtle">剩余 {{ remainingPoints }} 点 · 每项至少1点 · 上限20</span></div>
+        <div class="sec-hdr">📈 分配属性点 <span class="subtle">剩余 {{ remainingPoints }} 点 · 每项至少1点 · 上限20</span><span v-if="remainingPoints === 0" style="color:var(--success);font-size:11px;margin-left:6px">✓ 已分配完毕，可自由调整</span></div>
         <div v-for="attr in attributes" :key="attr.key" class="attr-row">
           <span class="attr-icon">{{ attr.icon }}</span>
           <span class="attr-label">{{ attr.label }}</span>
@@ -92,7 +92,7 @@
       <!-- 物品选择弹窗：点物品卡时浮出，紧贴被点击的物品卡出现（iframe 内 position:fixed 会锚定到被撑高的文档，
            而非可视区，故改用 absolute 锚定到点击卡片附近，无论 iframe 多高都在玩家眼前） -->
       <div v-if="pickerItem" class="picker-mask" @click.self="closeItemPicker">
-        <div class="picker-card" ref="pickerCardEl" :style="pickerCardStyle">
+        <div class="picker-card" ref="pickerCardEl" :style="pickerCardStyle" :class="{ flip: pickerFlip }">
           <div class="picker-head">
             <span class="pk-icon">{{ pickerItem.icon }}</span>
             <div class="pk-title-wrap">
@@ -354,6 +354,8 @@ const cargoHoldWeight = computed(() => totalWeight.value - carryWeight.value);
 
 function hardcoreMode() {
   selectedIds.value = new Set();
+  for (const k in carryChoice) delete carryChoice[k];
+  for (const k in itemPositions) delete itemPositions[k];
   toastr.info('硬核模式：晓光将空手面对荒野。祝你好运。');
 }
 function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
@@ -374,12 +376,6 @@ function catEmoji(cat: string) {
 }
 function jumpToCategory(cat: string) {
   activeCategory.value = activeCategory.value === cat ? '' : cat;
-}
-
-function toggleItem(item: ItemOption) {
-  if (selectedIds.value.has(item.id)) { selectedIds.value.delete(item.id); }
-  else { if (selectedCount.value >= 20) return; selectedIds.value.add(item.id); }
-  selectedIds.value = new Set(selectedIds.value);
 }
 
 // ─── 物品选择弹窗：点物品卡时浮出，一站式决定「随身/行李舱 + 位置」 ───
@@ -422,6 +418,7 @@ const pickerCardStyle = computed(() => ({
   top: pickerTop.value + 'px',
   left: '50%',
   transform: 'translateX(-50%)',
+  ...(pickerFlip.value ? { animationName: 'pkSlideDown' as const } : {}),
 }));
 function addItem(item: ItemOption, mode: 'carry' | 'cargo') {
   if (selectedCount.value >= 20 && !selectedIds.value.has(item.id)) {
@@ -511,12 +508,18 @@ function confirm() {
         if (item.锋利度 !== undefined) itemData.锋利度 = item.锋利度;
         if (item.电量 !== undefined) itemData.电量 = item.电量;
         if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
+        if (item.易损度 !== undefined) itemData.易损度 = item.易损度;
         _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
+        // 写入快捷装备引用
+        const pos = itemPositions[id] || '背包';
+        if (pos === '手持') _.set(vars, 'stat_data.装备.手持', item.名称);
+        if (pos === '穿着') _.set(vars, 'stat_data.装备.穿着', item.名称);
       }
       // 货舱：玩家选中的cargo记录到 $待搜刮货舱 供后续工坊「搜刮残骸」按钮掷骰
       const cargoCarried = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id]==='cargo');
       _.set(vars, 'stat_data.$待搜刮货舱', cargoCarried.map(i => ({ id:i.id, 名称:i.名称, 重量:i.重量, 描述:i.描述, 分类:i.分类, icon:i.icon, 易损度:(i as any).易损度 ?? 0 })));
       _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
+      _.set(vars, 'stat_data.$当前负重', carryWeight.value);
       _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id=>carryChoice[id]!=='cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
     }, { type: 'message', message_id: getCurrentMessageId() });
     emit('done');
@@ -591,7 +594,9 @@ function confirm() {
 .picker-mask { position: absolute; inset: 0; background: rgba(20,16,10,0.55); backdrop-filter: blur(2px); z-index: 1000; animation: pkFadeIn .15s ease-out; overflow-y: auto; }
 @keyframes pkFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; max-width: 460px; width: calc(100% - 32px); max-height: 480px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.18); animation: pkSlideUp .2s ease-out; z-index: 1001; }
+.picker-card.flip { animation-name: pkSlideDown; }
 @keyframes pkSlideUp { from { transform: translateX(-50%) translateY(8px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+@keyframes pkSlideDown { from { transform: translateX(-50%) translateY(-8px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
 .picker-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(168,68,52,.04), transparent); }
 .pk-icon { font-size: 32px; }
 .pk-title-wrap { flex: 1; min-width: 0; }

@@ -311,13 +311,13 @@ async function init() {
   // ─── 时间与代谢推进：AI 写 $推进时段 时按规则结算 ───
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     if (!variables?.stat_data?.$推进时段) return;
-    const 推进 = variables.stat_data.$推进时段; // '黎明'|'黄昏'|'夜晚'|'次日' 等
+    const 推进 = variables.stat_data.$推进时段; // '次日'|'黄昏'|'夜晚'（仅这三个值触发代谢结算，其它时段切换直接改 世界.时间.时段）
     const 晓光 = variables.stat_data.晓光 || {};
     const 生存 = 晓光.生存状态 || {};
     const 营养 = 晓光.营养代谢 || {};
     const 基础属性 = 晓光.基础属性 || {};
     const 灵力 = 晓光.狐类特性?.灵力环境 ?? '稀薄';
-    const 恢复倍率 = 灵力 === '充沛' ? 1.4 : 灵力 === '正常' ? 1.0 : 0.7;
+    const 恢复倍率 = _.get(variables, 'stat_data.$恢复倍率', 0.7);
     const 有庇护所 = variables.stat_data.营地?.庇护所?.类型 && variables.stat_data.营地?.庇护所?.类型 !== '无';
     const 火状态 = variables.stat_data.营地?.篝火?.状态;
     const 有火 = ['点燃', '旺盛'].includes(火状态);

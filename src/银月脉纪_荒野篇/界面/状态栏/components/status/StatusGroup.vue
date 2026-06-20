@@ -39,6 +39,7 @@
       <DataRow label="篝火带来的暖意" :value="`${火补偿}°C`" />
       <DataRow label="每秒散失的热量" :value="`${散热速率}W`" :kind="散热速率>80?'bad':散热速率>60?'warn':'good'" term="散热速率" />
       <DataRow label="距离失温还差" :value="失温余量" :kind="失温余量.includes('危险')?'bad':失温余量.includes('注意')?'warn':'good'" term="距失温阈值" />
+      <DataRow label="预计失温时间" :value="预计失温分钟 < 999 ? `约${预计失温分钟}分钟` : '不适用'" :kind="预计失温分钟 < 30 ? 'bad' : 预计失温分钟 < 120 ? 'warn' : 'good'" />
       <Formula>体感温度 = 气温 − 风的拉低 + 衣物保暖×层次权重×(1−湿度衰减)×(1−破损度) + 火 + 庇护所</Formula>
     </DetailFold>
 
@@ -74,7 +75,8 @@
     <div class="sec-hdr">🦊 狐族特性</div>
     <div class="card" style="font-size:12px;line-height:1.8">
       狐尾湿度：<span class="badge" :class="湿度Badge">{{ 狐尾湿度 }}</span> &nbsp; 九尾状态：<span class="chip">{{ 九尾状态 }}</span><br>
-      灵力环境：<span class="badge badge-bad">{{ 灵力环境 }}</span> &nbsp;<span style="font-size:11px;color:var(--text-secondary)">恢复力降至接近人类</span><InfoI term="灵力环境" />
+      灵力环境：<span class="badge" :class="灵力环境==='稀薄' ? 'badge-bad' : 灵力环境==='正常' ? 'badge-warn' : 'badge-good'">{{ 灵力环境 }}</span> &nbsp;<span style="font-size:11px;color:var(--text-secondary)">{{ 灵力环境==='稀薄' ? '恢复力降至接近人类' : 灵力环境==='正常' ? '灵力正常运转' : '灵力充沛，恢复力增强' }}</span><InfoI term="灵力环境" />
+      <span v-if="九尾裹身有效 !== undefined" :class="['badge', 九尾裹身有效 ? 'badge-good' : 'badge-warn']">{{ 九尾裹身有效 ? '九尾裹身有效' : '狐尾湿透·裹身失效' }}</span>
     </div>
   </div>
 </template>
@@ -107,6 +109,7 @@ const 风寒 = computed(() => d.value.$风寒拉低 ?? 5);
 const 衣物补偿 = computed(() => d.value.$衣物补偿 ?? 0.5);
 const 火补偿 = computed(() => d.value.$火补偿 ?? 0);
 const 散热速率 = computed(() => d.value.$散热速率 ?? 82);
+const 预计失温分钟 = computed(() => d.value.$预计失温分钟 ?? 999);
 const 气温 = computed(() => _.get(d.value, '世界.天气详情.温度', 7));
 const 失温余量 = computed(() => {
   const 阈值 = d.value.$距失温阈值 ?? 1.8;
@@ -146,15 +149,16 @@ const 蛋白 = computed(() => 摄入.value.蛋白质克 ?? 0);
 const 脂肪 = computed(() => 摄入.value.脂肪克 ?? 0);
 const 碳水 = computed(() => 摄入.value.碳水克 ?? 0);
 const bmr = computed(() => 营养.value.基础代谢率 ?? 1450);
-const 活动 = computed(() => f('肌肉疲劳', 35) > 50 ? 600 : 300);
-const 蛋白需求 = computed(() => d.value.$蛋白质需求 ?? Math.round(0.9 * a('体质', 2) * 5));
+const 活动 = computed(() => { const v = f('肌肉疲劳', 35); return v > 50 ? 600 : v > 25 ? 300 : 0; });
+const 蛋白需求 = computed(() => d.value.$蛋白质需求 ?? 0);
 const 体脂 = computed(() => 营养.value.体脂储备 ?? 18);
-const 水分 = computed(() => d.value.$水分流失 ?? (1300 + (f('肌肉疲劳', 35) > 50 ? 600 : f('肌肉疲劳', 35) > 25 ? 300 : 0) + (气温.value > 20 ? (气温.value - 20) * 40 : 0)));
+const 水分 = computed(() => d.value.$水分流失 ?? 0);
 
 const 睡眠债务 = computed(() => _.get(d.value, '晓光.睡眠.睡眠债务', f('睡眠债务', 4)));
 const 狐尾湿度 = computed(() => _.get(d.value, '晓光.狐类特性.狐尾湿度', '干燥'));
 const 九尾状态 = computed(() => _.get(d.value, '晓光.狐类特性.九尾状态', '合并一尾'));
 const 灵力环境 = computed(() => _.get(d.value, '晓光.狐类特性.灵力环境', '稀薄'));
+const 九尾裹身有效 = computed(() => d.value.$九尾裹身有效);
 
 const 湿度Badge = computed(() => 狐尾湿度.value === '湿透' ? 'badge-bad' : 狐尾湿度.value === '微湿' ? 'badge-warn' : 'badge-good');
 const 执念Badge = computed(() => {

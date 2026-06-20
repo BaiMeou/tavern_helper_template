@@ -224,7 +224,7 @@ export const Schema = z
               描述: '小型私人飞机残骸，驾驶舱有未读飞行日志，行李舱已搜刮完毕，机身中部仍有可用金属件',
               已探索: true,
             },
-            溪流南: {
+            南侧溪流: {
               名称: '南侧溪流',
               方位: '南',
               距离: '约200m',
@@ -342,7 +342,7 @@ export const Schema = z
           }))
           .prefault({}),
 
-        手持: z.string().prefault('短柄斧'),
+        手持: z.string().prefault('金属杆'),
         穿着: z.string().prefault('破损的巫女服'),
       })
       .prefault({}),
@@ -356,6 +356,19 @@ export const Schema = z
         重量: z.coerce.number(),
       }))
       .prefault([]),
+
+    // 引擎/前端依赖的 $ 字段（非 transform 派生，由脚本/前端直接写入，显式声明避免 passthrough 移除后丢失）
+    $崩溃轮次: z.number().prefault(0),
+    $上次掷骰: z.any().optional(),
+    $近期操作: z.array(z.any()).prefault([]),
+    $前端操作: z.string().optional(),
+    $上次合成: z.any().optional(),
+    $前端选择: z.any().optional(),
+    $已初始化: z.boolean().prefault(false),
+    $上次铃铛结果: z.string().optional(),
+    $掷骰请求: z.any().optional(),
+    $合成请求: z.any().optional(),
+    $推进时段: z.string().optional(),
 
     // ═══════════════════════════════════════════════════════
     // 工坊 — 配方 + 陷阱

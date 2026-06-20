@@ -66,7 +66,7 @@ const recipes = computed(() => d.value.工坊?.配方 ?? {});
 const recipeCount = computed(() => Object.keys(recipes.value).filter(k => recipes.value[k].已解锁).length);
 const traps = computed(() => d.value.工坊?.陷阱 ?? {});
 const pendingCargoCount = computed(() => {
-  const cargo = (d.value as any).$待搜刮货舱;
+  const cargo = d.value.$待搜刮货舱;
   return Array.isArray(cargo) ? cargo.length : 0;
 });
 
@@ -89,12 +89,16 @@ function pushOp(text: string) {
 }
 
 function scavenge() {
-  // 表达意图 + 静默触发引擎掷骰。结果由脚本回写 $上次掷骰，下一轮 AI 读到后叙事。
+  if (pendingCargoCount.value === 0) {
+    toastr.info('货舱已无待搜刮物品——所有残骸已处理完毕');
+    return;
+  }
+  // 表达意图 + 静默触发引擎掷骰。结果由脚本回写 $上次掷骰，下一轮读到后展示。
   pushOp('晓光开始搜刮货舱残骸');
   _.set(store.data, '$掷骰请求', { 类型: '搜刮', 时间: nowLabel() });
 }
 function craft(name: string) {
-  // 表达意图 + 静默触发引擎校验扣减。结果由脚本回写 $上次合成，下一轮 AI 读到后叙事。
+  // 表达意图 + 静默触发引擎校验扣减。结果由脚本回写 $近期操作，下一轮读到后展示。
   pushOp(`晓光尝试合成「${name}」`);
   _.set(store.data, '$合成请求', { 配方名: name, 时间: nowLabel() });
 }

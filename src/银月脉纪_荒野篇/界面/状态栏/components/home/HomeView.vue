@@ -50,7 +50,7 @@
     </div>
 
     <!-- AI 操作记忆 -->
-    <div v-if="recentOps.length" class="oplog">
+    <div v-if="recentOps.length && hasTimeProgression" class="oplog">
       <div class="oplog-h"><span class="dot-live"></span>晓光最近的动作（最近{{ recentOps.length }}条）</div>
       <div v-for="(op, i) in recentOps" :key="i" class="oplog-item">
         <span class="t">{{ op.t }}</span>
@@ -117,6 +117,10 @@ const recentOps = computed<{t: string; text: string}[]>(() => {
   const arr = d.value.$近期操作 ?? [];
   if (!Array.isArray(arr)) return [];
   return arr.slice(-5).reverse();
+});
+const hasTimeProgression = computed(() => {
+  const times = new Set(recentOps.value.map(o => o.t));
+  return times.size >= 2;
 });
 const latestLog = computed(() => {
   const logs = d.value.图鉴?.日志 ?? {};
