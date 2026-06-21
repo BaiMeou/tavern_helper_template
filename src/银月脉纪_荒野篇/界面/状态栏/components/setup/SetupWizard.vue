@@ -3,7 +3,6 @@
     <div class="wizard-card">
       <h1 class="wizard-title">银月脉纪：荒野篇</h1>
       <p class="wizard-sub">坠机之前，你从残骸中抢救出了什么？<br>你的身体状态如何？</p>
-      <div style="text-align:center;margin-bottom:16px;"><button class="hardcore-btn" @click="hardcoreMode">🦴 硬核模式：空手求生</button></div>
 
       <!-- Step 1: 属性分配 -->
       <section>
@@ -147,7 +146,7 @@
         </div>
       </div>
 
-      <!-- 开始求生按钮（空手/硬核模式允许 0 件物品，仅要求属性点分配完毕）-->
+      <!-- 开始求生按钮（允许 0 件物品空手开局，仅要求属性点分配完毕）-->
       <!-- 货舱搜刮在求生开始后于「工坊 → ✈️搜刮残骸」中进行,向导阶段不掷骰 -->
       <button class="confirm-btn" :disabled="remainingPoints !== 0" @click="confirm">
         {{ remainingPoints !== 0 ? `还需分配 ${remainingPoints} 个属性点` : `🦊 开始求生 (${selectedCount}/20件 · ${totalWeight.toFixed(1)}kg)` }}
@@ -354,12 +353,6 @@ const carryWeight = computed(() => {
 });
 const cargoHoldWeight = computed(() => totalWeight.value - carryWeight.value);
 
-function hardcoreMode() {
-  selectedIds.value = new Set();
-  for (const k in carryChoice) delete carryChoice[k];
-  for (const k in itemPositions) delete itemPositions[k];
-  toastr.info('硬核模式：晓光将空手面对荒野。祝你好运。');
-}
 function getItemById(id: string) { return ITEM_POOL.find(i => i.id === id); }
 
 
@@ -494,8 +487,8 @@ function confirm() {
   if (remainingPoints.value !== 0) return;
   // 与全卡其它组件统一：直接写 store.data（store.data 本身即 stat_data 根，无 stat_data. 前缀），
   // 靠 mvu 的 watchIgnorable 自动同步回消息变量，AI 下一轮即可读到。
-  // 无条件写入已初始化标记：确保任何完成向导的路径（含空手/硬核 0 物品）都能落库，
-  // isSetupDone 仅依赖此标记，避免硬核模式无法跳过向导。
+  // 无条件写入已初始化标记：确保任何完成向导的路径（含空手 0 物品）都能落库，
+  // isSetupDone 仅依赖此标记。
   _.set(store.data, '$已初始化', true);
   for (const [key, val] of Object.entries({ ...attrs })) {
     _.set(store.data, `晓光.基础属性.${key}`, val);
@@ -637,9 +630,6 @@ function confirm() {
 .confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .chip { padding: 3px 8px; border-radius: 3px; font-size: 10px; background: var(--nav); color: var(--text-secondary); border: 1px solid var(--border); }
-
-.hardcore-btn { padding: 8px 20px; background: var(--text); color: var(--bg); border: 2px solid var(--border); border-radius: 4px; font-size: 14px; cursor: pointer; font-family: var(--font-display); font-weight: bold; }
-.hardcore-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* Carry-on vs cargo */
 .risk-warning { font-size: 11px; color: var(--warning); background: rgba(226,143,27,0.08); padding: 8px 10px; border-radius: 4px; border-left: 3px solid var(--warning); margin-bottom: 10px; line-height: 1.4; }
