@@ -158,8 +158,10 @@
 
 <script setup lang="ts">
 import { ref, computed, reactive, nextTick } from 'vue';
+import { useDataStore } from '../../store';
 
 const emit = defineEmits<{ done: [] }>();
+const store = useDataStore();
 
 // ─── 属性 ───
 const attrs = reactive<Record<string,number>>({ 体质: 2, 敏捷: 2, 智力: 8, 意志: 4, 感知: 4 });
@@ -489,42 +491,44 @@ const efficiency = computed(() => {
 
 // ─── 确认 ───
 function confirm() {
-  if (remainingPoints.value === 0) {
-    updateVariablesWith(vars => {
-      // 无条件写入已初始化标记：确保任何完成向导的路径（含空手/硬核 0 物品）都能落库，
-      // isSetupDone 仅依赖此标记，避免硬核模式无法跳过向导。
-      _.set(vars, 'stat_data.$已初始化', true);
-      for (const [key, val] of Object.entries({ ...attrs })) { _.set(vars, `stat_data.晓光.基础属性.${key}`, val); }
-      // 只把【随身】物品写入物品栏。货舱物品延迟到求生开始后玩家在「工坊→搜刮残骸」中掷骰存活后才入库
-      for (const id of selectedIds.value) {
-        if (carryChoice[id] === 'cargo') continue;
-        const item = ITEM_POOL.find(i => i.id === id);
-        if (!item) continue;
-        const itemData: any = { 名称: item.名称, 分类: item.分类, 重量: item.重量, 位置: itemPositions[id] || '背包', 描述: item.描述 };
-        if (item.耐久度 !== undefined) itemData.耐久度 = item.耐久度;
-        if (item.使用次数剩余 !== undefined) itemData.使用次数剩余 = item.使用次数剩余;
-        if (item.数量 !== undefined) itemData.数量 = item.数量;
-        if (item.容量 !== undefined) itemData.容量 = item.容量;
-        if (item.锋利度 !== undefined) itemData.锋利度 = item.锋利度;
-        if (item.电量 !== undefined) itemData.电量 = item.电量;
-        if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
-        if (item.易损度 !== undefined) itemData.易损度 = item.易损度;
-        _.set(vars, `stat_data.装备.物品栏.${id}`, itemData);
-        // 写入快捷装备引用
-        const pos = itemPositions[id] || '背包';
-        if (pos === '手持') _.set(vars, 'stat_data.装备.手持', item.名称);
-        if (pos === '穿着') _.set(vars, 'stat_data.装备.穿着', item.名称);
-      }
-      // 货舱：玩家选中的cargo记录到 $待搜刮货舱 供后续工坊「搜刮残骸」按钮掷骰
-      const cargoCarried = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id]==='cargo');
-      _.set(vars, 'stat_data.$待搜刮货舱', cargoCarried.map(i => ({ id:i.id, 名称:i.名称, 重量:i.重量, 描述:i.描述, 分类:i.分类, icon:i.icon, 易损度:(i as any).易损度 ?? 0 })));
-      _.set(vars, 'stat_data.装备.负重.安全上限', safeLimit.value);
-      _.set(vars, 'stat_data.$当前负重', carryWeight.value);
-      _.set(vars, 'stat_data.$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id=>carryChoice[id]!=='cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
-    }, { type: 'message', message_id: getCurrentMessageId() });
-    emit('done');
+  if (remainingPoints.value !== 0) return;
+  // 与全卡其它组件统一：直接写 store.data（store.data 本身即 stat_data 根，无 stat_data. 前缀），
+  // 靠 mvu 的 watchIgnorable 自动同步回消息变量，AI 下一轮即可读到。
+  // 无条件写入已初始化标记：确保任何完成向导的路径（含空手/硬核 0 物品）都能落库，
+  // isSetupDone 仅依赖此标记，避免硬核模式无法跳过向导。
+  _.set(store.data, '$已初始化', true);
+  for (const [key, val] of Object.entries({ ...attrs })) {
+    _.set(store.data, `晓光.基础属性.${key}`, val);
   }
+  // 只把【随身】物品写入物品栏。货舱物品延迟到求生开始后玩家在「工坊→搜刮残骸」中掷骰存活后才入库
+  for (const id of selectedIds.value) {
+    if (carryChoice[id] === 'cargo') continue;
+    const item = ITEM_POOL.find(i => i.id === id);
+    if (!item) continue;
+    const itemData: any = { 名称: item.名称, 分类: item.分类, 重量: item.重量, 位置: itemPositions[id] || '背包', 描述: item.描述 };
+    if (item.耐久度 !== undefined) itemData.耐久度 = item.耐久度;
+    if (item.使用次数剩余 !== undefined) itemData.使用次数剩余 = item.使用次数剩余;
+    if (item.数量 !== undefined) itemData.数量 = item.数量;
+    if (item.容量 !== undefined) itemData.容量 = item.容量;
+    if (item.锋利度 !== undefined) itemData.锋利度 = item.锋利度;
+    if (item.电量 !== undefined) itemData.电量 = item.电量;
+    if (item.保暖值 !== undefined) itemData.保暖值 = item.保暖值;
+    if (item.易损度 !== undefined) itemData.易损度 = item.易损度;
+    _.set(store.data, `装备.物品栏.${id}`, itemData);
+    // 写入快捷装备引用
+    const pos = itemPositions[id] || '背包';
+    if (pos === '手持') _.set(store.data, '装备.手持', item.名称);
+    if (pos === '穿着') _.set(store.data, '装备.穿着', item.名称);
+  }
+  // 货舱：玩家选中的cargo记录到 $待搜刮货舱 供后续工坊「搜刮残骸」按钮掷骰
+  const cargoCarried = ITEM_POOL.filter(i => selectedIds.value.has(i.id) && carryChoice[i.id] === 'cargo');
+  _.set(store.data, '$待搜刮货舱', cargoCarried.map(i => ({ id: i.id, 名称: i.名称, 重量: i.重量, 描述: i.描述, 分类: i.分类, icon: i.icon, 易损度: (i as any).易损度 ?? 0 })));
+  // 安全上限：体质动态公式（唯一真相源，体质越高背越多）。$当前负重 不写——由 schema transform 从物品栏实时算。
+  _.set(store.data, '装备.负重.安全上限', safeLimit.value);
+  _.set(store.data, '$前端操作', `玩家完成了初始设置：随身${[...selectedIds.value].filter(id => carryChoice[id] !== 'cargo').length}件(${carryWeight.value.toFixed(1)}kg)，行李舱${cargoCarried.length}件待搜刮(暂不计负重)，属性分配完毕`);
+  emit('done');
 }
+
 </script>
 
 <style scoped>

@@ -36,8 +36,6 @@
 
 声音比她自己预期的更响亮。第一步，找到水源。
 
-<StatusPlaceHolderImpl/>
-
 <UpdateVariable>
 <initvar>
 ```yaml
@@ -181,8 +179,7 @@
     可见星座: 猎户座清晰——深秋夜空，北斗低垂于北面针叶林梢
     夜间能见度: 月光可辨
 装备:
-  负重:
-    安全上限: 9
+  负重: {}
   物品栏: {}
   容器: {}
   衣物:
@@ -235,3 +232,5 @@
 ```
 </initvar>
 </UpdateVariable>
+
+<StatusPlaceHolderImpl/>

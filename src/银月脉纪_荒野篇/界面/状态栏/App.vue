@@ -61,10 +61,8 @@ const isSetupDone = computed(() => {
 });
 
 function onSetupDone() {
-  // SetupWizard 已 updateVariablesWith 写入 stat_data.$已初始化=true，
-  // 但 mvu 的 useIntervalFn 是 2 秒轮询，会产生 2 秒空白窗口（向导已隐藏、主界面未挂载）。
-  // 这里立即在本地 store.data 镜像同样字段，让 isSetupDone 立刻 true → 主界面零延迟挂载；
-  // mvu 的 watchIgnorable 会把这个变更同步回 stat_data（实际值已存在，不会引发回写）。
+  // SetupWizard 现在直接写 store.data（含 $已初始化=true），与全卡其它组件统一。
+  // 此处兜底确认本地标记已置位，保证 isSetupDone 立刻为 true → 主界面零延迟挂载。
   if (store.data && !(store.data as any).$已初始化) {
     (store.data as any).$已初始化 = true;
   }
