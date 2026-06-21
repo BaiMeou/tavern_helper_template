@@ -28,7 +28,7 @@ const battery = computed<number | null>(() => {
   return 手机?.电量 ?? null;
 });
 const timeDisplay = computed(() => {
-  const 时段 = store.data.世界?.时间?.时段 ?? '清晨';
+  const 时段 = store.data.世界?.时间?.时段 ?? '—';
   const 天数 = store.data.世界?.时间?.天数 ?? 0;
   return `第${天数}天 · ${时段}`;
 });

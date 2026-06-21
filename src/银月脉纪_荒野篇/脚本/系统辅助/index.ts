@@ -323,6 +323,19 @@ async function init() {
     const 有火 = ['点燃', '旺盛'].includes(火状态);
     const 床铺 = 晓光.睡眠?.床铺类型 ?? '无';
 
+    // 电子设备待机自然耗电：手机/头灯等放着也会缓慢掉电（屏幕检查、待机损耗）。
+    // 主动使用（提问3%、手电1%/min）的额外消耗仍由 AI 叙事时另写——这里只补"时间流逝→自然掉电"。
+    // 过夜多为关屏待机，掉得少；白天单时段待机掉得稍多。电量到 0 视为关机。
+    const 衰减电量 = (每设备: number) => {
+      const 物品栏 = variables.stat_data.装备?.物品栏 || {};
+      for (const [key, item] of Object.entries(物品栏) as [string, any][]) {
+        if (item?.分类 !== '电子') continue;
+        if (typeof item.电量 !== 'number') continue;
+        if (item.电量 <= 0) continue;
+        _.set(variables, `stat_data.装备.物品栏.${key}.电量`, Math.max(0, Math.round((item.电量 - 每设备) * 10) / 10));
+      }
+    };
+
     if (推进 === '次日') {
       // 过夜结算：天数+1，时段=清晨
       const 天数 = _.get(variables, 'stat_data.世界.时间.天数', 0) + 1;
@@ -406,6 +419,8 @@ async function init() {
           _.set(variables, `stat_data.工坊.陷阱.${name}.布置天数`, (t.布置天数 ?? 0) + 1);
         }
       }
+      // 过夜电子设备待机耗电（关屏待机，掉得少）
+      衰减电量(1);
     } else if (推进 === '黄昏' || 推进 === '夜晚') {
       // 一个时段的代谢消耗：饥饿口渴下降
       const 时段系数 = 推进 === '夜晚' ? 1.5 : 1;
@@ -422,9 +437,12 @@ async function init() {
       if (推进 === '夜晚' && 床铺 === '无') {
         _.set(variables, 'stat_data.晓光.睡眠.睡眠债务', Math.min(48, 债务 + 2));
       }
+      // 单时段电子设备待机耗电（白天待机检查，掉得稍多）
+      衰减电量(2);
     } else {
-      // 未识别的推进值：不结算，仅警告（避免静默吞掉，提示 AI 用合法值或直接改 世界.时间.时段）
+      // 未识别的推进值：不结算，但写回 $前端操作 让 AI 知道参数无法识别（避免"时间看似推进却无变化"的困惑）
       console.warn(`[系统辅助] $推进时段="${推进}" 非法（仅支持 次日/黄昏/夜晚），未做任何代谢结算。纯叙事时段切换请直接改 世界.时间.时段`);
+      _.set(variables, 'stat_data.$前端操作', `时间推进参数"${推进}"无法识别（仅支持 次日/黄昏/夜晚）——未结算代谢。若只是叙事时段切换，请直接修改 世界.时间.时段`);
     }
     // 清除触发字段
     _.set(variables, 'stat_data.$推进时段', null);

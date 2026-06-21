@@ -82,15 +82,15 @@ const 天体 = computed(() => d.value.世界?.天体 ?? {});
 const 水文 = computed(() => d.value.世界?.水文 ?? {});
 const landmarks = computed(() => d.value.世界?.地标 ?? {});
 
-const 体感 = computed(() => d.value.$体感温度 ?? 2);
-const 风寒 = computed(() => d.value.$风寒拉低 ?? 5);
-const 保暖 = computed(() => d.value.$总保暖值 ?? 3.5);
-const 防风 = computed(() => d.value.$总防风值 ?? 2);
-const 失温风险 = computed(() => d.value.$失温风险等级 ?? '正常');
+const 体感 = computed(() => d.value.$体感温度 ?? 0);
+const 风寒 = computed(() => d.value.$风寒拉低 ?? 0);
+const 保暖 = computed(() => d.value.$总保暖值 ?? 0);
+const 防风 = computed(() => d.value.$总防风值 ?? 0);
+const 失温风险 = computed(() => d.value.$失温风险等级 ?? '—');
 const 庇护补偿 = computed(() => d.value.$庇护补偿 ?? 0);
 const 火补偿 = computed(() => d.value.$火补偿 ?? 0);
 const 湿尾 = computed(() => d.value.晓光?.狐类特性?.狐尾湿度 === '湿透');
-const 月相 = computed(() => d.value.世界?.天体?.月相 ?? d.value.世界?.时间?.月相 ?? '残月');
+const 月相 = computed(() => d.value.世界?.天体?.月相 ?? d.value.世界?.时间?.月相 ?? '—');
 
 const 失温Badge = computed(() => 失温风险.value === '极高' || 失温风险.value === '高' ? 'badge-bad' : 失温风险.value === '偏高' ? 'badge-warn' : 'badge-good');
 const 浊度Badge = computed(() => {

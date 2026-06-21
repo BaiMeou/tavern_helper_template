@@ -11,18 +11,18 @@
           <span class="chip">九尾白狐娘</span><span class="chip">14岁</span>
           <span class="chip">162cm / 50kg</span><span class="chip">C罩杯</span>
         </div>
-        <div class="header-loc">📍 {{ t('当前位置', '飞机残骸西侧') }}</div>
+        <div class="header-loc">📍 {{ t('当前位置', '—') }}</div>
       </div>
     </div>
 
     <div class="sec-hdr">📊 生存体征</div>
     <div class="vital-grid">
-      <VitalCard icon="🍗" label="饥饿度" :value="s('饥饿', 85)" unit="%" :trend="trend('饥饿')" :accent="vitalAccent(s('饥饿'))" />
-      <VitalCard icon="💧" label="口渴度" :value="s('口渴', 55)" unit="%" :trend="trend('口渴')" :accent="vitalAccent(s('口渴'))" />
-      <VitalCard icon="⚡" label="精力值" :value="s('精力', 38)" unit="%" :trend="trend('精力')" :accent="vitalAccent(s('精力'))" />
+      <VitalCard icon="🍗" label="饥饿度" :value="s('饥饿', 0)" unit="%" :trend="trend('饥饿')" :accent="vitalAccent(s('饥饿'))" />
+      <VitalCard icon="💧" label="口渴度" :value="s('口渴', 0)" unit="%" :trend="trend('口渴')" :accent="vitalAccent(s('口渴'))" />
+      <VitalCard icon="⚡" label="精力值" :value="s('精力', 0)" unit="%" :trend="trend('精力')" :accent="vitalAccent(s('精力'))" />
       <VitalCard icon="🌡️" label="核心体温" :value="体温" unit="°C" :trend="体温Trend" :accent="体温Accent" />
-      <VitalCard icon="❤️" label="健康度" :value="s('健康', 78)" unit="%" :trend="trend('健康')" :accent="vitalAccent(s('健康'))" />
-      <VitalCard icon="🧠" label="精神" :value="s('精神', 75)" unit="%" :trend="精神Trend" :accent="精神Accent" />
+      <VitalCard icon="❤️" label="健康度" :value="s('健康', 0)" unit="%" :trend="trend('健康')" :accent="vitalAccent(s('健康'))" />
+      <VitalCard icon="🧠" label="精神" :value="s('精神', 0)" unit="%" :trend="精神Trend" :accent="精神Accent" />
     </div>
 
     <div class="sec-hdr">📈 身体属性</div>
@@ -61,13 +61,13 @@
     <div class="card">
       <div class="fatigue-line">
         <span>😴 疲劳</span>
-        <span>肌肉 {{ f('肌肉疲劳', 35) }}%<InfoI term="肌肉疲劳" /> · 睡眠债务 {{ 睡眠债务 }}h<InfoI term="睡眠债务" /> · <b>{{ f('累积负荷', '疲惫') }}</b><InfoI term="累积负荷" /></span>
+        <span>肌肉 {{ f('肌肉疲劳', 0) }}%<InfoI term="肌肉疲劳" /> · 睡眠债务 {{ 睡眠债务 }}h<InfoI term="睡眠债务" /> · <b>{{ f('累积负荷', '—') }}</b><InfoI term="累积负荷" /></span>
       </div>
     </div>
     <div class="card card-accent">
       <div class="fatigue-line">
         <span class="badge" :class="执念Badge">{{ ob('状态', '稳固') }}</span>
-        <span>执念强度 {{ ob('强度', 85) }}%</span>
+        <span>执念强度 {{ ob('强度', 0) }}%</span>
       </div>
       <div class="spirit-quote">{{ ob('核心锚点', '铃铛还在就还有家——主人一定在找晓光') }}</div>
     </div>
@@ -104,15 +104,15 @@ const ob = (path: string, fallback: any) => _.get(d.value, `晓光.执念.${path
 const a = (key: string, fallback: number) => _.get(d.value, `晓光.基础属性.${key}`, fallback);
 
 const 体温 = computed(() => s('体温', 36.8));
-const 体感 = computed(() => d.value.$体感温度 ?? 2);
-const 风寒 = computed(() => d.value.$风寒拉低 ?? 5);
-const 衣物补偿 = computed(() => d.value.$衣物补偿 ?? 0.5);
+const 体感 = computed(() => d.value.$体感温度 ?? 0);
+const 风寒 = computed(() => d.value.$风寒拉低 ?? 0);
+const 衣物补偿 = computed(() => d.value.$衣物补偿 ?? 0);
 const 火补偿 = computed(() => d.value.$火补偿 ?? 0);
-const 散热速率 = computed(() => d.value.$散热速率 ?? 82);
+const 散热速率 = computed(() => d.value.$散热速率 ?? 0);
 const 预计失温分钟 = computed(() => d.value.$预计失温分钟 ?? 999);
-const 气温 = computed(() => _.get(d.value, '世界.天气详情.温度', 7));
+const 气温 = computed(() => _.get(d.value, '世界.天气详情.温度', 0));
 const 失温余量 = computed(() => {
-  const 阈值 = d.value.$距失温阈值 ?? 1.8;
+  const 阈值 = d.value.$距失温阈值 ?? 0;
   const 风险 = d.value.$失温风险等级 ?? '正常';
   if (风险 === '极高' || 风险 === '高') return `危险 ${阈值}°C`;
   if (风险 === '偏高') return `注意 ${阈值}°C`;
@@ -121,7 +121,7 @@ const 失温余量 = computed(() => {
 
 const 精神区间 = computed(() => d.value.晓光?.$精神区间 ?? '稳定');
 const 精神Trend = computed(() => {
-  const v = s('精神', 75);
+  const v = s('精神', 0);
   if (精神区间.value === '崩溃' || 精神区间.value === '临界') return `⚠ ${精神区间.value}`;
   if (v < 50) return '↓ 压抑';
   if (v >= 80) return '→ 稳定';
@@ -181,11 +181,11 @@ function trend(key: string): string {
 }
 
 const attributes = computed(() => [
-  { icon: '💪', label: '体质', current: a('体质', 2), max: 20, fillActive: a('体质', 2), xp: sp('体质XP', 20), desc: '负重恢复 · 伤病抵抗' },
-  { icon: '🏃', label: '敏捷', current: a('敏捷', 2), max: 20, fillActive: a('敏捷', 2), xp: sp('敏捷XP', 45), desc: '移动闪避 · 捕猎攀爬' },
-  { icon: '🧠', label: '智力', current: a('智力', 8), max: 20, fillActive: 0, fillNormal: a('智力', 8), desc: '配方解锁 · 思维加速' },
-  { icon: '🛡️', label: '意志', current: a('意志', 4), max: 20, fillActive: 0, fillNormal: a('意志', 4), xp: sp('意志XP', 10), desc: '精神耐力 · 孤独抗性' },
-  { icon: '👁️', label: '感知', current: a('感知', 4), max: 20, fillActive: 0, fillNormal: a('感知', 4), xp: sp('感知XP', 80), desc: '环境察觉 · 追踪预警' },
+  { icon: '💪', label: '体质', current: a('体质', 0), max: 20, fillActive: a('体质', 0), xp: sp('体质XP', 0), desc: '负重恢复 · 伤病抵抗' },
+  { icon: '🏃', label: '敏捷', current: a('敏捷', 0), max: 20, fillActive: a('敏捷', 0), xp: sp('敏捷XP', 0), desc: '移动闪避 · 捕猎攀爬' },
+  { icon: '🧠', label: '智力', current: a('智力', 0), max: 20, fillActive: 0, fillNormal: a('智力', 0), desc: '配方解锁 · 思维加速' },
+  { icon: '🛡️', label: '意志', current: a('意志', 0), max: 20, fillActive: 0, fillNormal: a('意志', 0), xp: sp('意志XP', 0), desc: '精神耐力 · 孤独抗性' },
+  { icon: '👁️', label: '感知', current: a('感知', 0), max: 20, fillActive: 0, fillNormal: a('感知', 0), xp: sp('感知XP', 0), desc: '环境察觉 · 追踪预警' },
 ]);
 </script>
 

@@ -112,16 +112,16 @@ const store = useDataStore();
 const d = computed<any>(() => store.data);
 
 const 天数 = computed(() => d.value.世界?.时间?.天数 ?? 0);
-const 时段 = computed(() => d.value.世界?.时间?.时段 ?? '清晨');
+const 时段 = computed(() => d.value.世界?.时间?.时段 ?? '—');
 const 九尾状态 = computed(() => d.value.晓光?.狐类特性?.九尾状态 ?? '合并一尾');
 const 灵力 = computed(() => d.value.晓光?.狐类特性?.灵力环境 ?? '稀薄');
 const 执念状态 = computed(() => d.value.晓光?.执念?.状态 ?? '稳固');
-const 健康 = computed(() => d.value.晓光?.生存状态?.健康 ?? 78);
-const 饥饿 = computed(() => d.value.晓光?.生存状态?.饥饿 ?? 85);
-const 口渴 = computed(() => d.value.晓光?.生存状态?.口渴 ?? 55);
-const 精力 = computed(() => d.value.晓光?.生存状态?.精力 ?? 38);
+const 健康 = computed(() => d.value.晓光?.生存状态?.健康 ?? 0);
+const 饥饿 = computed(() => d.value.晓光?.生存状态?.饥饿 ?? 0);
+const 口渴 = computed(() => d.value.晓光?.生存状态?.口渴 ?? 0);
+const 精力 = computed(() => d.value.晓光?.生存状态?.精力 ?? 0);
 const 体温 = computed(() => d.value.晓光?.生存状态?.体温 ?? 36.8);
-const 精神 = computed(() => d.value.晓光?.生存状态?.精神 ?? 75);
+const 精神 = computed(() => d.value.晓光?.生存状态?.精神 ?? 0);
 const 精神区间 = computed(() => d.value.晓光?.$精神区间 ?? '稳定');
 const 移速修正 = computed(() => d.value.$移动速度总修正 ?? 0);
 

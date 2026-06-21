@@ -72,19 +72,7 @@ export const Schema = z
               受伤天数: z.coerce.number().prefault(0),
             }),
           )
-          .prefault({
-            右手擦伤: {
-              位置: '右手掌外侧',
-              类型: '擦伤',
-              严重度: '轻微',
-              愈合阶段: '结痂',
-              感染风险: '低',
-              对行动影响: '抓握稍感刺痛，不影响主要活动',
-              处理方式: '已自然结痂，未做特殊处理',
-              预计愈合天数: 3,
-              受伤天数: 1,
-            },
-          }),
+          .prefault({}),
 
         疾病: z
           .record(
@@ -116,12 +104,21 @@ export const Schema = z
           })
           .prefault({}),
 
+        // 生理状态：发情期由满月触发（世界.天体.月相='满月'）或长期压抑积累。
+        // 主人缺席荒野时无法完全解除，只能由隐秘慰藉机制部分缓解（见世界书 条件事件/晓光身体设定）。
+        // 隐藏机制，不上前端 UI；供 AI 在身体/亲密叙事时读写。
+        生理状态: z
+          .object({
+            发情期: z.enum(['无', '萌动', '发情中', '部分缓解', '余韵']).prefault('无'),
+          })
+          .prefault({}),
+
         执念: z
           .object({
             状态: z.enum(['稳固', '动摇', '崩溃']).prefault('稳固'),
             强度: z.coerce.number().prefault(85).transform(v => _.clamp(v, 0, 100)),
             近期波动: z.string().prefault(''),
-            核心锚点: z.string().prefault('铃铛还在就还有家——主人一定在找晓光'),
+            核心锚点: z.string().prefault(''),
           })
           .prefault({}),
 
@@ -152,7 +149,7 @@ export const Schema = z
                 关联信息: z.string(),
               }))
               .prefault({}),
-            灵力感知: z.string().prefault('灵力极度稀薄——几乎什么都察觉不到，只有颈间铃铛微弱地温暖着'),
+            灵力感知: z.string().prefault(''),
             时间感知偏差: z.string().prefault('正常'),
           })
           .prefault({}),
@@ -189,11 +186,11 @@ export const Schema = z
 
         地形: z
           .object({
-            当前位置: z.string().prefault('飞机残骸西侧 — 机身中部与驾驶舱之间'),
-            北方: z.string().prefault('针叶林深处 — 狼群嚎叫方向，松鸡低处活动'),
-            南方: z.string().prefault('草甸与溪流 — 约200m有水声，但鸟群曾惊飞(大型动物?)'),
-            东方: z.string().prefault('飞机残骸 — 行李舱已搜刮，驾驶舱有未读飞行日志'),
-            西方: z.string().prefault('陡峭碎石坡 — 视野开阔但攀爬消耗极大'),
+            当前位置: z.string().prefault(''),
+            北方: z.string().prefault(''),
+            南方: z.string().prefault(''),
+            东方: z.string().prefault(''),
+            西方: z.string().prefault(''),
           })
           .prefault({}),
 
@@ -215,24 +212,7 @@ export const Schema = z
             描述: z.string(),
             已探索: z.boolean().prefault(false),
           }))
-          .prefault({
-            飞机残骸: {
-              名称: '飞机残骸',
-              方位: '东',
-              距离: '0m (当前所在)',
-              类型: '资源点',
-              描述: '小型私人飞机残骸，驾驶舱有未读飞行日志，行李舱已搜刮完毕，机身中部仍有可用金属件',
-              已探索: true,
-            },
-            南侧溪流: {
-              名称: '南侧溪流',
-              方位: '南',
-              距离: '约200m',
-              类型: '水源',
-              描述: '可听到水流声，但曾惊起鸟群——可能有大型动物在附近饮水',
-              已探索: false,
-            },
-          }),
+          .prefault({}),
 
         天气详情: z
           .object({
@@ -253,7 +233,7 @@ export const Schema = z
             溪流水位: z.enum(['干涸', '枯水', '低位', '正常', '高位', '泛滥']).prefault('低位'),
             流速: z.enum(['静止', '缓慢', '中等', '湍急']).prefault('缓慢'),
             浑浊度: z.enum(['清澈', '微浊', '浑浊', '泥浆']).prefault('微浊'),
-            水生生物: z.string().prefault('未观察到鱼类——溪流太浅且寒冷'),
+            水生生物: z.string().prefault(''),
             地下水可获取性: z.enum(['不可及', '需深挖', '浅挖可得', '地表渗出']).prefault('需深挖'),
             雨水收集效率: z.coerce.number().prefault(0),
           })
@@ -264,7 +244,7 @@ export const Schema = z
             日出时分: z.string().prefault('06:47'),
             日落时分: z.string().prefault('17:02'),
             月相: z.enum(['新月', '蛾眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月']).prefault('残月'),
-            可见星座: z.string().prefault('猎户座清晰——深秋夜空，北斗低垂于北面针叶林梢'),
+            可见星座: z.string().prefault(''),
             夜间能见度: z.enum(['漆黑', '微光', '月光可辨', '明亮']).prefault('月光可辨'),
           })
           .prefault({}),
@@ -280,7 +260,7 @@ export const Schema = z
           .object({
             // 改为只读派生：当前负重由 transform 从物品栏实时算（排除待打捞货舱）
             // 字段保留以兼容旧存档，但 AI 不应再手动写
-            当前: z.coerce.number().prefault(7.5),
+            当前: z.coerce.number().prefault(0),
             安全上限: z.coerce.number().prefault(9),
           })
           .prefault({}),
@@ -342,8 +322,10 @@ export const Schema = z
           }))
           .prefault({}),
 
-        手持: z.string().prefault('金属杆'),
-        穿着: z.string().prefault('破损的巫女服'),
+        // 默认空：玩家未在向导中分配任何物品到「手持/穿着」时，前端显示"无"。
+        // 不再硬编码 '金属杆' / '破损的巫女服'，避免初始化前界面误显已存在的装备。
+        手持: z.string().prefault(''),
+        穿着: z.string().prefault(''),
       })
       .prefault({}),
 
@@ -509,10 +491,10 @@ export const Schema = z
 
         气味: z
           .object({
-            主导气味: z.string().prefault('潮湿泥土、松针腐叶、远处隐约烟熏(残骸余烬)'),
+            主导气味: z.string().prefault(''),
             晓光自身气味强度: z.enum(['无', '微弱', '轻微', '明显', '浓烈']).prefault('轻微'),
             嗅觉可追踪距离: z.coerce.number().prefault(80),
-            风对气味的携带: z.string().prefault('西北微风将残骸烟味吹向东南'),
+            风对气味的携带: z.string().prefault(''),
           })
           .prefault({}),
       })
