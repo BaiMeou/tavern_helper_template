@@ -158,6 +158,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive, nextTick } from 'vue';
 import { useDataStore } from '../../store';
+import { POS_CAPS as SCHEMA_POS_CAPS, POS_ICONS } from '../../../../schema';
 
 const emit = defineEmits<{ done: [] }>();
 const store = useDataStore();
@@ -320,16 +321,11 @@ const catRefs = reactive<Record<string, any>>({});
 
 const categories = ['工具','容器','食物','庇护','武器','医疗','电子','特殊','材料','烹饪'];
 const selectedCount = computed(() => selectedIds.value.size);
-// 位置容量单一数据源（舒适/绝对上限），与 schema.ts 的 POS_CAPS 保持一致。
-// availablePositions 标签与 loadPositions 上限均从此派生，避免多处硬编码不同步。
-const POS_CAPS: Record<string, { 舒适: number; 绝对: number; icon: string }> = {
-  '背包': { 舒适: 6, 绝对: 12, icon: '🎒' },
-  '腰挂': { 舒适: 1.5, 绝对: 3, icon: '🔗' },
-  '手持': { 舒适: 1, 绝对: 3, icon: '✋' },
-  '尾藏': { 舒适: 0.3, 绝对: 1, icon: '🦊' },
-  '颈间': { 舒适: 0.1, 绝对: 0.3, icon: '💎' },
-  '穿着': { 舒适: 2, 绝对: 5, icon: '👘' },
-};
+// 位置容量单一数据源：从 schema.ts 导入 POS_CAPS/POS_ICONS，不再本地硬编码（避免三处漂移）。
+// availablePositions 标签与 loadPositions 上限均从此派生。
+const POS_CAPS: Record<string, { 舒适: number; 绝对: number; icon: string }> = Object.fromEntries(
+  Object.entries(SCHEMA_POS_CAPS).map(([k, v]) => [k, { 舒适: v.舒适, 绝对: v.绝对, icon: POS_ICONS[k] ?? '📦' }])
+);
 const availablePositions = Object.entries(POS_CAPS).map(([value, c]) => ({
   value,
   icon: c.icon,
@@ -457,7 +453,7 @@ const loadPositions = computed(() => {
     return { key, label: key, icon: posIcon(key), weight, cap, pct: Math.min((weight/cap)*100, 100), over: weight > cap };
   });
 });
-function posIcon(p: string) { const m: Record<string,string> = { '手持':'✋','背包':'🎒','腰挂':'🔗','尾藏':'🦊','颈间':'💎','穿着':'👘','其他':'📦' }; return m[p]||'📦'; }
+function posIcon(p: string) { return POS_ICONS[p] ?? '📦'; }
 const balanceLabel = computed(() => {
   const overs = loadPositions.value.filter(p => p.over);
   if (overs.length > 0) return '个别位置超载';

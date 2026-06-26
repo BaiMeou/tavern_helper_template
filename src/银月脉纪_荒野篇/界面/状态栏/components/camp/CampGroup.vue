@@ -72,7 +72,12 @@ const fire = computed(() => d.value.营地?.篝火 ?? {});
 const water = computed(() => d.value.营地?.储水 ?? {});
 const food = computed(() => d.value.营地?.食物库存 ?? {});
 
-const isUnlocked = computed(() => shelter.value.类型 && shelter.value.类型 !== '无');
+// 解锁判断：庇护所类型非严格后，AI 可写任意非空描述（"天然岩壁凹陷"等）。
+// 只要类型存在、非空、非"无"即视为已搭建 → 解锁营地面板。
+const isUnlocked = computed(() => {
+  const t = shelter.value.类型;
+  return !!t && t !== '无' && String(t).trim() !== '';
+});
 
 const fireBadge = computed(() => {
   const s = fire.value.状态;

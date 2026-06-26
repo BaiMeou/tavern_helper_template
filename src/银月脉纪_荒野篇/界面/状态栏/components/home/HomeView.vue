@@ -10,8 +10,23 @@
         <span class="tag">14岁</span>
         <span class="tag">162cm</span>
         <span class="tag">🦊 {{ 九尾状态 }}</span>
-        <span class="tag">灵力{{ 灵力 }}</span>
         <span class="tag">执念·{{ 执念状态 }}</span>
+      </div>
+      <!-- 灵力核心条：纯数值、无上限、动态满格（满格=历史峰值，随新高自动涨） -->
+      <div class="lingli-bar" :class="`lingli-${灵力等级}`" :title="`灵力值 ${灵力值} · 峰值 ${灵力峰值} · 满格参考 ${灵力满格参考}`">
+        <div class="lingli-label">
+          <span class="ll-name">✨ 灵力</span>
+          <span class="ll-rank">{{ 灵力等级 }}</span>
+        </div>
+        <div class="lingli-track">
+          <div class="lingli-fill" :style="{ width: 灵力条占比 + '%' }"></div>
+          <div class="lingli-peak" v-if="灵力峰值 > 灵力满格参考 * 0 + 50 && 灵力峰值 > 灵力值" :style="{ left: 灵力峰值占比 + '%' }" :title="`历史峰值 ${灵力峰值}`"></div>
+        </div>
+        <div class="lingli-nums">
+          <span class="ll-val">{{ 灵力值 }}</span>
+          <span class="ll-max">/ {{ 灵力满格参考 }}</span>
+          <span class="ll-ratio">· 恢复×{{ 恢复倍率 }}</span>
+        </div>
       </div>
       <div v-if="alerts.length" class="alert-row">
         <div v-for="a in alerts" :key="a.text" class="alert" :class="a.kind">
@@ -114,7 +129,15 @@ const d = computed<any>(() => store.data);
 const 天数 = computed(() => d.value.世界?.时间?.天数 ?? 0);
 const 时段 = computed(() => d.value.世界?.时间?.时段 ?? '—');
 const 九尾状态 = computed(() => d.value.晓光?.狐类特性?.九尾状态 ?? '合并一尾');
-const 灵力 = computed(() => d.value.晓光?.狐类特性?.灵力环境 ?? '稀薄');
+// ── 灵力核心：纯数值 + 动态满格条 ──
+const 灵力值 = computed(() => d.value.晓光?.狐类特性?.灵力值 ?? 20);
+const 灵力峰值 = computed(() => d.value.晓光?.狐类特性?.灵力峰值 ?? 20);
+const 灵力满格参考 = computed(() => d.value.$灵力满格参考 ?? Math.max(灵力峰值.value, 灵力值.value, 50));
+const 灵力等级 = computed(() => d.value.$灵力等级 ?? '未知');
+const 恢复倍率 = computed(() => d.value.$恢复倍率 ?? 1);
+// 条占比：灵力值 / 满格参考（钳到 0-100%）；峰值标记位置同理
+const 灵力条占比 = computed(() => Math.max(0, Math.min(100, (灵力值.value / 灵力满格参考.value) * 100)));
+const 灵力峰值占比 = computed(() => Math.max(0, Math.min(100, (灵力峰值.value / 灵力满格参考.value) * 100)));
 const 执念状态 = computed(() => d.value.晓光?.执念?.状态 ?? '稳固');
 const 健康 = computed(() => d.value.晓光?.生存状态?.健康 ?? 0);
 const 饥饿 = computed(() => d.value.晓光?.生存状态?.饥饿 ?? 0);
@@ -226,6 +249,45 @@ function performReset() {
   background: var(--nav); color: var(--text-secondary);
   border: 1px solid rgba(140,126,108,.3);
 }
+
+/* ── 灵力核心条：醒目，区别于 0-100 体征 ── */
+.lingli-bar {
+  margin: 6px 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(52,138,167,.06), rgba(168,140,52,.06));
+  border: 1px solid rgba(52,138,167,.25);
+  position: relative;
+}
+.lingli-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.ll-name { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text); }
+.ll-rank {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  background: rgba(52,138,167,.15); color: var(--info, #348aa7);
+}
+.lingli-bar.lingli-枯竭 .ll-rank { background: rgba(224,73,60,.15); color: var(--danger, #b8403a); }
+.lingli-bar.lingli-稀薄 .ll-rank { background: rgba(226,143,27,.15); color: #b06f12; }
+.lingli-bar.lingli-全盛 .ll-rank, .lingli-bar.lingli-旺盛 .ll-rank { background: rgba(76,175,80,.15); color: var(--success, #4caf50); }
+.lingli-track {
+  position: relative; height: 10px; border-radius: 5px;
+  background: rgba(140,126,108,.15); overflow: visible;
+  border: 1px solid rgba(140,126,108,.2);
+}
+.lingli-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, #348aa7, #6bb6c9 50%, #c9a84c);
+  transition: width .4s cubic-bezier(.2,.8,.3,1);
+  box-shadow: 0 0 6px rgba(52,138,167,.3);
+}
+.lingli-peak {
+  position: absolute; top: -2px; width: 2px; height: 14px;
+  background: var(--accent, #a84434); border-radius: 1px;
+  box-shadow: 0 0 4px rgba(168,68,52,.5);
+}
+.lingli-nums { display: flex; align-items: baseline; gap: 5px; margin-top: 5px; }
+.ll-val { font-family: var(--font-data); font-size: 16px; font-weight: 700; color: var(--info, #348aa7); }
+.ll-max { font-size: 10px; color: var(--text-secondary); }
+.ll-ratio { font-size: 10px; color: var(--text-secondary); margin-left: auto; }
 
 .alert-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
 .alert {

@@ -214,6 +214,30 @@
       - 名称: ===系统开始===
         <<: *分隔符
 
+      - 名称: 灵力系统
+        启用: true
+        激活策略:
+          类型: 绿灯
+          关键字:
+            - 灵力
+            - 灵脉
+            - 施法
+            - 疗伤
+            - 扛重
+            - 九尾
+            - 狐尾
+            - 全盛
+            - 枯竭
+        插入位置:
+          类型: 指定深度
+          角色: 系统
+          深度: 0
+          顺序: 14720
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/系统/灵力系统
+
       - 名称: 微气候系统
         启用: true
         激活策略:
@@ -627,7 +651,7 @@
         ```
         <body>
         <script>
-        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@8df3f0f/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
+        $('body').load('https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@20b9083/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
         </script>
         </body>
         ```
@@ -652,18 +676,18 @@
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@8df3f0f/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/变量结构/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@20b9083/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/变量结构/index.js';
 
       - 名称: 系统辅助
         id: 3a91c882-e501-4d77-b123-8cd02f3456a7
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@8df3f0f/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/系统辅助/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@20b9083/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/系统辅助/index.js';
 
       - 名称: 立即事件
         id: 7b32d941-f612-5e88-c234-9de03f4568b8
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@8df3f0f/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/立即事件/index.js';
+          import 'https://cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@20b9083/dist/%E9%93%B6%E6%9C%88%E8%84%89%E7%BA%AA_%E8%8D%92%E9%87%8E%E7%AF%87/脚本/立即事件/index.js';
