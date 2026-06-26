@@ -11,7 +11,7 @@
           <span class="chip">九尾白狐娘</span><span class="chip">14岁</span>
           <span class="chip">162cm / 50kg</span><span class="chip">C罩杯</span>
         </div>
-        <div class="header-loc">📍 {{ t('当前位置', '—') }}</div>
+        <div class="header-loc">📍 {{ 当前位置 }}</div>
       </div>
     </div>
 
@@ -75,7 +75,19 @@
     <div class="sec-hdr">🦊 狐族特性</div>
     <div class="card" style="font-size:12px;line-height:1.8">
       狐尾湿度：<span class="badge" :class="湿度Badge">{{ 狐尾湿度 }}</span> &nbsp; 九尾状态：<span class="chip">{{ 九尾状态 }}</span><br>
-      灵力环境：<span class="badge" :class="灵力环境==='稀薄' ? 'badge-bad' : 灵力环境==='正常' ? 'badge-warn' : 'badge-good'">{{ 灵力环境 }}</span> &nbsp;<span style="font-size:11px;color:var(--text-secondary)">{{ 灵力环境==='稀薄' ? '恢复力降至接近人类' : 灵力环境==='正常' ? '灵力正常运转' : '灵力充沛，恢复力增强' }}</span><InfoI term="灵力环境" />
+      <!-- 灵力核心：纯数值 + 动态满格（详情） -->
+      <div class="lingli-detail">
+        <span class="badge" :class="灵力等级Badge">✨ 灵力·{{ 灵力等级 }}</span>
+        <span style="font-size:11px;color:var(--text-secondary)">
+          {{ 灵力值 }} / 满格 {{ 灵力满格参考 }}（峰值 {{ 灵力峰值 }}）· 恢复×{{ 恢复倍率 }}
+        </span>
+      </div>
+      <div class="lingli-detail-bar">
+        <div class="lingli-detail-fill" :style="{ width: 灵力条占比 + '%' }"></div>
+      </div>
+      <span style="font-size:11px;color:var(--text-secondary)">
+        灵力缓冲：负重惩罚 ×{{ 灵力缓冲系数 }}（灵力越高越能扛重）· 灵脉：{{ 灵脉强度 }}
+      </span><InfoI term="灵力" /><br>
       <span v-if="九尾裹身有效 !== undefined" :class="['badge', 九尾裹身有效 ? 'badge-good' : 'badge-warn']">{{ 九尾裹身有效 ? '九尾裹身有效' : '狐尾湿透·裹身失效' }}</span>
     </div>
   </div>
@@ -99,6 +111,8 @@ const d = computed<any>(() => store.data);
 const s = (path: string, fallback: number) => _.get(d.value, `晓光.生存状态.${path}`, fallback);
 const sp = (path: string, fallback: number) => _.get(d.value, `晓光.属性成长.${path}`, fallback);
 const t = (path: string, fallback: string) => _.get(d.value, `世界.时间.${path}`, fallback) || fallback;
+// 位置真路径在 地形.当前位置，不在 时间.当前位置 —— 旧版读错路径导致永远显示 "—"
+const 当前位置 = computed(() => _.get(d.value, '世界.地形.当前位置', '') || '—');
 const f = (path: string, fallback: any) => _.get(d.value, `晓光.疲劳.${path}`, fallback);
 const ob = (path: string, fallback: any) => _.get(d.value, `晓光.执念.${path}`, fallback);
 const a = (key: string, fallback: number) => _.get(d.value, `晓光.基础属性.${key}`, fallback);
@@ -158,6 +172,22 @@ const 睡眠债务 = computed(() => _.get(d.value, '晓光.睡眠.睡眠债务',
 const 狐尾湿度 = computed(() => _.get(d.value, '晓光.狐类特性.狐尾湿度', '干燥'));
 const 九尾状态 = computed(() => _.get(d.value, '晓光.狐类特性.九尾状态', '合并一尾'));
 const 灵力环境 = computed(() => _.get(d.value, '晓光.狐类特性.灵力环境', '稀薄'));
+// ── 灵力核心详情 ──
+const 灵力值 = computed(() => _.get(d.value, '晓光.狐类特性.灵力值', 20));
+const 灵力峰值 = computed(() => _.get(d.value, '晓光.狐类特性.灵力峰值', 20));
+const 灵力满格参考 = computed(() => d.value.$灵力满格参考 ?? Math.max(灵力峰值.value, 灵力值.value, 50));
+const 灵力等级 = computed(() => d.value.$灵力等级 ?? '未知');
+const 恢复倍率 = computed(() => d.value.$恢复倍率 ?? 1);
+const 灵力缓冲系数 = computed(() => d.value.$灵力缓冲系数 ?? 1);
+const 灵脉强度 = computed(() => _.get(d.value, '世界.地形.灵脉强度', '正常'));
+const 灵力条占比 = computed(() => Math.max(0, Math.min(100, (灵力值.value / 灵力满格参考.value) * 100)));
+const 灵力等级Badge = computed(() => {
+  const lv = 灵力等级.value;
+  if (lv === '枯竭') return 'badge-bad';
+  if (lv === '稀薄') return 'badge-warn';
+  if (lv === '全盛' || lv === '旺盛') return 'badge-good';
+  return 'badge-warn';
+});
 const 九尾裹身有效 = computed(() => d.value.$九尾裹身有效);
 
 const 湿度Badge = computed(() => 狐尾湿度.value === '湿透' ? 'badge-bad' : 狐尾湿度.value === '微湿' ? 'badge-warn' : 'badge-good');
@@ -205,4 +235,15 @@ const attributes = computed(() => [
 @media (max-width: 360px) { .attr-grid { grid-template-columns: 1fr; } }
 .fatigue-line { display: flex; justify-content: space-between; font-size: 12px; align-items: center; gap: 4px; }
 .spirit-quote { font-size: 12px; font-style: italic; margin-top: 6px; }
+/* 灵力详情条 */
+.lingli-detail { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.lingli-detail-bar {
+  height: 7px; border-radius: 4px; background: rgba(140,126,108,.15);
+  margin: 5px 0 4px; overflow: hidden; border: 1px solid rgba(140,126,108,.2);
+}
+.lingli-detail-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, #348aa7, #6bb6c9 50%, #c9a84c);
+  transition: width .4s cubic-bezier(.2,.8,.3,1);
+}
 </style>

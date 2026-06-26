@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useDataStore } from '../../store';
+import { POS_CAPS, POS_ICONS } from '../../../../schema';
 import ItemCard from './ItemCard.vue';
 import DetailFold from '../shared/DetailFold.vue';
 import DataRow from '../shared/DataRow.vue';
@@ -84,19 +85,17 @@ const 货舱重 = computed(() => {
   return (Array.isArray(待) ? 待 : []).reduce((s: number, x: any) => s + (x.重量 || 0), 0);
 });
 
-// 各位置负载分布
-const POS_CAPS: Record<string, { comfort: number; cap: number; icon: string }> = {
-  '手持': { comfort: 1, cap: 3, icon: '✋' }, '背包': { comfort: 6, cap: 12, icon: '🎒' },
-  '腰挂': { comfort: 1.5, cap: 3, icon: '🔗' }, '尾藏': { comfort: 0.3, cap: 1, icon: '🦊' },
-  '颈间': { comfort: 0.1, cap: 0.3, icon: '💎' }, '穿着': { comfort: 2, cap: 5, icon: '👘' },
-};
+// 各位置负载分布（POS_CAPS/POS_ICONS 单一数据源来自 schema.ts，不再本地重复定义）
+const POS_CAPS_LOCAL = Object.fromEntries(
+  Object.entries(POS_CAPS).map(([k, v]) => [k, { comfort: v.舒适, cap: v.绝对, icon: POS_ICONS[k] ?? '📦' }])
+);
 const loadPositions = computed(() => {
   const pos重: Record<string, number> = {};
   for (const item of Object.values(items.value) as any[]) {
-    const p = item.位置; if (!POS_CAPS[p]) continue;
+    const p = item.位置; if (!POS_CAPS_LOCAL[p]) continue;
     pos重[p] = (pos重[p] || 0) + (item.重量 || 0) * (item.数量 || 1);
   }
-  return Object.entries(POS_CAPS).map(([k, v]) => {
+  return Object.entries(POS_CAPS_LOCAL).map(([k, v]) => {
     const w = pos重[k] || 0;
     return { key: k, label: k, icon: v.icon, weight: w, cap: v.cap, over: w > v.cap, overComfort: w > v.comfort && w <= v.cap };
   });

@@ -100,13 +100,11 @@ async function init() {
       case '搜刮': {
         const 感知 = 基础属性.感知 ?? 4;
         const bonus = (感知 - 1) * 3;
-        // 候选物品来源：req.物品（AI/前端显式提供） 或 stat_data.$待搜刮货舱（向导阶段记录的行李舱物品）
-        let 候选 = Array.isArray(req.物品) ? req.物品 : [];
-        const usingPending = 候选.length === 0;
-        if (usingPending) {
-          const pending = _.get(variables, 'stat_data.$待搜刮货舱', []);
-          候选 = Array.isArray(pending) ? pending : [];
-        }
+        // 候选物品来源：req.物品（AI/前端显式提供）。
+        // 旧版会自动把存活物品塞进物品栏 + 清空 $待搜刮货舱——已移除：
+        // 搜刮改为 AI 驱动的地点探索，掷骰只产出"每件物品的完好度判定"供 AI 叙事，
+        // 真正的拾取由 AI 用 $前端选择 弹窗让玩家挑捡（见《前端交互系统》）。
+        const 候选 = Array.isArray(req.物品) ? req.物品 : [];
         const 拾取 = 候选.map((it: any) => {
           const r = roll();
           const adj = r + bonus - (it.易损度 || 0);
@@ -116,26 +114,8 @@ async function init() {
             : { 标签: '损坏', 耐久: 0, 可修: false, 可拆: true };
           return { id: it.id, 名称: it.名称, 重量: it.重量, 描述: it.描述, 分类: it.分类, r, adj, ...cond };
         });
-        // 行李舱搜刮：把存活的物品自动入物品栏，并清空 $待搜刮货舱
-        if (usingPending && 拾取.length > 0) {
-          for (const item of 拾取) {
-            if (item.标签 === '损坏') continue;
-            const entry: any = {
-              名称: item.名称,
-              分类: item.分类 || '特殊',
-              重量: item.重量,
-              位置: '背包',
-              描述: item.描述 || '',
-              耐久度: item.耐久,
-            };
-            if (item.可修) entry.描述 = (entry.描述 || '') + ' [部分损坏·可修理]';
-            if (item.可拆 && !item.可修) entry.描述 = (entry.描述 || '') + ' [严重损坏·可拆解]';
-            _.set(variables, `stat_data.装备.物品栏.cargo_${item.id}`, entry);
-          }
-          _.set(variables, 'stat_data.$待搜刮货舱', []);
-        }
-        结果 = { 拾取, 来源: usingPending ? '行李舱搜刮' : 'AI候选' };
-        同步给AI = `搜刮掷骰完成：感知加成+${bonus}，共${拾取.length}件候选，存活${拾取.filter((x: any) => x.标签 !== '损坏').length}件（${拾取.map((x: any) => `${x.名称}(${x.标签}·${x.耐久}%)`).join('、')}）${usingPending ? '——已将存活物品自动收入物品栏' : ''}`;
+        结果 = { 拾取, 来源: 'AI候选' };
+        同步给AI = `搜刮掷骰完成：感知加成+${bonus}，共${拾取.length}件候选——${拾取.map((x: any) => `${x.名称}(${x.标签}·${x.耐久}%)`).join('、')}。AI 据此叙事，并用 $前端选择 让玩家挑捡（拾取型）`;
         break;
       }
       case '狩猎': {
@@ -224,89 +204,8 @@ async function init() {
     _.set(variables, 'stat_data.$掷骰请求', null);
   });
 
-  // ─── 合成引擎：AI/前端写 $合成请求 = { 配方名 } → 脚本校验材料+智力+工具 → 扣减+产出 ───
-  eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
-    const req = variables?.stat_data?.$合成请求;
-    if (!req || typeof req !== 'object') return;
-    const 配方名 = req.配方名;
-    const 配方 = _.get(variables, `stat_data.工坊.配方.${配方名}`);
-    const 物品栏 = _.get(variables, 'stat_data.装备.物品栏', {}) as Record<string, any>;
-    let 同步给AI = '';
-    let 成功 = false;
-    if (!配方) {
-      同步给AI = `合成失败：配方「${配方名}」不存在或未解锁`;
-    } else if (!配方.已解锁) {
-      同步给AI = `合成失败：配方「${配方名}」尚未解锁`;
-    } else {
-      const 智力 = _.get(variables, 'stat_data.晓光.基础属性.智力', 8);
-      if (配方.所需智力 && 智力 < 配方.所需智力) {
-        同步给AI = `合成失败：智力不足（需${配方.所需智力}，当前${智力}）`;
-      } else {
-        // 校验材料：所需材料是 {材料名: 数量}，材料名可能对应物品栏的某个 item key 或 item.名称
-        const 缺口: string[] = [];
-        for (const [mat, need] of Object.entries(配方.所需材料 || {})) {
-          const needN = Number(need) || 0;
-          // 先按 key 精确匹配，再按 名称 模糊匹配
-          let have = 0;
-          if (物品栏[mat]) have = (物品栏[mat].数量 ?? 1);
-          if (have < needN) {
-            // 按 名称 找
-            for (const [k, it] of Object.entries(物品栏) as [string, any][]) {
-              if (it.名称 === mat) { have = (it.数量 ?? 1); break; }
-            }
-          }
-          if (have < needN) 缺口.push(`${mat}(${needN}/${have})`);
-        }
-        if (缺口.length) {
-          同步给AI = `合成失败：材料不足——${缺口.join('、')}`;
-        } else {
-          // 扣减材料
-          for (const [mat, need] of Object.entries(配方.所需材料 || {})) {
-            const needN = Number(need) || 0;
-            let key = mat;
-            if (!物品栏[key]) {
-              for (const [k, it] of Object.entries(物品栏) as [string, any][]) {
-                if (it.名称 === mat) { key = k; break; }
-              }
-            }
-            const it = 物品栏[key];
-            if (!it) continue;
-            const cur = it.数量 ?? 1;
-            if (cur > needN) {
-              it.数量 = cur - needN;
-            } else {
-              delete 物品栏[key];
-            }
-          }
-          // 产出新物品
-          const 产出 = 配方.产出物 || 配方名;
-          const 产key = 产出;
-          if (物品栏[产key]) {
-            物品栏[产key].数量 = (物品栏[产key].数量 ?? 1) + (配方.产出数量 ?? 1);
-          } else {
-            物品栏[产key] = {
-              名称: 产出,
-              分类: 配方.产出分类 || '自制',
-              重量: 配方.产出重量 ?? 0,
-              位置: '背包',
-              描述: 配方.效果描述 || `由${配方名}合成`,
-              ...(配方.产出数量 ? { 数量: 配方.产出数量 } : {}),
-            };
-          }
-          成功 = true;
-          同步给AI = `合成成功：${配方名} → 产出「${产出}」×${配方.产出数量 ?? 1}，材料已扣减`;
-        }
-      }
-    }
-    _.set(variables, 'stat_data.装备.物品栏', 物品栏);
-    _.set(variables, 'stat_data.$上次合成', { 配方名, 成功, 时间: req.时间 });
-    const 操作记忆 = _.get(variables, 'stat_data.$近期操作', []) as any[];
-    操作记忆.push({ t: req.时间 || '现在', text: 同步给AI });
-    while (操作记忆.length > 5) 操作记忆.shift();
-    _.set(variables, 'stat_data.$近期操作', 操作记忆);
-    _.set(variables, 'stat_data.$前端操作', `[引擎合成] ${同步给AI}`);
-    _.set(variables, 'stat_data.$合成请求', null);
-  });
+  // 合成引擎已移除——配方并入图鉴作纯知识展示，物品消耗/产出改由 AI 在叙事里自然写。
+  // 详见《制作系统》世界书：AI 让晓光制作已解锁配方时，直接在 <UpdateVariable> 里扣材料、加产物。
 
   // ─── 时间与代谢推进：AI 写 $推进时段 时按规则结算 ───
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
@@ -322,6 +221,28 @@ async function init() {
     const 火状态 = variables.stat_data.营地?.篝火?.状态;
     const 有火 = ['点燃', '旺盛'].includes(火状态);
     const 床铺 = 晓光.睡眠?.床铺类型 ?? '无';
+
+    // ── 灵力环境衰减/恢复（脚本算环境项；主动消耗由 AI 在叙事里写，脚本不碰）──
+    // 按当前位置灵脉强度给 灵力值 自然增减。过夜额外受庇护所/床铺调制（休息回灵）。
+    // 主动消耗（施法/疗伤/扛重）完全由 AI 写，脚本不插手。
+    const 灵脉强度 = _.get(variables, 'stat_data.世界.地形.灵脉强度', '正常');
+    const 灵脉档: Record<string, number> = { '枯竭': -8, '稀薄': -3, '正常': 0, '丰沛': 6, '灵脉交汇': 12 };
+    // 灵脉强度是自由 string：命中档位取对应值，未命中按"正常"处理（不惩罚 AI 的自由描述）
+    const 灵脉每时段 = 灵脉档[灵脉强度] ?? 0;
+    const 灵力值_旧 = typeof 晓光.狐类特性?.灵力值 === 'number' ? 晓光.狐类特性.灵力值 : null;
+    if (灵力值_旧 != null) {
+      let 灵力增量 = 灵脉每时段;
+      if (推进 === '次日') {
+        // 过夜休息回灵：受庇护所/床铺/火调制（休息质量越高回灵越多）
+        const 休息回灵 = (有庇护所 ? 10 : 2) * (床铺 === '无' ? 0.5 : 1) * (有火 ? 1.2 : 1);
+        灵力增量 += 休息回灵;
+      }
+      const 灵力值_新 = Math.max(0, Math.round((灵力值_旧 + 灵力增量) * 10) / 10);
+      _.set(variables, 'stat_data.晓光.狐类特性.灵力值', 灵力值_新);
+      // 峰值由 schema transform 自动同步新高，这里不手动写峰值（避免回降）
+      // 灵力环境枚举：按新灵力值回填一档，保持旧消费者兼容（<10稀薄, <50正常, 否则充沛）
+      _.set(variables, 'stat_data.晓光.狐类特性.灵力环境', 灵力值_新 < 10 ? '稀薄' : 灵力值_新 < 50 ? '正常' : '充沛');
+    }
 
     // 电子设备待机自然耗电：手机/头灯等放着也会缓慢掉电（屏幕检查、待机损耗）。
     // 主动使用（提问3%、手电1%/min）的额外消耗仍由 AI 叙事时另写——这里只补"时间流逝→自然掉电"。

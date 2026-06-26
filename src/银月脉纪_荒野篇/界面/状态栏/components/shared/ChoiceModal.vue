@@ -2,9 +2,12 @@
   <Teleport to="body">
     <div v-if="visible" class="modal-overlay" @click.self="close">
       <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="choice-modal-title">
-        <div id="choice-modal-title" class="modal-title">{{ choiceData.标题 || '发现物品' }}</div>
+        <div id="choice-modal-title" class="modal-title">{{ choiceData.标题 || (isActionMode ? '请选择' : '发现物品') }}</div>
         <div v-if="choiceData.多选" class="modal-subtle">
           可多选 · 最多{{ choiceData.最大数量 || 5 }}件 · 当前 {{ totalPickWeight.toFixed(1) }}kg
+        </div>
+        <div v-else-if="isActionMode" class="modal-subtle">
+          单选 · 选定一项后确认
         </div>
 
         <div class="choice-grid">
@@ -17,7 +20,7 @@
             @click="toggleOpt(opt)"
             @keydown.enter.prevent="toggleOpt(opt)"
             @keydown.space.prevent="toggleOpt(opt)">
-            <span class="choice-icon">{{ opt.icon || '📦' }}</span>
+            <span class="choice-icon">{{ opt.icon || (isActionMode ? '👉' : '📦') }}</span>
             <div class="choice-body">
               <div class="choice-name">
                 {{ opt.名称 }}
@@ -39,8 +42,11 @@
         </div>
 
         <div class="modal-actions">
-          <button class="modal-btn cancel" @click="close">取消（什么都不捡）</button>
-          <button class="modal-btn confirm" :disabled="selected.size === 0" @click="confirm">
+          <button class="modal-btn cancel" @click="close">{{ isActionMode ? '取消（不选）' : '取消（什么都不捡）' }}</button>
+          <button v-if="isActionMode" class="modal-btn confirm" :disabled="selected.size === 0" @click="confirm">
+            确认选择 ({{ selected.size }})
+          </button>
+          <button v-else class="modal-btn confirm" :disabled="selected.size === 0" @click="confirm">
             确认 ({{ selected.size }}件 · {{ totalPickWeight.toFixed(2) }}kg)
           </button>
         </div>
@@ -55,11 +61,13 @@ import { useDataStore } from '../../store';
 
 const store = useDataStore();
 const visible = ref(false);
-const choiceData = ref<any>({ 标题: '', 选项: [], 多选: false, 最大数量: 5 });
+const choiceData = ref<any>({ 标题: '', 选项: [], 多选: false, 最大数量: 5, 类型: '拾取' });
 const selected = ref(new Set<string>());
 
 const maxPick = computed(() => choiceData.value.最大数量 || 5);
-const atLimit = computed(() => selected.value.size >= maxPick.value);
+const atLimit = computed(() => choiceData.value.多选 === true && selected.value.size >= maxPick.value);
+// 行动选择模式：不写物品栏，只把玩家选择回传给 AI
+const isActionMode = computed(() => choiceData.value.类型 === '行动');
 
 const totalPickWeight = computed(() => {
   let w = 0;
@@ -69,14 +77,44 @@ const totalPickWeight = computed(() => {
   return w;
 });
 
-// AI 触发：watch $前端选择
-watch(() => _.get(store.data, '$前端选择'), (newVal: any) => {
-  if (newVal && Array.isArray(newVal.选项) && newVal.选项.length > 0) {
-    choiceData.value = { 最大数量: 5, 多选: true, ...newVal };
-    selected.value = new Set();
-    visible.value = true;
-  }
-}, { deep: true });
+// ── 触发弹窗的健壮机制 ──
+// 旧版只靠 watch(store.data, '$前端选择') —— 但 util/mvu.ts 的 2s 轮询里有 _.isEqual 短路：
+// 若 $前端选择 已经存在于 data.value（上一轮没弹起来/没清掉），AI 再写同值时 result.data 与 data.value 相等，
+// 轮询跳过 data.value 重新赋值 → Vue deep watch 不触发 → 弹窗永远不弹（玩家反馈"完全没弹窗"的根因）。
+// 修复：①挂载时若已存在未确认的 $前端选择，立即弹；②监听其 JSON 序列化值变化（绕开对象引用相等）；③一轮主动轮询兜底。
+function snapshotChoice(): any | null {
+  const c = _.get(store.data, '$前端选择');
+  if (c && Array.isArray(c.选项) && c.选项.length > 0) return { 最大数量: 5, 多选: false, 类型: '拾取', ...c };
+  return null;
+}
+function openIfPending() {
+  if (visible.value) return; // 一次只弹一个
+  const c = snapshotChoice();
+  if (!c) return;
+  choiceData.value = c;
+  selected.value = new Set();
+  visible.value = true;
+}
+
+// ① 挂载即查：覆盖"AI 已写但前端此前未弹起"的滞留情况
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown);
+  openIfPending();
+});
+
+// ② 监听序列化值：对象引用被 isEqual 吞掉时，字符串值仍会变 → 必触发
+watch(
+  () => {
+    const c = _.get(store.data, '$前端选择');
+    try { return c ? JSON.stringify(c) : ''; } catch { return ''; }
+  },
+  (nv, ov) => { if (nv && nv !== ov) openIfPending(); },
+);
+
+// ③ 主动轮询兜底：每 800ms 自查一次，防止极端情况下 watch 漏触发（成本极低）
+let pollTimer: any = null;
+onMounted(() => { pollTimer = setInterval(openIfPending, 800); });
+onUnmounted(() => { if (pollTimer) clearInterval(pollTimer); });
 
 // 键盘无障碍：弹窗可见时按 ESC 关闭（等价于「什么都不捡」）
 function onKeydown(e: KeyboardEvent) {
@@ -85,7 +123,6 @@ function onKeydown(e: KeyboardEvent) {
     close();
   }
 }
-onMounted(() => window.addEventListener('keydown', onKeydown));
 onUnmounted(() => window.removeEventListener('keydown', onKeydown));
 
 function toggleOpt(opt: any) {
@@ -117,33 +154,48 @@ const DAMAGED_RULES: Record<string, any> = { 耐久度: 0, 可拆解: true };
 
 function confirm() {
   const picked = (choiceData.value.选项 || []).filter((o: any) => selected.value.has(o.id));
-  for (const opt of picked) {
-    const entry: any = { 位置: opt.位置 || '背包' };
-    for (const k of FIELD_WHITELIST) {
-      if (opt[k] !== undefined && opt[k] !== null) entry[k] = opt[k];
-    }
-    if (!entry.分类) entry.分类 = '特殊';
-    if (entry.损坏标签 === '损坏') {
-      // 损坏物品按统一规则处理（耐久归零、标记可拆解）
-      Object.assign(entry, DAMAGED_RULES);
-    }
-    _.set(store.data, `装备.物品栏.${opt.id}`, entry);
-  }
   const 摘要 = picked.map((o: any) => {
     let s = o.名称;
     if (o.损坏标签 && o.损坏标签 !== '完好') s += `(${o.损坏标签})`;
     return s;
   }).join('、');
-  _.set(store.data, '$玩家选择', {
-    已选: picked.map((o: any) => ({ id: o.id, 名称: o.名称, 损坏标签: o.损坏标签 || '完好' })),
-    时间: nowLabel(),
-  });
-  // 追加到 AI 操作记忆（环形5条）
-  const ops = _.get(store.data, '$近期操作', []) as any[];
-  ops.push({ t: nowLabel(), text: `从「${choiceData.value.标题}」中拾取：${摘要}（+${totalPickWeight.value.toFixed(1)}kg）` });
-  while (ops.length > 5) ops.shift();
-  _.set(store.data, '$近期操作', ops);
-  _.set(store.data, '$前端操作', `玩家从「${choiceData.value.标题}」中拾取了：${摘要}（${picked.length}件·${totalPickWeight.value.toFixed(1)}kg）`);
+
+  if (isActionMode.value) {
+    // 行动选择：只回传玩家意图，不写物品栏
+    _.set(store.data, '$玩家选择', {
+      类型: '行动',
+      已选: picked.map((o: any) => ({ id: o.id, 名称: o.名称 })),
+      时间: nowLabel(),
+    });
+    const ops = _.get(store.data, '$近期操作', []) as any[];
+    ops.push({ t: nowLabel(), text: `在「${choiceData.value.标题}」中选择：${摘要 || '（未选）'}` });
+    while (ops.length > 5) ops.shift();
+    _.set(store.data, '$近期操作', ops);
+    _.set(store.data, '$前端操作', `玩家在「${choiceData.value.标题}」中选择了：${摘要 || '什么都不做'}`);
+  } else {
+    // 物品拾取：选中项落物品栏
+    for (const opt of picked) {
+      const entry: any = { 位置: opt.位置 || '背包' };
+      for (const k of FIELD_WHITELIST) {
+        if (opt[k] !== undefined && opt[k] !== null) entry[k] = opt[k];
+      }
+      if (!entry.分类) entry.分类 = '特殊';
+      if (entry.损坏标签 === '损坏') {
+        Object.assign(entry, DAMAGED_RULES);
+      }
+      _.set(store.data, `装备.物品栏.${opt.id}`, entry);
+    }
+    _.set(store.data, '$玩家选择', {
+      类型: '拾取',
+      已选: picked.map((o: any) => ({ id: o.id, 名称: o.名称, 损坏标签: o.损坏标签 || '完好' })),
+      时间: nowLabel(),
+    });
+    const ops = _.get(store.data, '$近期操作', []) as any[];
+    ops.push({ t: nowLabel(), text: `从「${choiceData.value.标题}」中拾取：${摘要}（+${totalPickWeight.value.toFixed(1)}kg）` });
+    while (ops.length > 5) ops.shift();
+    _.set(store.data, '$近期操作', ops);
+    _.set(store.data, '$前端操作', `玩家从「${choiceData.value.标题}」中拾取了：${摘要}（${picked.length}件·${totalPickWeight.value.toFixed(1)}kg）`);
+  }
   _.set(store.data, '$前端选择', null);
   visible.value = false;
 }
@@ -156,12 +208,12 @@ function nowLabel(): string {
 
 function close() {
   visible.value = false;
-  // 取消=什么都不捡，也要告知 AI
+  // 取消=什么都不选，也要告知 AI
   const ops = _.get(store.data, '$近期操作', []) as any[];
-  ops.push({ t: nowLabel(), text: `放弃了「${choiceData.value.标题}」的拾取机会` });
+  ops.push({ t: nowLabel(), text: `放弃了「${choiceData.value.标题}」的${isActionMode.value ? '选择' : '拾取'}机会` });
   while (ops.length > 5) ops.shift();
   _.set(store.data, '$近期操作', ops);
-  _.set(store.data, '$前端操作', `玩家放弃了「${choiceData.value.标题}」中的所有物品（什么都没捡）`);
+  _.set(store.data, '$前端操作', `玩家放弃了「${choiceData.value.标题}」${isActionMode.value ? '中的选项' : '中的所有物品'}（什么都没选）`);
   _.set(store.data, '$前端选择', null);
 }
 </script>
