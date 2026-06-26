@@ -268,14 +268,7 @@
             },
             "累积负荷": {
               "default": "疲惫",
-              "type": "string",
-              "enum": [
-                "轻松",
-                "正常",
-                "疲惫",
-                "透支",
-                "极限"
-              ]
+              "type": "string"
             }
           }
         },
@@ -291,6 +284,14 @@
                 "正常",
                 "充沛"
               ]
+            },
+            "灵力值": {
+              "default": 20,
+              "type": "number"
+            },
+            "灵力峰值": {
+              "default": 20,
+              "type": "number"
             },
             "狐尾湿度": {
               "default": "干燥",
@@ -310,7 +311,8 @@
                 "完全展开"
               ]
             }
-          }
+          },
+          "additionalProperties": {}
         },
         "生理状态": {
           "default": {},
@@ -385,15 +387,7 @@
             },
             "床铺类型": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "裸地",
-                "草垫",
-                "保温毯",
-                "帐篷",
-                "庇护所床铺"
-              ]
+              "type": "string"
             }
           }
         },
@@ -418,13 +412,7 @@
                     "type": "string"
                   },
                   "威胁评估": {
-                    "type": "string",
-                    "enum": [
-                      "无害",
-                      "注意",
-                      "警惕",
-                      "危险"
-                    ]
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -448,12 +436,7 @@
                     "type": "string"
                   },
                   "强度": {
-                    "type": "string",
-                    "enum": [
-                      "微弱",
-                      "明显",
-                      "浓烈"
-                    ]
+                    "type": "string"
                   },
                   "方向": {
                     "type": "string"
@@ -572,6 +555,10 @@
             "西方": {
               "default": "",
               "type": "string"
+            },
+            "灵脉强度": {
+              "default": "正常",
+              "type": "string"
             }
           }
         },
@@ -581,38 +568,15 @@
           "properties": {
             "坡度": {
               "default": "缓坡",
-              "type": "string",
-              "enum": [
-                "平坦",
-                "缓坡",
-                "中坡",
-                "陡坡",
-                "悬崖"
-              ]
+              "type": "string"
             },
             "地表类型": {
               "default": "针叶铺地",
-              "type": "string",
-              "enum": [
-                "碎石",
-                "泥地",
-                "草地",
-                "针叶铺地",
-                "雪地",
-                "岩石",
-                "沙地"
-              ]
+              "type": "string"
             },
             "路径质量": {
               "default": "开阔",
-              "type": "string",
-              "enum": [
-                "无路",
-                "兽径",
-                "小路",
-                "清晰路径",
-                "开阔"
-              ]
+              "type": "string"
             },
             "迷路风险": {
               "default": "低",
@@ -723,15 +687,7 @@
             },
             "地表状况": {
               "default": "微湿",
-              "type": "string",
-              "enum": [
-                "干燥",
-                "微湿",
-                "泥泞",
-                "冻结",
-                "积雪",
-                "冰面"
-              ]
+              "type": "string"
             },
             "树冠覆盖率": {
               "default": 65,
@@ -739,23 +695,11 @@
             },
             "气压趋势": {
               "default": "稳定",
-              "type": "string",
-              "enum": [
-                "上升",
-                "稳定",
-                "下降"
-              ]
+              "type": "string"
             },
             "光照明度": {
               "default": "阴翳",
-              "type": "string",
-              "enum": [
-                "全暗",
-                "微光",
-                "阴翳",
-                "明亮",
-                "直射"
-              ]
+              "type": "string"
             }
           }
         },
@@ -765,35 +709,15 @@
           "properties": {
             "溪流水位": {
               "default": "低位",
-              "type": "string",
-              "enum": [
-                "干涸",
-                "枯水",
-                "低位",
-                "正常",
-                "高位",
-                "泛滥"
-              ]
+              "type": "string"
             },
             "流速": {
               "default": "缓慢",
-              "type": "string",
-              "enum": [
-                "静止",
-                "缓慢",
-                "中等",
-                "湍急"
-              ]
+              "type": "string"
             },
             "浑浊度": {
               "default": "微浊",
-              "type": "string",
-              "enum": [
-                "清澈",
-                "微浊",
-                "浑浊",
-                "泥浆"
-              ]
+              "type": "string"
             },
             "水生生物": {
               "default": "",
@@ -801,13 +725,7 @@
             },
             "地下水可获取性": {
               "default": "需深挖",
-              "type": "string",
-              "enum": [
-                "不可及",
-                "需深挖",
-                "浅挖可得",
-                "地表渗出"
-              ]
+              "type": "string"
             },
             "雨水收集效率": {
               "default": 0,
@@ -1519,16 +1437,7 @@
           "properties": {
             "类型": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "临时草铺",
-                "狐尾裹身",
-                "保温毯帐篷",
-                "天然岩洞",
-                "木架帐篷",
-                "加固庇护所"
-              ]
+              "type": "string"
             },
             "完整度": {
               "default": 0,
@@ -1540,25 +1449,11 @@
             },
             "防水性": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "差",
-                "一般",
-                "好",
-                "极好"
-              ]
+              "type": "string"
             },
             "防风性": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "差",
-                "一般",
-                "好",
-                "极好"
-              ]
+              "type": "string"
             },
             "内部温差": {
               "default": 0,
@@ -1713,25 +1608,11 @@
           "properties": {
             "环境噪声音量": {
               "default": "安静",
-              "type": "string",
-              "enum": [
-                "死寂",
-                "安静",
-                "轻微",
-                "正常",
-                "嘈杂"
-              ]
+              "type": "string"
             },
             "晓光自身噪音": {
               "default": "轻微",
-              "type": "string",
-              "enum": [
-                "无声",
-                "极低",
-                "轻微",
-                "明显",
-                "嘈杂"
-              ]
+              "type": "string"
             },
             "可闻距离": {
               "default": 150,
@@ -1749,14 +1630,7 @@
             },
             "晓光自身气味强度": {
               "default": "轻微",
-              "type": "string",
-              "enum": [
-                "无",
-                "微弱",
-                "轻微",
-                "明显",
-                "浓烈"
-              ]
+              "type": "string"
             },
             "嗅觉可追踪距离": {
               "default": 80,
