@@ -21,6 +21,26 @@ const xpRecentGain: Record<string, number> = {};
 async function init() {
   await waitGlobalInitialized('Mvu');
 
+  // ─── $玩家选择 自动清理：AI 读取后自动清空，防止残留 ───
+  // 设计：前端 confirm() 写入 $玩家选择，AI 下一轮读取后应清理。
+  // 若 AI 忘记清理，此处在新一轮变量更新开始时自动清空（保留一轮供 AI 读取）。
+  eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
+    if (!variables?.stat_data) return;
+    // $玩家选择 存在且本轮 AI 已做过其他更新（$前端操作 被写过或掷骰/推进已处理）→ 清空
+    const 玩家选择 = variables.stat_data.$玩家选择;
+    const 前端操作 = variables.stat_data.$前端操作;
+    if (
+      玩家选择 &&
+      前端操作 &&
+      !String(前端操作).includes('玩家在') &&
+      !String(前端操作).includes('玩家从') &&
+      !String(前端操作).includes('玩家放弃')
+    ) {
+      // $前端操作 已被 AI 改写（不再是前端原始操作），说明 AI 已处理 → 清空 $玩家选择
+      _.set(variables, 'stat_data.$玩家选择', null);
+    }
+  });
+
   // ─── XP 限流 + 自动升级（单监听器，先限流后升级，顺序确定无竞态） ───
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     if (!variables?.stat_data?.晓光) return;
@@ -37,7 +57,7 @@ async function init() {
         delta = XP_PER_ROUND_CAP;
       }
       // 连续追加衰减：连续≥3轮加同一项，后续减半
-      xpRecentGain[xpKey + ':streak'] = (delta > 0 ? (xpRecentGain[xpKey + ':streak'] ?? 0) + 1 : 0);
+      xpRecentGain[xpKey + ':streak'] = delta > 0 ? (xpRecentGain[xpKey + ':streak'] ?? 0) + 1 : 0;
       if ((xpRecentGain[xpKey + ':streak'] ?? 0) >= 3 && delta > 0) {
         _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, prev + Math.floor(delta / 2));
       }
@@ -108,10 +128,14 @@ async function init() {
         const 拾取 = 候选.map((it: any) => {
           const r = roll();
           const adj = r + bonus - (it.易损度 || 0);
-          const cond = adj >= 80 ? { 标签: '完好', 耐久: 100, 可修: false, 可拆: false }
-            : adj >= 55 ? { 标签: '少耐久', 耐久: 40 + Math.floor(Math.random() * 30), 可修: false, 可拆: false }
-            : adj >= 30 ? { 标签: '部分损坏', 耐久: 10 + Math.floor(Math.random() * 20), 可修: true, 可拆: true }
-            : { 标签: '损坏', 耐久: 0, 可修: false, 可拆: true };
+          const cond =
+            adj >= 80
+              ? { 标签: '完好', 耐久: 100, 可修: false, 可拆: false }
+              : adj >= 55
+                ? { 标签: '少耐久', 耐久: 40 + Math.floor(Math.random() * 30), 可修: false, 可拆: false }
+                : adj >= 30
+                  ? { 标签: '部分损坏', 耐久: 10 + Math.floor(Math.random() * 20), 可修: true, 可拆: true }
+                  : { 标签: '损坏', 耐久: 0, 可修: false, 可拆: true };
           return { id: it.id, 名称: it.名称, 重量: it.重量, 描述: it.描述, 分类: it.分类, r, adj, ...cond };
         });
         结果 = { 拾取, 来源: 'AI候选' };
@@ -214,8 +238,6 @@ async function init() {
     const 晓光 = variables.stat_data.晓光 || {};
     const 生存 = 晓光.生存状态 || {};
     const 营养 = 晓光.营养代谢 || {};
-    const 基础属性 = 晓光.基础属性 || {};
-    const 灵力 = 晓光.狐类特性?.灵力环境 ?? '稀薄';
     const 恢复倍率 = _.get(variables, 'stat_data.$恢复倍率', 0.7);
     const 有庇护所 = variables.stat_data.营地?.庇护所?.类型 && variables.stat_data.营地?.庇护所?.类型 !== '无';
     const 火状态 = variables.stat_data.营地?.篝火?.状态;
@@ -225,8 +247,9 @@ async function init() {
     // ── 灵力环境衰减/恢复（脚本算环境项；主动消耗由 AI 在叙事里写，脚本不碰）──
     // 按当前位置灵脉强度给 灵力值 自然增减。过夜额外受庇护所/床铺调制（休息回灵）。
     // 主动消耗（施法/疗伤/扛重）完全由 AI 写，脚本不插手。
+    // 平衡：增长速度放缓，防止短期暴涨。丰沛区每时段+4（原+6），过夜休息回灵+6（原+10）。
     const 灵脉强度 = _.get(variables, 'stat_data.世界.地形.灵脉强度', '正常');
-    const 灵脉档: Record<string, number> = { '枯竭': -8, '稀薄': -3, '正常': 0, '丰沛': 6, '灵脉交汇': 12 };
+    const 灵脉档: Record<string, number> = { 枯竭: -6, 稀薄: -2, 正常: 0, 丰沛: 4, 灵脉交汇: 8 };
     // 灵脉强度是自由 string：命中档位取对应值，未命中按"正常"处理（不惩罚 AI 的自由描述）
     const 灵脉每时段 = 灵脉档[灵脉强度] ?? 0;
     const 灵力值_旧 = typeof 晓光.狐类特性?.灵力值 === 'number' ? 晓光.狐类特性.灵力值 : null;
@@ -234,7 +257,7 @@ async function init() {
       let 灵力增量 = 灵脉每时段;
       if (推进 === '次日') {
         // 过夜休息回灵：受庇护所/床铺/火调制（休息质量越高回灵越多）
-        const 休息回灵 = (有庇护所 ? 10 : 2) * (床铺 === '无' ? 0.5 : 1) * (有火 ? 1.2 : 1);
+        const 休息回灵 = (有庇护所 ? 6 : 2) * (床铺 === '无' ? 0.5 : 1) * (有火 ? 1.2 : 1);
         灵力增量 += 休息回灵;
       }
       const 灵力值_新 = Math.max(0, Math.round((灵力值_旧 + 灵力增量) * 10) / 10);
@@ -276,8 +299,11 @@ async function init() {
       // 重置今日摄入
       _.set(variables, 'stat_data.晓光.营养代谢.今日摄入', { 卡路里: 0, 蛋白质克: 0, 脂肪克: 0, 碳水克: 0 });
       // 睡眠恢复：精力 + 睡眠债务 偿还，受床铺/庇护所/火/灵力影响
-      const 睡眠质量 = (床铺 === '无' ? 0.4 : 床铺 === '裸地' ? 0.5 : 床铺 === '草垫' ? 0.7 : 0.9)
-        * (有庇护所 ? 1.1 : 0.8) * (有火 ? 1.1 : 0.95) * 恢复倍率;
+      const 睡眠质量 =
+        (床铺 === '无' ? 0.4 : 床铺 === '裸地' ? 0.5 : 床铺 === '草垫' ? 0.7 : 0.9) *
+        (有庇护所 ? 1.1 : 0.8) *
+        (有火 ? 1.1 : 0.95) *
+        恢复倍率;
       const 精力恢复 = Math.round(45 * 睡眠质量);
       _.set(variables, 'stat_data.晓光.生存状态.精力', Math.min(100, (生存.精力 ?? 30) + 精力恢复));
       const 债务 = _.get(variables, 'stat_data.晓光.睡眠.睡眠债务', 4);
@@ -327,10 +353,15 @@ async function init() {
       for (const [name, t] of Object.entries(陷阱) as [string, any][]) {
         if (t.状态 !== '待机') continue;
         const 类型概率: Record<string, number> = {
-          '绳索陷阱': 0.30, '钢丝锯陷阱': 0.18, '弹性拉索陷阱': 0.18,
-          '落穴陷阱': 0.35, '网陷阱': 0.25, '简易钓钩': 0.40, '藤蔓陷阱': 0.22,
+          绳索陷阱: 0.3,
+          钢丝锯陷阱: 0.18,
+          弹性拉索陷阱: 0.18,
+          落穴陷阱: 0.35,
+          网陷阱: 0.25,
+          简易钓钩: 0.4,
+          藤蔓陷阱: 0.22,
         };
-        const p = 类型概率[t.类型] ?? 0.20;
+        const p = 类型概率[t.类型] ?? 0.2;
         if (Math.random() < p) {
           _.set(variables, `stat_data.工坊.陷阱.${name}.状态`, '捕获成功');
           _.set(variables, `stat_data.工坊.陷阱.${name}.布置天数`, (t.布置天数 ?? 0) + 1);
@@ -350,9 +381,12 @@ async function init() {
       _.set(variables, 'stat_data.晓光.生存状态.精力', Math.max(0, (生存.精力 ?? 38) - 5 * 时段系数));
       // 体温受失温风险影响
       const 失温风险 = _.get(variables, 'stat_data.$失温风险等级', '正常');
-      if (失温风险 === '极高') _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.8));
-      else if (失温风险 === '高') _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.4));
-      else if (失温风险 === '偏高') _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.15));
+      if (失温风险 === '极高')
+        _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.8));
+      else if (失温风险 === '高')
+        _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.4));
+      else if (失温风险 === '偏高')
+        _.set(variables, 'stat_data.晓光.生存状态.体温', Math.max(30, (生存.体温 ?? 36.8) - 0.15));
       // 睡眠债务累积
       const 债务 = _.get(variables, 'stat_data.晓光.睡眠.睡眠债务', 4);
       if (推进 === '夜晚' && 床铺 === '无') {
@@ -362,8 +396,14 @@ async function init() {
       衰减电量(2);
     } else {
       // 未识别的推进值：不结算，但写回 $前端操作 让 AI 知道参数无法识别（避免"时间看似推进却无变化"的困惑）
-      console.warn(`[系统辅助] $推进时段="${推进}" 非法（仅支持 次日/黄昏/夜晚），未做任何代谢结算。纯叙事时段切换请直接改 世界.时间.时段`);
-      _.set(variables, 'stat_data.$前端操作', `时间推进参数"${推进}"无法识别（仅支持 次日/黄昏/夜晚）——未结算代谢。若只是叙事时段切换，请直接修改 世界.时间.时段`);
+      console.warn(
+        `[系统辅助] $推进时段="${推进}" 非法（仅支持 次日/黄昏/夜晚），未做任何代谢结算。纯叙事时段切换请直接改 世界.时间.时段`,
+      );
+      _.set(
+        variables,
+        'stat_data.$前端操作',
+        `时间推进参数"${推进}"无法识别（仅支持 次日/黄昏/夜晚）——未结算代谢。若只是叙事时段切换，请直接修改 世界.时间.时段`,
+      );
     }
     // 清除触发字段
     _.set(variables, 'stat_data.$推进时段', null);

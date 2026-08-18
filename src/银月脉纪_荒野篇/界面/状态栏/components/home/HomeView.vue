@@ -13,14 +13,23 @@
         <span class="tag">执念·{{ 执念状态 }}</span>
       </div>
       <!-- 灵力核心条：纯数值、无上限、动态满格（满格=历史峰值，随新高自动涨） -->
-      <div class="lingli-bar" :class="`lingli-${灵力等级}`" :title="`灵力值 ${灵力值} · 峰值 ${灵力峰值} · 满格参考 ${灵力满格参考}`">
+      <div
+        class="lingli-bar"
+        :class="`lingli-${灵力等级}`"
+        :title="`灵力值 ${灵力值} · 峰值 ${灵力峰值} · 满格参考 ${灵力满格参考}`"
+      >
         <div class="lingli-label">
           <span class="ll-name">✨ 灵力</span>
           <span class="ll-rank">{{ 灵力等级 }}</span>
         </div>
         <div class="lingli-track">
           <div class="lingli-fill" :style="{ width: 灵力条占比 + '%' }"></div>
-          <div class="lingli-peak" v-if="灵力峰值 > 灵力满格参考 * 0 + 50 && 灵力峰值 > 灵力值" :style="{ left: 灵力峰值占比 + '%' }" :title="`历史峰值 ${灵力峰值}`"></div>
+          <div
+            class="lingli-peak"
+            v-if="灵力峰值 > 灵力满格参考 * 0 + 50 && 灵力峰值 > 灵力值"
+            :style="{ left: 灵力峰值占比 + '%' }"
+            :title="`历史峰值 ${灵力峰值}`"
+          ></div>
         </div>
         <div class="lingli-nums">
           <span class="ll-val">{{ 灵力值 }}</span>
@@ -30,17 +39,18 @@
       </div>
       <div v-if="alerts.length" class="alert-row">
         <div v-for="a in alerts" :key="a.text" class="alert" :class="a.kind">
-          <span class="a-ico">{{ a.ico }}</span>{{ a.text }}
+          <span class="a-ico">{{ a.ico }}</span
+          >{{ a.text }}
         </div>
       </div>
     </div>
 
     <!-- 4 大体征 -->
     <div class="vitals-hero">
-      <VitalHero icon="❤️" label="健康" :value="健康" :max="100" :kind="kind(健康, [30,60])" term="健康" />
-      <VitalHero icon="🍗" label="饥饿" :value="饥饿" :max="100" :kind="kind(饥饿, [30,60])" term="饥饿" />
-      <VitalHero icon="💧" label="口渴" :value="口渴" :max="100" :kind="kind(口渴, [30,60])" term="口渴" />
-      <VitalHero icon="⚡" label="精力" :value="精力" :max="100" :kind="kind(精力, [30,60])" term="精力" />
+      <VitalHero icon="❤️" label="健康" :value="健康" :max="100" :kind="kind(健康, [30, 60])" term="健康" />
+      <VitalHero icon="🍗" label="饥饿" :value="饥饿" :max="100" :kind="kind(饥饿, [30, 60])" term="饥饿" />
+      <VitalHero icon="💧" label="口渴" :value="口渴" :max="100" :kind="kind(口渴, [30, 60])" term="口渴" />
+      <VitalHero icon="⚡" label="精力" :value="精力" :max="100" :kind="kind(精力, [30, 60])" term="精力" />
     </div>
 
     <!-- 副体征 -->
@@ -60,9 +70,7 @@
     </div>
 
     <!-- 今日近况 -->
-    <div class="today" v-if="latestLog">
-      <b>「今日」</b>{{ latestLog }}
-    </div>
+    <div class="today" v-if="latestLog"><b>「今日」</b>{{ latestLog }}</div>
 
     <!-- AI 操作记忆 -->
     <div v-if="recentOps.length && hasTimeProgression" class="oplog">
@@ -75,18 +83,24 @@
 
     <!-- 入口 -->
     <div class="entry-grid">
-      <div class="entry" @click="$emit('go','status')">
+      <div class="entry" @click="$emit('go', 'status')">
         <span class="e-ico">📊</span><span class="e-label">状态</span>
         <span v-if="alertCount" class="e-badge">{{ alertCount }}</span>
       </div>
-      <div class="entry" @click="$emit('go','inventory')">
+      <div class="entry" @click="$emit('go', 'inventory')">
         <span class="e-ico">🎒</span><span class="e-label">装备</span>
         <span v-if="itemCount" class="e-badge">{{ itemCount }}</span>
       </div>
-      <div class="entry" @click="$emit('go','world')"><span class="e-ico">🗺️</span><span class="e-label">世界</span></div>
-      <div class="entry" @click="$emit('go','camp')"><span class="e-ico">🏕️</span><span class="e-label">营地</span></div>
-      <div class="entry" @click="$emit('go','workshop')"><span class="e-ico">🛠️</span><span class="e-label">工坊</span></div>
-      <div class="entry" @click="$emit('go','journal')">
+      <div class="entry" @click="$emit('go', 'world')">
+        <span class="e-ico">🗺️</span><span class="e-label">世界</span>
+      </div>
+      <div class="entry" @click="$emit('go', 'camp')">
+        <span class="e-ico">🏕️</span><span class="e-label">营地</span>
+      </div>
+      <div class="entry" @click="$emit('go', 'workshop')">
+        <span class="e-ico">🛠️</span><span class="e-label">工坊</span>
+      </div>
+      <div class="entry" @click="$emit('go', 'journal')">
         <span class="e-ico">📖</span><span class="e-label">图鉴</span>
         <span v-if="journalCount" class="e-badge">{{ journalCount }}</span>
       </div>
@@ -151,9 +165,14 @@ const 移速修正 = computed(() => d.value.$移动速度总修正 ?? 0);
 const itemCount = computed(() => Object.keys(d.value.装备?.物品栏 ?? {}).length);
 const journalCount = computed(() => {
   const j = d.value.图鉴 ?? {};
-  return Object.keys(j.野兽 ?? {}).length + Object.keys(j.草药 ?? {}).length + Object.keys(j.足迹 ?? {}).length;
+  return (
+    Object.keys(j.野兽 ?? {}).length +
+    Object.keys(j.草药 ?? {}).length +
+    Object.keys(j.足迹 ?? {}).length +
+    Object.keys(j.日志 ?? {}).length
+  );
 });
-const recentOps = computed<{t: string; text: string}[]>(() => {
+const recentOps = computed<{ t: string; text: string }[]>(() => {
   const arr = d.value.$近期操作 ?? [];
   if (!Array.isArray(arr)) return [];
   return arr.slice(-5).reverse();
@@ -178,7 +197,8 @@ function kind(v: number, [low, mid]: [number, number]): 'bad' | 'warn' | 'good' 
 const alerts = computed(() => {
   const list: { ico: string; text: string; kind: 'danger' | 'warn' }[] = [];
   const risk = d.value.$失温风险等级;
-  if (risk === '极高' || risk === '高') list.push({ ico: '⚠️', text: `失温风险${risk} — ${失温建议(d.value)}`, kind: 'danger' });
+  if (risk === '极高' || risk === '高')
+    list.push({ ico: '⚠️', text: `失温风险${risk} — ${失温建议(d.value)}`, kind: 'danger' });
   else if (risk === '偏高') list.push({ ico: '⚠️', text: `失温风险偏高 — ${失温建议(d.value)}`, kind: 'warn' });
 
   if (口渴.value <= 30) list.push({ ico: '💧', text: `口渴${口渴.value}% — 严重缺水，需立即饮水`, kind: 'danger' });
@@ -186,7 +206,8 @@ const alerts = computed(() => {
 
   if (饥饿.value <= 25) list.push({ ico: '🍗', text: `饥饿${饥饿.value}% — 持续扣健康`, kind: 'danger' });
   if (健康.value <= 30) list.push({ ico: '❤️', text: `健康${健康.value}% — 危险`, kind: 'danger' });
-  if (精神区间.value === '崩溃' || 精神区间.value === '临界') list.push({ ico: '🧠', text: `精神${精神区间.value} — 触发危机`, kind: 'danger' });
+  if (精神区间.value === '崩溃' || 精神区间.value === '临界')
+    list.push({ ico: '🧠', text: `精神${精神区间.value} — 触发危机`, kind: 'danger' });
 
   const wounds = d.value.晓光?.伤口 ?? {};
   for (const [name, w] of Object.entries(wounds) as [string, any][]) {
@@ -216,8 +237,14 @@ function performReset() {
     // 防止任何残留再被读到。提醒玩家手动开新聊天，让 mvu 走完整 initvar。
     const mid = getCurrentMessageId();
     replaceVariables({}, { type: 'message', message_id: mid });
-    try { replaceVariables({}, { type: 'chat' }); } catch { /* chat 变量类型可能不可写，忽略 */ }
-    toastr.success('已清空当前楼层与聊天变量。请前往酒馆主菜单 → 开一个新聊天，重新开始你的旅程。', '存档已重置', { timeOut: 8000 });
+    try {
+      replaceVariables({}, { type: 'chat' });
+    } catch {
+      /* chat 变量类型可能不可写，忽略 */
+    }
+    toastr.success('已清空当前楼层与聊天变量。请前往酒馆主菜单 → 开一个新聊天，重新开始你的旅程。', '存档已重置', {
+      timeOut: 8000,
+    });
   } catch (e) {
     console.error('[reset]', e);
     toastr.error('重置失败：' + ((e as any)?.message ?? e));
@@ -227,27 +254,69 @@ function performReset() {
 </script>
 
 <style scoped>
-.home { padding: 14px; animation: fadeIn .3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.home {
+  padding: 14px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .home-hero {
   background: linear-gradient(135deg, #fffdf9, #f6efe4);
-  border: 1px solid var(--border); border-left: 4px solid var(--accent);
-  border-radius: 8px; padding: 16px; margin-bottom: 14px;
-  box-shadow: var(--shadow); position: relative; overflow: hidden;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
 }
 .home-hero::after {
-  content: '🦊'; position: absolute; right: -10px; bottom: -18px;
-  font-size: 90px; opacity: .06; transform: rotate(-12deg);
+  content: '🦊';
+  position: absolute;
+  right: -10px;
+  bottom: -18px;
+  font-size: 90px;
+  opacity: 0.06;
+  transform: rotate(-12deg);
 }
-.hero-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
-.hero-name { font-family: var(--font-display); font-size: 22px; font-weight: 900; }
-.hero-meta { font-size: 11px; color: var(--text-secondary); }
-.hero-tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 12px; }
+.hero-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+}
+.hero-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0 12px;
+}
 .tag {
-  font-size: 10px; padding: 2px 8px; border-radius: 10px;
-  background: var(--nav); color: var(--text-secondary);
-  border: 1px solid rgba(140,126,108,.3);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--nav);
+  color: var(--text-secondary);
+  border: 1px solid rgba(140, 126, 108, 0.3);
 }
 
 /* ── 灵力核心条：醒目，区别于 0-100 体征 ── */
@@ -255,155 +324,387 @@ function performReset() {
   margin: 6px 0 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(52,138,167,.06), rgba(168,140,52,.06));
-  border: 1px solid rgba(52,138,167,.25);
+  background: linear-gradient(135deg, rgba(52, 138, 167, 0.06), rgba(168, 140, 52, 0.06));
+  border: 1px solid rgba(52, 138, 167, 0.25);
   position: relative;
 }
-.lingli-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.ll-name { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text); }
-.ll-rank {
-  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
-  background: rgba(52,138,167,.15); color: var(--info, #348aa7);
+.lingli-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
 }
-.lingli-bar.lingli-枯竭 .ll-rank { background: rgba(224,73,60,.15); color: var(--danger, #b8403a); }
-.lingli-bar.lingli-稀薄 .ll-rank { background: rgba(226,143,27,.15); color: #b06f12; }
-.lingli-bar.lingli-全盛 .ll-rank, .lingli-bar.lingli-旺盛 .ll-rank { background: rgba(76,175,80,.15); color: var(--success, #4caf50); }
+.ll-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.ll-rank {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(52, 138, 167, 0.15);
+  color: var(--info, #348aa7);
+}
+.lingli-bar.lingli-枯竭 .ll-rank {
+  background: rgba(224, 73, 60, 0.15);
+  color: var(--danger, #b8403a);
+}
+.lingli-bar.lingli-稀薄 .ll-rank {
+  background: rgba(226, 143, 27, 0.15);
+  color: #b06f12;
+}
+.lingli-bar.lingli-全盛 .ll-rank,
+.lingli-bar.lingli-旺盛 .ll-rank {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--success, #4caf50);
+}
 .lingli-track {
-  position: relative; height: 10px; border-radius: 5px;
-  background: rgba(140,126,108,.15); overflow: visible;
-  border: 1px solid rgba(140,126,108,.2);
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(140, 126, 108, 0.15);
+  overflow: visible;
+  border: 1px solid rgba(140, 126, 108, 0.2);
 }
 .lingli-fill {
-  height: 100%; border-radius: 4px;
+  height: 100%;
+  border-radius: 4px;
   background: linear-gradient(90deg, #348aa7, #6bb6c9 50%, #c9a84c);
-  transition: width .4s cubic-bezier(.2,.8,.3,1);
-  box-shadow: 0 0 6px rgba(52,138,167,.3);
+  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+  box-shadow: 0 0 6px rgba(52, 138, 167, 0.3);
 }
 .lingli-peak {
-  position: absolute; top: -2px; width: 2px; height: 14px;
-  background: var(--accent, #a84434); border-radius: 1px;
-  box-shadow: 0 0 4px rgba(168,68,52,.5);
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 14px;
+  background: var(--accent, #a84434);
+  border-radius: 1px;
+  box-shadow: 0 0 4px rgba(168, 68, 52, 0.5);
 }
-.lingli-nums { display: flex; align-items: baseline; gap: 5px; margin-top: 5px; }
-.ll-val { font-family: var(--font-data); font-size: 16px; font-weight: 700; color: var(--info, #348aa7); }
-.ll-max { font-size: 10px; color: var(--text-secondary); }
-.ll-ratio { font-size: 10px; color: var(--text-secondary); margin-left: auto; }
+.lingli-nums {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 5px;
+}
+.ll-val {
+  font-family: var(--font-data);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--info, #348aa7);
+}
+.ll-max {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+.ll-ratio {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
 
-.alert-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.alert-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
 .alert {
-  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500;
-  padding: 8px 11px; border-radius: 6px; border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 11px;
+  border-radius: 6px;
+  border: 1px solid;
 }
-.alert.danger { background: rgba(224,73,60,.08); border-color: rgba(224,73,60,.3); color: var(--danger); }
-.alert.warn { background: rgba(226,143,27,.08); border-color: rgba(226,143,27,.3); color: #b06f12; }
-.alert .a-ico { font-size: 15px; }
+.alert.danger {
+  background: rgba(224, 73, 60, 0.08);
+  border-color: rgba(224, 73, 60, 0.3);
+  color: var(--danger);
+}
+.alert.warn {
+  background: rgba(226, 143, 27, 0.08);
+  border-color: rgba(226, 143, 27, 0.3);
+  color: #b06f12;
+}
+.alert .a-ico {
+  font-size: 15px;
+}
 
-.vitals-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 12px; }
+.vitals-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 12px;
+}
 
-.sub-vitals { display: flex; gap: 8px; margin-bottom: 14px; }
+.sub-vitals {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
 .sv {
-  flex: 1; background: var(--card-alt);
-  border: 1px solid rgba(140,126,108,.2); border-radius: 6px;
-  padding: 8px 10px; text-align: center;
+  flex: 1;
+  background: var(--card-alt);
+  border: 1px solid rgba(140, 126, 108, 0.2);
+  border-radius: 6px;
+  padding: 8px 10px;
+  text-align: center;
 }
-.sv .v { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.sv .v {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
 .sv .l {
-  font-size: 9px; color: var(--text-secondary); margin-top: 2px;
-  display: flex; align-items: center; justify-content: center; gap: 3px;
+  font-size: 9px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
 }
 
 .today {
-  background: var(--card); border: 1px dashed var(--border); border-radius: 7px;
-  padding: 11px 13px; margin-bottom: 14px; font-size: 12px; line-height: 1.6;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 7px;
+  padding: 11px 13px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  line-height: 1.6;
   color: var(--text-secondary);
 }
-.today b { color: var(--accent); font-family: var(--font-display); }
+.today b {
+  color: var(--accent);
+  font-family: var(--font-display);
+}
 
 .oplog {
   background: linear-gradient(135deg, #f3ece0, #fffdf9);
-  border: 1px solid var(--border); border-radius: 7px;
-  padding: 10px 12px; margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
 }
 .oplog-h {
-  font-size: 10px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px;
-  margin-bottom: 7px; letter-spacing: .3px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 7px;
+  letter-spacing: 0.3px;
 }
 .oplog-h .dot-live {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--success);
-  box-shadow: 0 0 0 2px rgba(76,175,80,.2);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 .oplog-item {
-  font-size: 11px; line-height: 1.5; padding: 3px 0; display: flex; gap: 7px;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 3px 0;
+  display: flex;
+  gap: 7px;
   color: var(--text-secondary);
 }
 .oplog-item .t {
-  font-family: var(--font-data); font-size: 9px; color: var(--accent);
-  flex-shrink: 0; padding-top: 1px;
+  font-family: var(--font-data);
+  font-size: 9px;
+  color: var(--accent);
+  flex-shrink: 0;
+  padding-top: 1px;
 }
-.oplog-item:not(:last-child) { border-bottom: 1px dotted rgba(140,126,108,.2); }
+.oplog-item:not(:last-child) {
+  border-bottom: 1px dotted rgba(140, 126, 108, 0.2);
+}
 
-.entry-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
-.entry {
-  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-  padding: 14px 6px; text-align: center; cursor: pointer; transition: all .15s;
-  box-shadow: var(--shadow-sm); position: relative;
+.entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 9px;
 }
-.entry:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent-light); }
-.entry .e-ico { font-size: 26px; display: block; line-height: 1; }
-.entry .e-label { font-size: 11px; margin-top: 6px; font-weight: 500; }
+.entry {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.entry:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: var(--accent-light);
+}
+.entry .e-ico {
+  font-size: 26px;
+  display: block;
+  line-height: 1;
+}
+.entry .e-label {
+  font-size: 11px;
+  margin-top: 6px;
+  font-weight: 500;
+}
 .entry .e-badge {
-  position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px;
-  padding: 0 4px; border-radius: 8px; background: var(--accent); color: #fff;
-  font-size: 9px; font-weight: bold;
-  display: flex; align-items: center; justify-content: center;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .term-card {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: linear-gradient(135deg, #f6efe4, #fffdf9);
-  border: 1px solid var(--border); border-radius: 7px;
-  padding: 11px 13px; margin: 18px 0 4px; cursor: pointer;
-  box-shadow: var(--shadow-sm); transition: all .15s;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 11px 13px;
+  margin: 18px 0 4px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s;
 }
-.term-card:hover { border-color: var(--accent-light); box-shadow: var(--shadow); }
-.term-card .tc-l { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; }
-.term-card .tc-l .tc-ico { font-size: 16px; }
-.term-card .tc-arrow { font-size: 11px; color: var(--accent); }
+.term-card:hover {
+  border-color: var(--accent-light);
+  box-shadow: var(--shadow);
+}
+.term-card .tc-l {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.term-card .tc-l .tc-ico {
+  font-size: 16px;
+}
+.term-card .tc-arrow {
+  font-size: 11px;
+  color: var(--accent);
+}
 
 /* 危险操作区：低调放页面最底；点击后内联展开确认面板（不用 fixed/absolute，避开 iframe 定位坑） */
-.danger-zone { margin-top: 22px; padding-top: 14px; border-top: 1px dashed rgba(140,126,108,.25); text-align: center; }
-.dz-link { font-size: 11px; color: var(--danger, #b8403a); cursor: pointer; opacity: .65; user-select: none; transition: opacity .15s; display: inline-block; padding: 4px 10px; }
-.dz-link:hover { opacity: 1; text-decoration: underline; }
+.danger-zone {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(140, 126, 108, 0.25);
+  text-align: center;
+}
+.dz-link {
+  font-size: 11px;
+  color: var(--danger, #b8403a);
+  cursor: pointer;
+  opacity: 0.65;
+  user-select: none;
+  transition: opacity 0.15s;
+  display: inline-block;
+  padding: 4px 10px;
+}
+.dz-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
 
 .reset-card {
-  background: var(--card, #fffdf9); border: 2px solid var(--danger, #b8403a);
-  border-radius: 10px; padding: 16px; margin: 4px 0 8px;
+  background: var(--card, #fffdf9);
+  border: 2px solid var(--danger, #b8403a);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 4px 0 8px;
   text-align: left;
-  box-shadow: 0 4px 18px rgba(184, 64, 58, .15);
-  animation: cardIn .2s ease;
+  box-shadow: 0 4px 18px rgba(184, 64, 58, 0.15);
+  animation: cardIn 0.2s ease;
 }
-@keyframes cardIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .rc-title {
-  font-family: var(--font-display); font-size: 15px; font-weight: 700;
-  color: var(--danger, #b8403a); margin-bottom: 10px; text-align: center;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--danger, #b8403a);
+  margin-bottom: 10px;
+  text-align: center;
 }
-.rc-body { font-size: 12px; line-height: 1.7; color: var(--text); }
-.rc-body p { margin: 0 0 6px; }
-.rc-body p:last-child { margin-bottom: 0; }
-.rc-warn { color: var(--danger, #b8403a); font-weight: 600; }
-.rc-actions { display: flex; gap: 8px; margin-top: 12px; }
+.rc-body {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.rc-body p {
+  margin: 0 0 6px;
+}
+.rc-body p:last-child {
+  margin-bottom: 0;
+}
+.rc-warn {
+  color: var(--danger, #b8403a);
+  font-weight: 600;
+}
+.rc-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
 .rc-btn {
-  flex: 1; padding: 8px 10px; border-radius: 6px; font-size: 12px;
-  font-weight: 600; cursor: pointer; border: 1px solid;
-  transition: all .12s; font-family: inherit;
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.12s;
+  font-family: inherit;
 }
 .rc-btn.cancel {
-  background: var(--card-alt, #f6efe4); color: var(--text);
+  background: var(--card-alt, #f6efe4);
+  color: var(--text);
   border-color: var(--border);
 }
-.rc-btn.cancel:hover { background: var(--nav, #ebe2d2); }
-.rc-btn.confirm {
-  background: var(--danger, #b8403a); color: #fff; border-color: var(--danger, #b8403a);
+.rc-btn.cancel:hover {
+  background: var(--nav, #ebe2d2);
 }
-.rc-btn.confirm:hover { background: #9a3329; border-color: #9a3329; }
+.rc-btn.confirm {
+  background: var(--danger, #b8403a);
+  color: #fff;
+  border-color: var(--danger, #b8403a);
+}
+.rc-btn.confirm:hover {
+  background: #9a3329;
+  border-color: #9a3329;
+}
 </style>
