@@ -3,7 +3,7 @@
     <div class="vc-icon">{{ icon }}</div>
     <div class="vc-label">{{ label }}</div>
     <div class="vc-value">
-      {{ value }}<span class="vc-unit" v-if="unit">{{ unit }}</span>
+      {{ value }}<span v-if="unit" class="vc-unit">{{ unit }}</span>
     </div>
     <div class="vc-trend" :style="{ color: trendColor }">{{ trend }}</div>
   </div>

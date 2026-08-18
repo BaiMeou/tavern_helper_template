@@ -9,7 +9,7 @@
       <div class="card">
         <strong>类型：</strong>{{ shelter.类型 }}
         <span v-if="shelter.完整度"> · 完整度 {{ shelter.完整度 }}% · 舒适 {{ shelter.舒适度 }}/10</span>
-        <div class="op-line" v-if="shelter.内部温差">
+        <div v-if="shelter.内部温差" class="op-line">
           <span style="font-size:11px;color:var(--success)">内部比外面暖 {{ shelter.内部温差 }}°C</span>
         </div>
       </div>

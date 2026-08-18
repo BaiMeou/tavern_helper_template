@@ -4,7 +4,7 @@
       <span class="fh-l">📊 <slot name="title">{{ title ?? '详细数据' }}</slot></span>
       <span class="fh-arr">▸</span>
     </div>
-    <div class="fold-body" v-show="open">
+    <div v-show="open" class="fold-body">
       <slot />
     </div>
   </div>

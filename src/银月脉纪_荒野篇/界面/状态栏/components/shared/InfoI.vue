@@ -1,5 +1,5 @@
 <template>
-  <i class="info-i" @click.stop="openTerm(term)" :title="term">ⓘ</i>
+  <i class="info-i" :title="term" @click.stop="openTerm(term)">ⓘ</i>
 </template>
 
 <script setup lang="ts">

@@ -8,7 +8,7 @@
         <span :class="['badge', dangerBadge(b.危险等级)]">{{ b.危险等级 }}</span>
       </div>
       <div class="beast-detail">{{ b.习性 }} · {{ b.活动时段 }} · 体型{{ b.体型 }}</div>
-      <div class="beast-detail" v-if="b.足迹描述">足迹：{{ b.足迹描述 }}</div>
+      <div v-if="b.足迹描述" class="beast-detail">足迹：{{ b.足迹描述 }}</div>
       <DetailFold title="遭遇与利用">
         <DataRow label="分类" :value="b.分类" />
         <DataRow label="是否可食用" :value="b.是否可食用 || '未知'" />
@@ -22,7 +22,7 @@
     <div v-for="(h, key) in herbs" :key="key" class="card">
       <strong>{{ h.名称 }}</strong>
       <div class="beast-detail">{{ h.药用功效 }} · 采集{{ h.采集部位 }} · {{ h.处理方式 }}</div>
-      <div class="beast-detail" v-if="h.禁忌 && h.禁忌 !== '未知'" style="color:var(--danger)">禁忌：{{ h.禁忌 }}</div>
+      <div v-if="h.禁忌 && h.禁忌 !== '未知'" class="beast-detail" style="color:var(--danger)">禁忌：{{ h.禁忌 }}</div>
     </div>
 
     <div class="sec-hdr">👣 足迹与痕迹</div>
@@ -30,7 +30,7 @@
     <div v-for="(t, key) in tracks" :key="key" class="card">
       <div class="beast-head"><strong>{{ t.推测生物 }}</strong> <span :class="['badge', freshBadge(t.新鲜度)]">{{ t.新鲜度 }}</span></div>
       <div class="beast-detail">方向：{{ t.方向 }} · {{ t.发现地点 }}</div>
-      <div class="beast-detail" v-if="t.备注">{{ t.备注 }}</div>
+      <div v-if="t.备注" class="beast-detail">{{ t.备注 }}</div>
     </div>
 
     <div class="sec-hdr">📝 日志</div>

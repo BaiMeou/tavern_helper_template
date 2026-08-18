@@ -1,6 +1,6 @@
 import {fileURLToPath as __webpack_fileURLToPath__} from "node:url";
-var __webpack_dirname__ = __webpack_fileURLToPath__(import.meta.url.replace(/\/(?:[^\/]*)$/, ""));
-var __webpack_filename__ = __webpack_fileURLToPath__(import.meta.url);
+const __webpack_dirname__ = __webpack_fileURLToPath__(import.meta.url.replace(/\/(?:[^\/]*)$/, ""));
+const __webpack_filename__ = __webpack_fileURLToPath__(import.meta.url);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 import { existsSync as __WEBPACK_EXTERNAL_MODULE_node_fs_75ed2103_existsSync__, globSync as __WEBPACK_EXTERNAL_MODULE_node_fs_75ed2103_globSync__, mkdirSync as __WEBPACK_EXTERNAL_MODULE_node_fs_75ed2103_mkdirSync__, readFileSync as __WEBPACK_EXTERNAL_MODULE_node_fs_75ed2103_readFileSync__, writeFileSync as __WEBPACK_EXTERNAL_MODULE_node_fs_75ed2103_writeFileSync__ } from "node:fs";
@@ -15,7 +15,7 @@ import { lstat as __WEBPACK_EXTERNAL_MODULE_node_fs_promises_4a3ebc43_lstat__, r
 import { Readable as __WEBPACK_EXTERNAL_MODULE_node_stream_62980834_Readable__ } from "node:stream";
 import { type as __WEBPACK_EXTERNAL_MODULE_os_type__ } from "os";
 import { createServer as __WEBPACK_EXTERNAL_MODULE_node_http_b674be28_createServer__ } from "node:http";
-/******/ var __webpack_modules__ = ({
+/******/ const __webpack_modules__ = ({
 
 /***/ 9
 (module, __unused_webpack_exports, __webpack_require__) {
@@ -34,8 +34,8 @@ import { createServer as __WEBPACK_EXTERNAL_MODULE_node_http_b674be28_createServ
  * @private
  */
 
-var Negotiator = __webpack_require__(1882)
-var mime = __webpack_require__(1976)
+const Negotiator = __webpack_require__(1882)
+const mime = __webpack_require__(1976)
 
 /**
  * Module exports.
@@ -103,12 +103,12 @@ function Accepts (req) {
 
 Accepts.prototype.type =
 Accepts.prototype.types = function (types_) {
-  var types = types_
+  let types = types_
 
   // support flattened arguments
   if (types && !Array.isArray(types)) {
     types = new Array(arguments.length)
-    for (var i = 0; i < types.length; i++) {
+    for (let i = 0; i < types.length; i++) {
       types[i] = arguments[i]
     }
   }
@@ -123,9 +123,9 @@ Accepts.prototype.types = function (types_) {
     return types[0]
   }
 
-  var mimes = types.map(extToMime)
-  var accepts = this.negotiator.mediaTypes(mimes.filter(validMime))
-  var first = accepts[0]
+  const mimes = types.map(extToMime)
+  const accepts = this.negotiator.mediaTypes(mimes.filter(validMime))
+  const first = accepts[0]
 
   return first
     ? types[mimes.indexOf(first)]
@@ -147,12 +147,12 @@ Accepts.prototype.types = function (types_) {
 
 Accepts.prototype.encoding =
 Accepts.prototype.encodings = function (encodings_) {
-  var encodings = encodings_
+  let encodings = encodings_
 
   // support flattened arguments
   if (encodings && !Array.isArray(encodings)) {
     encodings = new Array(arguments.length)
-    for (var i = 0; i < encodings.length; i++) {
+    for (let i = 0; i < encodings.length; i++) {
       encodings[i] = arguments[i]
     }
   }
@@ -180,12 +180,12 @@ Accepts.prototype.encodings = function (encodings_) {
 
 Accepts.prototype.charset =
 Accepts.prototype.charsets = function (charsets_) {
-  var charsets = charsets_
+  let charsets = charsets_
 
   // support flattened arguments
   if (charsets && !Array.isArray(charsets)) {
     charsets = new Array(arguments.length)
-    for (var i = 0; i < charsets.length; i++) {
+    for (let i = 0; i < charsets.length; i++) {
       charsets[i] = arguments[i]
     }
   }
@@ -215,12 +215,12 @@ Accepts.prototype.lang =
 Accepts.prototype.langs =
 Accepts.prototype.language =
 Accepts.prototype.languages = function (languages_) {
-  var languages = languages_
+  let languages = languages_
 
   // support flattened arguments
   if (languages && !Array.isArray(languages)) {
     languages = new Array(arguments.length)
-    for (var i = 0; i < languages.length; i++) {
+    for (let i = 0; i < languages.length; i++) {
       languages[i] = arguments[i]
     }
   }
@@ -273,13 +273,13 @@ function validMime (type) {
  * Module dependencies
  */
 
-var crypto = __webpack_require__(6982);
+const crypto = __webpack_require__(6982);
 
 /**
  * Constructor
  */
 
-var Base64Id = function() { };
+const Base64Id = function() { };
 
 /**
  * Get random bytes
@@ -289,8 +289,8 @@ var Base64Id = function() { };
 
 Base64Id.prototype.getRandomBytes = function(bytes) {
 
-  var BUFFER_SIZE = 4096
-  var self = this;  
+  const BUFFER_SIZE = 4096
+  const self = this;  
   
   bytes = bytes || 12;
 
@@ -298,8 +298,8 @@ Base64Id.prototype.getRandomBytes = function(bytes) {
     return crypto.randomBytes(bytes);
   }
   
-  var bytesInBuffer = parseInt(BUFFER_SIZE/bytes);
-  var threshold = parseInt(bytesInBuffer*0.85);
+  const bytesInBuffer = parseInt(BUFFER_SIZE/bytes);
+  const threshold = parseInt(bytesInBuffer*0.85);
 
   if (!threshold) {
     return crypto.randomBytes(bytes);
@@ -332,7 +332,7 @@ Base64Id.prototype.getRandomBytes = function(bytes) {
     }
   }
   
-  var result = this.bytesBuffer.slice(bytes*this.bytesBufferIndex, bytes*(this.bytesBufferIndex+1)); 
+  const result = this.bytesBuffer.slice(bytes*this.bytesBufferIndex, bytes*(this.bytesBufferIndex+1)); 
   this.bytesBufferIndex++; 
   
   return result;
@@ -345,7 +345,7 @@ Base64Id.prototype.getRandomBytes = function(bytes) {
  */
 
 Base64Id.prototype.generateId = function () {
-  var rand = Buffer.alloc(15); // multiple of 3 for base64
+  const rand = Buffer.alloc(15); // multiple of 3 for base64
   if (!rand.writeInt32BE) {
     return Math.abs(Math.random() * Math.random() * Date.now() | 0).toString()
       + Math.abs(Math.random() * Math.random() * Date.now() | 0).toString();
@@ -388,7 +388,7 @@ exports = module.exports = new Base64Id();
  * @public
  */
 const mask = (source, mask, output, offset, length) => {
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     output[offset + i] = source[i] ^ mask[i & 3];
   }
 };
@@ -403,7 +403,7 @@ const mask = (source, mask, output, offset, length) => {
 const unmask = (buffer, mask) => {
   // Required until https://github.com/nodejs/node/issues/9006 is resolved.
   const length = buffer.length;
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     buffer[i] ^= mask[i & 3];
   }
 };
@@ -452,8 +452,8 @@ exports.serialize = serialize;
  * @private
  */
 
-var __toString = Object.prototype.toString
-var __hasOwnProperty = Object.prototype.hasOwnProperty
+const __toString = Object.prototype.toString
+const __hasOwnProperty = Object.prototype.hasOwnProperty
 
 /**
  * RegExp to match cookie-name in RFC 6265 sec 4.1.1
@@ -467,7 +467,7 @@ var __hasOwnProperty = Object.prototype.hasOwnProperty
  *                     "`" / "|" / "~" / DIGIT / ALPHA
  */
 
-var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+const cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
 /**
  * RegExp to match cookie-value in RFC 6265 sec 4.1.1
@@ -479,7 +479,7 @@ var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
  *                     ; and backslash
  */
 
-var cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*\1$/;
+const cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*\1$/;
 
 /**
  * RegExp to match domain-value in RFC 6265 sec 4.1.1
@@ -505,7 +505,7 @@ var cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u00
  * cause the user agent to ignore the attribute.)
  */
 
-var domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
+const domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
 
 /**
  * RegExp to match path-value in RFC 6265 sec 4.1.1
@@ -515,7 +515,7 @@ var domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([
  *                     ; defined in RFC 5234 appendix B.1
  */
 
-var pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
+const pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
 
 /**
  * Parse a cookie header.
@@ -534,15 +534,15 @@ function parse(str, opt) {
     throw new TypeError('argument str must be a string');
   }
 
-  var obj = {};
-  var len = str.length;
+  const obj = {};
+  const len = str.length;
   // RFC 6265 sec 4.1.1, RFC 2616 2.2 defines a cookie name consists of one char minimum, plus '='.
   if (len < 2) return obj;
 
-  var dec = (opt && opt.decode) || decode;
-  var index = 0;
-  var eqIdx = 0;
-  var endIdx = 0;
+  const dec = (opt && opt.decode) || decode;
+  let index = 0;
+  let eqIdx = 0;
+  let endIdx = 0;
 
   do {
     eqIdx = str.indexOf('=', index);
@@ -558,21 +558,21 @@ function parse(str, opt) {
       continue;
     }
 
-    var keyStartIdx = startIndex(str, index, eqIdx);
-    var keyEndIdx = endIndex(str, eqIdx, keyStartIdx);
-    var key = str.slice(keyStartIdx, keyEndIdx);
+    const keyStartIdx = startIndex(str, index, eqIdx);
+    const keyEndIdx = endIndex(str, eqIdx, keyStartIdx);
+    const key = str.slice(keyStartIdx, keyEndIdx);
 
     // only assign once
     if (!__hasOwnProperty.call(obj, key)) {
-      var valStartIdx = startIndex(str, eqIdx + 1, endIdx);
-      var valEndIdx = endIndex(str, endIdx, valStartIdx);
+      let valStartIdx = startIndex(str, eqIdx + 1, endIdx);
+      let valEndIdx = endIndex(str, endIdx, valStartIdx);
 
       if (str.charCodeAt(valStartIdx) === 0x22 /* " */ && str.charCodeAt(valEndIdx - 1) === 0x22 /* " */) {
         valStartIdx++;
         valEndIdx--;
       }
 
-      var val = str.slice(valStartIdx, valEndIdx);
+      const val = str.slice(valStartIdx, valEndIdx);
       obj[key] = tryDecode(val, dec);
     }
 
@@ -584,7 +584,7 @@ function parse(str, opt) {
 
 function startIndex(str, index, max) {
   do {
-    var code = str.charCodeAt(index);
+    const code = str.charCodeAt(index);
     if (code !== 0x20 /*   */ && code !== 0x09 /* \t */) return index;
   } while (++index < max);
   return max;
@@ -592,7 +592,7 @@ function startIndex(str, index, max) {
 
 function endIndex(str, index, min) {
   while (index > min) {
-    var code = str.charCodeAt(--index);
+    const code = str.charCodeAt(--index);
     if (code !== 0x20 /*   */ && code !== 0x09 /* \t */) return index + 1;
   }
   return min;
@@ -615,7 +615,7 @@ function endIndex(str, index, min) {
  */
 
 function serialize(name, val, opt) {
-  var enc = (opt && opt.encode) || encodeURIComponent;
+  const enc = (opt && opt.encode) || encodeURIComponent;
 
   if (typeof enc !== 'function') {
     throw new TypeError('option encode is invalid');
@@ -625,17 +625,17 @@ function serialize(name, val, opt) {
     throw new TypeError('argument name is invalid');
   }
 
-  var value = enc(val);
+  const value = enc(val);
 
   if (!cookieValueRegExp.test(value)) {
     throw new TypeError('argument val is invalid');
   }
 
-  var str = name + '=' + value;
+  let str = name + '=' + value;
   if (!opt) return str;
 
-  if (null != opt.maxAge) {
-    var maxAge = Math.floor(opt.maxAge);
+  if (opt.maxAge != null) {
+    const maxAge = Math.floor(opt.maxAge);
 
     if (!isFinite(maxAge)) {
       throw new TypeError('option maxAge is invalid')
@@ -661,7 +661,7 @@ function serialize(name, val, opt) {
   }
 
   if (opt.expires) {
-    var expires = opt.expires
+    const expires = opt.expires
 
     if (!isDate(expires) || isNaN(expires.valueOf())) {
       throw new TypeError('option expires is invalid');
@@ -683,7 +683,7 @@ function serialize(name, val, opt) {
   }
 
   if (opt.priority) {
-    var priority = typeof opt.priority === 'string'
+    const priority = typeof opt.priority === 'string'
       ? opt.priority.toLowerCase() : opt.priority;
 
     switch (priority) {
@@ -702,7 +702,7 @@ function serialize(name, val, opt) {
   }
 
   if (opt.sameSite) {
-    var sameSite = typeof opt.sameSite === 'string'
+    const sameSite = typeof opt.sameSite === 'string'
       ? opt.sameSite.toLowerCase() : opt.sameSite;
 
     switch (sameSite) {
@@ -776,10 +776,10 @@ function tryDecode(str, decode) {
 
   'use strict';
 
-  var assign = __webpack_require__(4059);
-  var vary = __webpack_require__(4795);
+  const assign = __webpack_require__(4059);
+  const vary = __webpack_require__(4795);
 
-  var defaults = {
+  const defaults = {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
@@ -792,7 +792,7 @@ function tryDecode(str, decode) {
 
   function isOriginAllowed(origin, allowedOrigin) {
     if (Array.isArray(allowedOrigin)) {
-      for (var i = 0; i < allowedOrigin.length; ++i) {
+      for (let i = 0; i < allowedOrigin.length; ++i) {
         if (isOriginAllowed(origin, allowedOrigin[i])) {
           return true;
         }
@@ -808,7 +808,7 @@ function tryDecode(str, decode) {
   }
 
   function configureOrigin(options, req) {
-    var requestOrigin = req.headers.origin,
+    let requestOrigin = req.headers.origin,
       headers = [],
       isAllowed;
 
@@ -845,7 +845,7 @@ function tryDecode(str, decode) {
   }
 
   function configureMethods(options) {
-    var methods = options.methods;
+    let methods = options.methods;
     if (methods.join) {
       methods = options.methods.join(','); // .methods is an array, so turn it into a string
     }
@@ -866,8 +866,8 @@ function tryDecode(str, decode) {
   }
 
   function configureAllowedHeaders(options, req) {
-    var allowedHeaders = options.allowedHeaders || options.headers;
-    var headers = [];
+    let allowedHeaders = options.allowedHeaders || options.headers;
+    const headers = [];
 
     if (!allowedHeaders) {
       allowedHeaders = req.headers['access-control-request-headers']; // .headers wasn't specified, so reflect the request headers
@@ -889,7 +889,7 @@ function tryDecode(str, decode) {
   }
 
   function configureExposedHeaders(options) {
-    var headers = options.exposedHeaders;
+    let headers = options.exposedHeaders;
     if (!headers) {
       return null;
     } else if (headers.join) {
@@ -905,7 +905,7 @@ function tryDecode(str, decode) {
   }
 
   function configureMaxAge(options) {
-    var maxAge = (typeof options.maxAge === 'number' || options.maxAge) && options.maxAge.toString()
+    const maxAge = (typeof options.maxAge === 'number' || options.maxAge) && options.maxAge.toString()
     if (maxAge && maxAge.length) {
       return {
         key: 'Access-Control-Max-Age',
@@ -916,8 +916,8 @@ function tryDecode(str, decode) {
   }
 
   function applyHeaders(headers, res) {
-    for (var i = 0, n = headers.length; i < n; i++) {
-      var header = headers[i];
+    for (let i = 0, n = headers.length; i < n; i++) {
+      const header = headers[i];
       if (header) {
         if (Array.isArray(header)) {
           applyHeaders(header, res);
@@ -931,7 +931,7 @@ function tryDecode(str, decode) {
   }
 
   function cors(options, req, res, next) {
-    var headers = [],
+    const headers = [],
       method = req.method && req.method.toUpperCase && req.method.toUpperCase();
 
     if (method === 'OPTIONS') {
@@ -965,7 +965,7 @@ function tryDecode(str, decode) {
 
   function middlewareWrapper(o) {
     // if options are static (either via defaults or custom options passed in), wrap in a function
-    var optionsCallback = null;
+    let optionsCallback = null;
     if (typeof o === 'function') {
       optionsCallback = o;
     } else {
@@ -979,8 +979,8 @@ function tryDecode(str, decode) {
         if (err) {
           next(err);
         } else {
-          var corsOptions = assign({}, defaults, options);
-          var originCallback = null;
+          const corsOptions = assign({}, defaults, options);
+          let originCallback = null;
           if (corsOptions.origin && typeof corsOptions.origin === 'function') {
             originCallback = corsOptions.origin;
           } else if (corsOptions.origin) {
@@ -1019,7 +1019,7 @@ function tryDecode(str, decode) {
 
 /* crc32.js (C) 2014-2015 SheetJS -- http://sheetjs.com */
 /* vim: set ts=2: */
-var CRC32;
+let CRC32;
 (function (factory) {
 	if(typeof DO_NOT_EXPORT_CRC === 'undefined') {
 		if(true) {
@@ -1033,9 +1033,9 @@ var CRC32;
 CRC32.version = '0.3.0';
 /* see perf/crc32table.js */
 function signed_crc_table() {
-	var c = 0, table = new Array(256);
+	let c = 0, table = new Array(256);
 
-	for(var n =0; n != 256; ++n){
+	for(let n =0; n != 256; ++n){
 		c = n;
 		c = ((c&1) ? (-306674912 ^ (c >>> 1)) : (c >>> 1));
 		c = ((c&1) ? (-306674912 ^ (c >>> 1)) : (c >>> 1));
@@ -1051,12 +1051,12 @@ function signed_crc_table() {
 	return typeof Int32Array !== 'undefined' ? new Int32Array(table) : table;
 }
 
-var table = signed_crc_table();
+const table = signed_crc_table();
 /* charCodeAt is the best approach for binary strings */
-var use_buffer = typeof Buffer !== 'undefined';
+const use_buffer = typeof Buffer !== 'undefined';
 function crc32_bstr(bstr) {
 	if(bstr.length > 32768) if(use_buffer) return crc32_buf_8(new Buffer(bstr));
-	var crc = -1, L = bstr.length - 1;
+	let crc = -1, L = bstr.length - 1;
 	for(var i = 0; i < L;) {
 		crc =  table[(crc ^ bstr.charCodeAt(i++)) & 0xFF] ^ (crc >>> 8);
 		crc =  table[(crc ^ bstr.charCodeAt(i++)) & 0xFF] ^ (crc >>> 8);
@@ -1240,7 +1240,7 @@ exports.colors = [
  * TODO: add a `localStorage` variable to explicitly enable/disable colors
  */
 
-// eslint-disable-next-line complexity
+ 
 function useColors() {
 	// NB: In an Electron preload script, document will be defined but not fully
 	// initialized. Since we know we're in Chrome, we'll just detect this case
@@ -1258,7 +1258,7 @@ function useColors() {
 
 	// Is webkit? http://stackoverflow.com/a/16459606/376773
 	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-	// eslint-disable-next-line no-return-assign
+	 
 	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
 		// Is firebug? http://stackoverflow.com/a/398120/376773
 		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
@@ -1614,7 +1614,7 @@ function setup(env) {
 					searchIndex++;
 					templateIndex++;
 				}
-			} else if (starIndex !== -1) { // eslint-disable-line no-negated-condition
+			} else if (starIndex !== -1) {  
 				// Backtrack to the last '*' and try to match more characters
 				templateIndex = starIndex + 1;
 				matchIndex++;
@@ -2008,7 +2008,7 @@ module.exports = (flag, argv = process.argv) => {
 (module, exports, __webpack_require__) {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
+let __WEBPACK_AMD_DEFINE_RESULT__;/**
  * @license
  * Lodash <https://lodash.com/>
  * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
@@ -2019,40 +2019,40 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 ;(function() {
 
   /** Used as a safe reference for `undefined` in pre-ES5 environments. */
-  var undefined;
+  let undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.18.1';
+  const VERSION = '4.18.1';
 
   /** Used as the size to enable large array optimizations. */
-  var LARGE_ARRAY_SIZE = 200;
+  const LARGE_ARRAY_SIZE = 200;
 
   /** Error message constants. */
-  var CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
+  const CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
       FUNC_ERROR_TEXT = 'Expected a function',
       INVALID_TEMPL_VAR_ERROR_TEXT = 'Invalid `variable` option passed into `_.template`',
       INVALID_TEMPL_IMPORTS_ERROR_TEXT = 'Invalid `imports` option passed into `_.template`';
 
   /** Used to stand-in for `undefined` hash values. */
-  var HASH_UNDEFINED = '__lodash_hash_undefined__';
+  const HASH_UNDEFINED = '__lodash_hash_undefined__';
 
   /** Used as the maximum memoize cache size. */
-  var MAX_MEMOIZE_SIZE = 500;
+  const MAX_MEMOIZE_SIZE = 500;
 
   /** Used as the internal argument placeholder. */
-  var PLACEHOLDER = '__lodash_placeholder__';
+  const PLACEHOLDER = '__lodash_placeholder__';
 
   /** Used to compose bitmasks for cloning. */
-  var CLONE_DEEP_FLAG = 1,
+  const CLONE_DEEP_FLAG = 1,
       CLONE_FLAT_FLAG = 2,
       CLONE_SYMBOLS_FLAG = 4;
 
   /** Used to compose bitmasks for value comparisons. */
-  var COMPARE_PARTIAL_FLAG = 1,
+  const COMPARE_PARTIAL_FLAG = 1,
       COMPARE_UNORDERED_FLAG = 2;
 
   /** Used to compose bitmasks for function metadata. */
-  var WRAP_BIND_FLAG = 1,
+  const WRAP_BIND_FLAG = 1,
       WRAP_BIND_KEY_FLAG = 2,
       WRAP_CURRY_BOUND_FLAG = 4,
       WRAP_CURRY_FLAG = 8,
@@ -2064,31 +2064,31 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       WRAP_FLIP_FLAG = 512;
 
   /** Used as default options for `_.truncate`. */
-  var DEFAULT_TRUNC_LENGTH = 30,
+  const DEFAULT_TRUNC_LENGTH = 30,
       DEFAULT_TRUNC_OMISSION = '...';
 
   /** Used to detect hot functions by number of calls within a span of milliseconds. */
-  var HOT_COUNT = 800,
+  const HOT_COUNT = 800,
       HOT_SPAN = 16;
 
   /** Used to indicate the type of lazy iteratees. */
-  var LAZY_FILTER_FLAG = 1,
+  const LAZY_FILTER_FLAG = 1,
       LAZY_MAP_FLAG = 2,
       LAZY_WHILE_FLAG = 3;
 
   /** Used as references for various `Number` constants. */
-  var INFINITY = 1 / 0,
+  const INFINITY = 1 / 0,
       MAX_SAFE_INTEGER = 9007199254740991,
       MAX_INTEGER = 1.7976931348623157e+308,
       NAN = 0 / 0;
 
   /** Used as references for the maximum length and index of an array. */
-  var MAX_ARRAY_LENGTH = 4294967295,
+  const MAX_ARRAY_LENGTH = 4294967295,
       MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1,
       HALF_MAX_ARRAY_LENGTH = MAX_ARRAY_LENGTH >>> 1;
 
   /** Used to associate wrap methods with their bit flags. */
-  var wrapFlags = [
+  const wrapFlags = [
     ['ary', WRAP_ARY_FLAG],
     ['bind', WRAP_BIND_FLAG],
     ['bindKey', WRAP_BIND_KEY_FLAG],
@@ -2101,7 +2101,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   ];
 
   /** `Object#toString` result references. */
-  var argsTag = '[object Arguments]',
+  const argsTag = '[object Arguments]',
       arrayTag = '[object Array]',
       asyncTag = '[object AsyncFunction]',
       boolTag = '[object Boolean]',
@@ -2124,7 +2124,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       weakMapTag = '[object WeakMap]',
       weakSetTag = '[object WeakSet]';
 
-  var arrayBufferTag = '[object ArrayBuffer]',
+  const arrayBufferTag = '[object ArrayBuffer]',
       dataViewTag = '[object DataView]',
       float32Tag = '[object Float32Array]',
       float64Tag = '[object Float64Array]',
@@ -2137,23 +2137,23 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       uint32Tag = '[object Uint32Array]';
 
   /** Used to match empty string literals in compiled template source. */
-  var reEmptyStringLeading = /\b__p \+= '';/g,
+  const reEmptyStringLeading = /\b__p \+= '';/g,
       reEmptyStringMiddle = /\b(__p \+=) '' \+/g,
       reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
 
   /** Used to match HTML entities and HTML characters. */
-  var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
+  const reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
       reUnescapedHtml = /[&<>"']/g,
       reHasEscapedHtml = RegExp(reEscapedHtml.source),
       reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
   /** Used to match template delimiters. */
-  var reEscape = /<%-([\s\S]+?)%>/g,
+  const reEscape = /<%-([\s\S]+?)%>/g,
       reEvaluate = /<%([\s\S]+?)%>/g,
       reInterpolate = /<%=([\s\S]+?)%>/g;
 
   /** Used to match property names within property paths. */
-  var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+  const reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
       reIsPlainProp = /^\w*$/,
       rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
@@ -2161,22 +2161,22 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * Used to match `RegExp`
    * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
    */
-  var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
+  const reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
       reHasRegExpChar = RegExp(reRegExpChar.source);
 
   /** Used to match leading whitespace. */
-  var reTrimStart = /^\s+/;
+  const reTrimStart = /^\s+/;
 
   /** Used to match a single whitespace character. */
-  var reWhitespace = /\s/;
+  const reWhitespace = /\s/;
 
   /** Used to match wrap detail comments. */
-  var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
+  const reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
       reWrapDetails = /\{\n\/\* \[wrapped with (.+)\] \*/,
       reSplitDetails = /,? & /;
 
   /** Used to match words composed of alphanumeric characters. */
-  var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
+  const reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
 
   /**
    * Used to validate the `validate` option in `_.template` variable.
@@ -2188,46 +2188,46 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * - "/" (beginning of a comment)
    * - whitespace
    */
-  var reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
+  const reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
 
   /** Used to match backslashes in property paths. */
-  var reEscapeChar = /\\(\\)?/g;
+  const reEscapeChar = /\\(\\)?/g;
 
   /**
    * Used to match
    * [ES template delimiters](http://ecma-international.org/ecma-262/7.0/#sec-template-literal-lexical-components).
    */
-  var reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+  const reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
   /** Used to match `RegExp` flags from their coerced string values. */
-  var reFlags = /\w*$/;
+  const reFlags = /\w*$/;
 
   /** Used to detect bad signed hexadecimal string values. */
-  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+  const reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
 
   /** Used to detect binary string values. */
-  var reIsBinary = /^0b[01]+$/i;
+  const reIsBinary = /^0b[01]+$/i;
 
   /** Used to detect host constructors (Safari). */
-  var reIsHostCtor = /^\[object .+?Constructor\]$/;
+  const reIsHostCtor = /^\[object .+?Constructor\]$/;
 
   /** Used to detect octal string values. */
-  var reIsOctal = /^0o[0-7]+$/i;
+  const reIsOctal = /^0o[0-7]+$/i;
 
   /** Used to detect unsigned integer values. */
-  var reIsUint = /^(?:0|[1-9]\d*)$/;
+  const reIsUint = /^(?:0|[1-9]\d*)$/;
 
   /** Used to match Latin Unicode letters (excluding mathematical operators). */
-  var reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
+  const reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
 
   /** Used to ensure capturing order of template delimiters. */
-  var reNoMatch = /($^)/;
+  const reNoMatch = /($^)/;
 
   /** Used to match unescaped characters in compiled string literals. */
-  var reUnescapedString = /['\n\r\u2028\u2029\\]/g;
+  const reUnescapedString = /['\n\r\u2028\u2029\\]/g;
 
   /** Used to compose unicode character classes. */
-  var rsAstralRange = '\\ud800-\\udfff',
+  const rsAstralRange = '\\ud800-\\udfff',
       rsComboMarksRange = '\\u0300-\\u036f',
       reComboHalfMarksRange = '\\ufe20-\\ufe2f',
       rsComboSymbolsRange = '\\u20d0-\\u20ff',
@@ -2243,7 +2243,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
 
   /** Used to compose unicode capture groups. */
-  var rsApos = "['\u2019]",
+  const rsApos = "['\u2019]",
       rsAstral = '[' + rsAstralRange + ']',
       rsBreak = '[' + rsBreakRange + ']',
       rsCombo = '[' + rsComboRange + ']',
@@ -2260,7 +2260,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       rsZWJ = '\\u200d';
 
   /** Used to compose unicode regexes. */
-  var rsMiscLower = '(?:' + rsLower + '|' + rsMisc + ')',
+  const rsMiscLower = '(?:' + rsLower + '|' + rsMisc + ')',
       rsMiscUpper = '(?:' + rsUpper + '|' + rsMisc + ')',
       rsOptContrLower = '(?:' + rsApos + '(?:d|ll|m|re|s|t|ve))?',
       rsOptContrUpper = '(?:' + rsApos + '(?:D|LL|M|RE|S|T|VE))?',
@@ -2274,19 +2274,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
 
   /** Used to match apostrophes. */
-  var reApos = RegExp(rsApos, 'g');
+  const reApos = RegExp(rsApos, 'g');
 
   /**
    * Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and
    * [combining diacritical marks for symbols](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks_for_Symbols).
    */
-  var reComboMark = RegExp(rsCombo, 'g');
+  const reComboMark = RegExp(rsCombo, 'g');
 
   /** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
-  var reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
+  const reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
 
   /** Used to match complex or compound words. */
-  var reUnicodeWord = RegExp([
+  const reUnicodeWord = RegExp([
     rsUpper + '?' + rsLower + '+' + rsOptContrLower + '(?=' + [rsBreak, rsUpper, '$'].join('|') + ')',
     rsMiscUpper + '+' + rsOptContrUpper + '(?=' + [rsBreak, rsUpper + rsMiscLower, '$'].join('|') + ')',
     rsUpper + '?' + rsMiscLower + '+' + rsOptContrLower,
@@ -2298,13 +2298,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   ].join('|'), 'g');
 
   /** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
-  var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
+  const reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
 
   /** Used to detect strings that need a more robust regexp to match words. */
-  var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
+  const reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
 
   /** Used to assign default `context` object properties. */
-  var contextProps = [
+  const contextProps = [
     'Array', 'Buffer', 'DataView', 'Date', 'Error', 'Float32Array', 'Float64Array',
     'Function', 'Int8Array', 'Int16Array', 'Int32Array', 'Map', 'Math', 'Object',
     'Promise', 'RegExp', 'Set', 'String', 'Symbol', 'TypeError', 'Uint8Array',
@@ -2313,10 +2313,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   ];
 
   /** Used to make template sourceURLs easier to identify. */
-  var templateCounter = -1;
+  let templateCounter = -1;
 
   /** Used to identify `toStringTag` values of typed arrays. */
-  var typedArrayTags = {};
+  const typedArrayTags = {};
   typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
   typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
   typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
@@ -2332,7 +2332,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   typedArrayTags[weakMapTag] = false;
 
   /** Used to identify `toStringTag` values supported by `_.clone`. */
-  var cloneableTags = {};
+  const cloneableTags = {};
   cloneableTags[argsTag] = cloneableTags[arrayTag] =
   cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
   cloneableTags[boolTag] = cloneableTags[dateTag] =
@@ -2348,7 +2348,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   cloneableTags[weakMapTag] = false;
 
   /** Used to map Latin Unicode letters to basic Latin letters. */
-  var deburredLetters = {
+  const deburredLetters = {
     // Latin-1 Supplement block.
     '\xc0': 'A',  '\xc1': 'A', '\xc2': 'A', '\xc3': 'A', '\xc4': 'A', '\xc5': 'A',
     '\xe0': 'a',  '\xe1': 'a', '\xe2': 'a', '\xe3': 'a', '\xe4': 'a', '\xe5': 'a',
@@ -2406,7 +2406,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   };
 
   /** Used to map characters to HTML entities. */
-  var htmlEscapes = {
+  const htmlEscapes = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -2415,7 +2415,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   };
 
   /** Used to map HTML entities to characters. */
-  var htmlUnescapes = {
+  const htmlUnescapes = {
     '&amp;': '&',
     '&lt;': '<',
     '&gt;': '>',
@@ -2424,7 +2424,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   };
 
   /** Used to escape characters for inclusion in compiled string literals. */
-  var stringEscapes = {
+  const stringEscapes = {
     '\\': '\\',
     "'": "'",
     '\n': 'n',
@@ -2434,35 +2434,35 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   };
 
   /** Built-in method references without a dependency on `root`. */
-  var freeParseFloat = parseFloat,
+  const freeParseFloat = parseFloat,
       freeParseInt = parseInt;
 
   /** Detect free variable `global` from Node.js. */
-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+  const freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
   /** Detect free variable `self`. */
-  var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+  const freeSelf = typeof self == 'object' && self && self.Object === Object && self;
 
   /** Used as a reference to the global object. */
-  var root = freeGlobal || freeSelf || Function('return this')();
+  const root = freeGlobal || freeSelf || Function('return this')();
 
   /** Detect free variable `exports`. */
-  var freeExports =  true && exports && !exports.nodeType && exports;
+  const freeExports =  true && exports && !exports.nodeType && exports;
 
   /** Detect free variable `module`. */
-  var freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
+  const freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
 
   /** Detect the popular CommonJS extension `module.exports`. */
-  var moduleExports = freeModule && freeModule.exports === freeExports;
+  const moduleExports = freeModule && freeModule.exports === freeExports;
 
   /** Detect free variable `process` from Node.js. */
-  var freeProcess = moduleExports && freeGlobal.process;
+  const freeProcess = moduleExports && freeGlobal.process;
 
   /** Used to access faster Node.js helpers. */
-  var nodeUtil = (function() {
+  const nodeUtil = (function() {
     try {
       // Use `util.types` for Node.js 10+.
-      var types = freeModule && freeModule.require && freeModule.require('util').types;
+      const types = freeModule && freeModule.require && freeModule.require('util').types;
 
       if (types) {
         return types;
@@ -2474,7 +2474,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
   }());
 
   /* Node.js helper references. */
-  var nodeIsArrayBuffer = nodeUtil && nodeUtil.isArrayBuffer,
+  const nodeIsArrayBuffer = nodeUtil && nodeUtil.isArrayBuffer,
       nodeIsDate = nodeUtil && nodeUtil.isDate,
       nodeIsMap = nodeUtil && nodeUtil.isMap,
       nodeIsRegExp = nodeUtil && nodeUtil.isRegExp,
@@ -2514,11 +2514,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Function} Returns `accumulator`.
    */
   function arrayAggregator(array, setter, iteratee, accumulator) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     while (++index < length) {
-      var value = array[index];
+      const value = array[index];
       setter(accumulator, value, iteratee(value), array);
     }
     return accumulator;
@@ -2534,7 +2534,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns `array`.
    */
   function arrayEach(array, iteratee) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     while (++index < length) {
@@ -2555,7 +2555,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns `array`.
    */
   function arrayEachRight(array, iteratee) {
-    var length = array == null ? 0 : array.length;
+    let length = array == null ? 0 : array.length;
 
     while (length--) {
       if (iteratee(array[length], length, array) === false) {
@@ -2576,7 +2576,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    *  else `false`.
    */
   function arrayEvery(array, predicate) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     while (++index < length) {
@@ -2597,13 +2597,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the new filtered array.
    */
   function arrayFilter(array, predicate) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length,
         resIndex = 0,
         result = [];
 
     while (++index < length) {
-      var value = array[index];
+      const value = array[index];
       if (predicate(value, index, array)) {
         result[resIndex++] = value;
       }
@@ -2621,7 +2621,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {boolean} Returns `true` if `target` is found, else `false`.
    */
   function arrayIncludes(array, value) {
-    var length = array == null ? 0 : array.length;
+    const length = array == null ? 0 : array.length;
     return !!length && baseIndexOf(array, value, 0) > -1;
   }
 
@@ -2635,7 +2635,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {boolean} Returns `true` if `target` is found, else `false`.
    */
   function arrayIncludesWith(array, value, comparator) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     while (++index < length) {
@@ -2656,7 +2656,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the new mapped array.
    */
   function arrayMap(array, iteratee) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length,
         result = Array(length);
 
@@ -2675,7 +2675,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns `array`.
    */
   function arrayPush(array, values) {
-    var index = -1,
+    let index = -1,
         length = values.length,
         offset = array.length;
 
@@ -2698,7 +2698,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {*} Returns the accumulated value.
    */
   function arrayReduce(array, iteratee, accumulator, initAccum) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     if (initAccum && length) {
@@ -2723,7 +2723,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {*} Returns the accumulated value.
    */
   function arrayReduceRight(array, iteratee, accumulator, initAccum) {
-    var length = array == null ? 0 : array.length;
+    let length = array == null ? 0 : array.length;
     if (initAccum && length) {
       accumulator = array[--length];
     }
@@ -2744,7 +2744,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    *  else `false`.
    */
   function arraySome(array, predicate) {
-    var index = -1,
+    let index = -1,
         length = array == null ? 0 : array.length;
 
     while (++index < length) {
@@ -2762,7 +2762,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @param {string} string The string inspect.
    * @returns {number} Returns the string size.
    */
-  var asciiSize = baseProperty('length');
+  const asciiSize = baseProperty('length');
 
   /**
    * Converts an ASCII `string` to an array.
@@ -2798,7 +2798,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {*} Returns the found element or its key, else `undefined`.
    */
   function baseFindKey(collection, predicate, eachFunc) {
-    var result;
+    let result;
     eachFunc(collection, function(value, key, collection) {
       if (predicate(value, key, collection)) {
         result = key;
@@ -2820,7 +2820,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the matched value, else `-1`.
    */
   function baseFindIndex(array, predicate, fromIndex, fromRight) {
-    var length = array.length,
+    let length = array.length,
         index = fromIndex + (fromRight ? 1 : -1);
 
     while ((fromRight ? index-- : ++index < length)) {
@@ -2857,7 +2857,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the matched value, else `-1`.
    */
   function baseIndexOfWith(array, value, fromIndex, comparator) {
-    var index = fromIndex - 1,
+    let index = fromIndex - 1,
         length = array.length;
 
     while (++index < length) {
@@ -2889,7 +2889,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the mean.
    */
   function baseMean(array, iteratee) {
-    var length = array == null ? 0 : array.length;
+    const length = array == null ? 0 : array.length;
     return length ? (baseSum(array, iteratee) / length) : NAN;
   }
 
@@ -2952,7 +2952,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns `array`.
    */
   function baseSortBy(array, comparer) {
-    var length = array.length;
+    let length = array.length;
 
     array.sort(comparer);
     while (length--) {
@@ -2971,12 +2971,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the sum.
    */
   function baseSum(array, iteratee) {
-    var result,
+    let result,
         index = -1,
         length = array.length;
 
     while (++index < length) {
-      var current = iteratee(array[index]);
+      const current = iteratee(array[index]);
       if (current !== undefined) {
         result = result === undefined ? current : (result + current);
       }
@@ -2994,7 +2994,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the array of results.
    */
   function baseTimes(n, iteratee) {
-    var index = -1,
+    let index = -1,
         result = Array(n);
 
     while (++index < n) {
@@ -3082,7 +3082,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the first unmatched string symbol.
    */
   function charsStartIndex(strSymbols, chrSymbols) {
-    var index = -1,
+    let index = -1,
         length = strSymbols.length;
 
     while (++index < length && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
@@ -3099,7 +3099,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the last unmatched string symbol.
    */
   function charsEndIndex(strSymbols, chrSymbols) {
-    var index = strSymbols.length;
+    let index = strSymbols.length;
 
     while (index-- && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
     return index;
@@ -3114,7 +3114,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the placeholder count.
    */
   function countHolders(array, placeholder) {
-    var length = array.length,
+    let length = array.length,
         result = 0;
 
     while (length--) {
@@ -3133,7 +3133,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @param {string} letter The matched letter to deburr.
    * @returns {string} Returns the deburred letter.
    */
-  var deburrLetter = basePropertyOf(deburredLetters);
+  const deburrLetter = basePropertyOf(deburredLetters);
 
   /**
    * Used by `_.escape` to convert characters to HTML entities.
@@ -3142,7 +3142,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @param {string} chr The matched character to escape.
    * @returns {string} Returns the escaped character.
    */
-  var escapeHtmlChar = basePropertyOf(htmlEscapes);
+  const escapeHtmlChar = basePropertyOf(htmlEscapes);
 
   /**
    * Used by `_.template` to escape characters for inclusion in compiled string literals.
@@ -3197,7 +3197,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the converted array.
    */
   function iteratorToArray(iterator) {
-    var data,
+    let data,
         result = [];
 
     while (!(data = iterator.next()).done) {
@@ -3214,7 +3214,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the key-value pairs.
    */
   function mapToArray(map) {
-    var index = -1,
+    let index = -1,
         result = Array(map.size);
 
     map.forEach(function(value, key) {
@@ -3247,13 +3247,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the new array of placeholder indexes.
    */
   function replaceHolders(array, placeholder) {
-    var index = -1,
+    let index = -1,
         length = array.length,
         resIndex = 0,
         result = [];
 
     while (++index < length) {
-      var value = array[index];
+      const value = array[index];
       if (value === placeholder || value === PLACEHOLDER) {
         array[index] = PLACEHOLDER;
         result[resIndex++] = index;
@@ -3270,7 +3270,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the values.
    */
   function setToArray(set) {
-    var index = -1,
+    let index = -1,
         result = Array(set.size);
 
     set.forEach(function(value) {
@@ -3287,7 +3287,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {Array} Returns the value-value pairs.
    */
   function setToPairs(set) {
-    var index = -1,
+    let index = -1,
         result = Array(set.size);
 
     set.forEach(function(value) {
@@ -3307,7 +3307,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the matched value, else `-1`.
    */
   function strictIndexOf(array, value, fromIndex) {
-    var index = fromIndex - 1,
+    let index = fromIndex - 1,
         length = array.length;
 
     while (++index < length) {
@@ -3329,7 +3329,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the matched value, else `-1`.
    */
   function strictLastIndexOf(array, value, fromIndex) {
-    var index = fromIndex + 1;
+    let index = fromIndex + 1;
     while (index--) {
       if (array[index] === value) {
         return index;
@@ -3373,7 +3373,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the index of the last non-whitespace character.
    */
   function trimmedEndIndex(string) {
-    var index = string.length;
+    let index = string.length;
 
     while (index-- && reWhitespace.test(string.charAt(index))) {}
     return index;
@@ -3386,7 +3386,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @param {string} chr The matched character to unescape.
    * @returns {string} Returns the unescaped character.
    */
-  var unescapeHtmlChar = basePropertyOf(htmlUnescapes);
+  const unescapeHtmlChar = basePropertyOf(htmlUnescapes);
 
   /**
    * Gets the size of a Unicode `string`.
@@ -3396,7 +3396,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * @returns {number} Returns the string size.
    */
   function unicodeSize(string) {
-    var result = reUnicode.lastIndex = 0;
+    let result = reUnicode.lastIndex = 0;
     while (reUnicode.test(string)) {
       ++result;
     }
@@ -3456,11 +3456,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
    * // Create a suped-up `defer` in Node.js.
    * var defer = _.runInContext({ 'setTimeout': setImmediate }).defer;
    */
-  var runInContext = (function runInContext(context) {
+  const runInContext = (function runInContext(context) {
     context = context == null ? root : _.defaults(root.Object(), context, _.pick(root, contextProps));
 
     /** Built-in constructor references. */
-    var Array = context.Array,
+    const Array = context.Array,
         Date = context.Date,
         Error = context.Error,
         Function = context.Function,
@@ -3471,25 +3471,25 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         TypeError = context.TypeError;
 
     /** Used for built-in method references. */
-    var arrayProto = Array.prototype,
+    const arrayProto = Array.prototype,
         funcProto = Function.prototype,
         objectProto = Object.prototype;
 
     /** Used to detect overreaching core-js shims. */
-    var coreJsData = context['__core-js_shared__'];
+    const coreJsData = context['__core-js_shared__'];
 
     /** Used to resolve the decompiled source of functions. */
-    var funcToString = funcProto.toString;
+    const funcToString = funcProto.toString;
 
     /** Used to check objects for own properties. */
-    var hasOwnProperty = objectProto.hasOwnProperty;
+    const hasOwnProperty = objectProto.hasOwnProperty;
 
     /** Used to generate unique IDs. */
-    var idCounter = 0;
+    let idCounter = 0;
 
     /** Used to detect methods masquerading as native. */
-    var maskSrcKey = (function() {
-      var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+    const maskSrcKey = (function() {
+      const uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
       return uid ? ('Symbol(src)_1.' + uid) : '';
     }());
 
@@ -3498,22 +3498,22 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
      * of values.
      */
-    var nativeObjectToString = objectProto.toString;
+    const nativeObjectToString = objectProto.toString;
 
     /** Used to infer the `Object` constructor. */
-    var objectCtorString = funcToString.call(Object);
+    const objectCtorString = funcToString.call(Object);
 
     /** Used to restore the original `_` reference in `_.noConflict`. */
-    var oldDash = root._;
+    const oldDash = root._;
 
     /** Used to detect if a method is native. */
-    var reIsNative = RegExp('^' +
+    const reIsNative = RegExp('^' +
       funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
       .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
     );
 
     /** Built-in value references. */
-    var Buffer = moduleExports ? context.Buffer : undefined,
+    const Buffer = moduleExports ? context.Buffer : undefined,
         Symbol = context.Symbol,
         Uint8Array = context.Uint8Array,
         allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined,
@@ -3525,21 +3525,21 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         symIterator = Symbol ? Symbol.iterator : undefined,
         symToStringTag = Symbol ? Symbol.toStringTag : undefined;
 
-    var defineProperty = (function() {
+    const defineProperty = (function() {
       try {
-        var func = getNative(Object, 'defineProperty');
+        const func = getNative(Object, 'defineProperty');
         func({}, '', {});
         return func;
       } catch (e) {}
     }());
 
     /** Mocked built-ins. */
-    var ctxClearTimeout = context.clearTimeout !== root.clearTimeout && context.clearTimeout,
+    const ctxClearTimeout = context.clearTimeout !== root.clearTimeout && context.clearTimeout,
         ctxNow = Date && Date.now !== root.Date.now && Date.now,
         ctxSetTimeout = context.setTimeout !== root.setTimeout && context.setTimeout;
 
     /* Built-in method references for those with the same name as other `lodash` methods. */
-    var nativeCeil = Math.ceil,
+    const nativeCeil = Math.ceil,
         nativeFloor = Math.floor,
         nativeGetSymbols = Object.getOwnPropertySymbols,
         nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
@@ -3554,7 +3554,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         nativeReverse = arrayProto.reverse;
 
     /* Built-in method references that are verified to be native. */
-    var DataView = getNative(context, 'DataView'),
+    const DataView = getNative(context, 'DataView'),
         Map = getNative(context, 'Map'),
         Promise = getNative(context, 'Promise'),
         Set = getNative(context, 'Set'),
@@ -3562,20 +3562,20 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         nativeCreate = getNative(Object, 'create');
 
     /** Used to store function metadata. */
-    var metaMap = WeakMap && new WeakMap;
+    const metaMap = WeakMap && new WeakMap;
 
     /** Used to lookup unminified function names. */
-    var realNames = {};
+    const realNames = {};
 
     /** Used to detect maps, sets, and weakmaps. */
-    var dataViewCtorString = toSource(DataView),
+    const dataViewCtorString = toSource(DataView),
         mapCtorString = toSource(Map),
         promiseCtorString = toSource(Promise),
         setCtorString = toSource(Set),
         weakMapCtorString = toSource(WeakMap);
 
     /** Used to convert symbols to primitives and strings. */
-    var symbolProto = Symbol ? Symbol.prototype : undefined,
+    const symbolProto = Symbol ? Symbol.prototype : undefined,
         symbolValueOf = symbolProto ? symbolProto.valueOf : undefined,
         symbolToString = symbolProto ? symbolProto.toString : undefined;
 
@@ -3718,7 +3718,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Object} proto The object to inherit from.
      * @returns {Object} Returns the new object.
      */
-    var baseCreate = (function() {
+    const baseCreate = (function() {
       function object() {}
       return function(proto) {
         if (!isObject(proto)) {
@@ -3728,7 +3728,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           return objectCreate(proto);
         }
         object.prototype = proto;
-        var result = new object;
+        const result = new object;
         object.prototype = undefined;
         return result;
       };
@@ -3858,7 +3858,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the cloned `LazyWrapper` object.
      */
     function lazyClone() {
-      var result = new LazyWrapper(this.__wrapped__);
+      const result = new LazyWrapper(this.__wrapped__);
       result.__actions__ = copyArray(this.__actions__);
       result.__dir__ = this.__dir__;
       result.__filtered__ = this.__filtered__;
@@ -3897,7 +3897,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the unwrapped value.
      */
     function lazyValue() {
-      var array = this.__wrapped__.value(),
+      let array = this.__wrapped__.value(),
           dir = this.__dir__,
           isArr = isArray(array),
           isRight = dir < 0,
@@ -3915,17 +3915,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isArr || (!isRight && arrLength == length && takeCount == length)) {
         return baseWrapperValue(array, this.__actions__);
       }
-      var result = [];
+      const result = [];
 
       outer:
       while (length-- && resIndex < takeCount) {
         index += dir;
 
-        var iterIndex = -1,
+        let iterIndex = -1,
             value = array[index];
 
         while (++iterIndex < iterLength) {
-          var data = iteratees[iterIndex],
+          const data = iteratees[iterIndex],
               iteratee = data.iteratee,
               type = data.type,
               computed = iteratee(value);
@@ -3959,12 +3959,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Array} [entries] The key-value pairs to cache.
      */
     function Hash(entries) {
-      var index = -1,
+      let index = -1,
           length = entries == null ? 0 : entries.length;
 
       this.clear();
       while (++index < length) {
-        var entry = entries[index];
+        const entry = entries[index];
         this.set(entry[0], entry[1]);
       }
     }
@@ -3992,7 +3992,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function hashDelete(key) {
-      var result = this.has(key) && delete this.__data__[key];
+      const result = this.has(key) && delete this.__data__[key];
       this.size -= result ? 1 : 0;
       return result;
     }
@@ -4007,9 +4007,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the entry value.
      */
     function hashGet(key) {
-      var data = this.__data__;
+      const data = this.__data__;
       if (nativeCreate) {
-        var result = data[key];
+        const result = data[key];
         return result === HASH_UNDEFINED ? undefined : result;
       }
       return hasOwnProperty.call(data, key) ? data[key] : undefined;
@@ -4025,7 +4025,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
      */
     function hashHas(key) {
-      var data = this.__data__;
+      const data = this.__data__;
       return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
     }
 
@@ -4040,7 +4040,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the hash instance.
      */
     function hashSet(key, value) {
-      var data = this.__data__;
+      const data = this.__data__;
       this.size += this.has(key) ? 0 : 1;
       data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
       return this;
@@ -4063,12 +4063,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Array} [entries] The key-value pairs to cache.
      */
     function ListCache(entries) {
-      var index = -1,
+      let index = -1,
           length = entries == null ? 0 : entries.length;
 
       this.clear();
       while (++index < length) {
-        var entry = entries[index];
+        const entry = entries[index];
         this.set(entry[0], entry[1]);
       }
     }
@@ -4095,13 +4095,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function listCacheDelete(key) {
-      var data = this.__data__,
+      const data = this.__data__,
           index = assocIndexOf(data, key);
 
       if (index < 0) {
         return false;
       }
-      var lastIndex = data.length - 1;
+      const lastIndex = data.length - 1;
       if (index == lastIndex) {
         data.pop();
       } else {
@@ -4121,7 +4121,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the entry value.
      */
     function listCacheGet(key) {
-      var data = this.__data__,
+      const data = this.__data__,
           index = assocIndexOf(data, key);
 
       return index < 0 ? undefined : data[index][1];
@@ -4151,7 +4151,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the list cache instance.
      */
     function listCacheSet(key, value) {
-      var data = this.__data__,
+      const data = this.__data__,
           index = assocIndexOf(data, key);
 
       if (index < 0) {
@@ -4180,12 +4180,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Array} [entries] The key-value pairs to cache.
      */
     function MapCache(entries) {
-      var index = -1,
+      let index = -1,
           length = entries == null ? 0 : entries.length;
 
       this.clear();
       while (++index < length) {
-        var entry = entries[index];
+        const entry = entries[index];
         this.set(entry[0], entry[1]);
       }
     }
@@ -4216,7 +4216,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function mapCacheDelete(key) {
-      var result = getMapData(this, key)['delete'](key);
+      const result = getMapData(this, key)['delete'](key);
       this.size -= result ? 1 : 0;
       return result;
     }
@@ -4258,7 +4258,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the map cache instance.
      */
     function mapCacheSet(key, value) {
-      var data = getMapData(this, key),
+      const data = getMapData(this, key),
           size = data.size;
 
       data.set(key, value);
@@ -4284,7 +4284,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Array} [values] The values to cache.
      */
     function SetCache(values) {
-      var index = -1,
+      let index = -1,
           length = values == null ? 0 : values.length;
 
       this.__data__ = new MapCache;
@@ -4335,7 +4335,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Array} [entries] The key-value pairs to cache.
      */
     function Stack(entries) {
-      var data = this.__data__ = new ListCache(entries);
+      const data = this.__data__ = new ListCache(entries);
       this.size = data.size;
     }
 
@@ -4361,7 +4361,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the entry was removed, else `false`.
      */
     function stackDelete(key) {
-      var data = this.__data__,
+      const data = this.__data__,
           result = data['delete'](key);
 
       this.size = data.size;
@@ -4405,9 +4405,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the stack cache instance.
      */
     function stackSet(key, value) {
-      var data = this.__data__;
+      let data = this.__data__;
       if (data instanceof ListCache) {
-        var pairs = data.__data__;
+        const pairs = data.__data__;
         if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
           pairs.push([key, value]);
           this.size = ++data.size;
@@ -4438,7 +4438,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the array of property names.
      */
     function arrayLikeKeys(value, inherited) {
-      var isArr = isArray(value),
+      const isArr = isArray(value),
           isArg = !isArr && isArguments(value),
           isBuff = !isArr && !isArg && isBuffer(value),
           isType = !isArr && !isArg && !isBuff && isTypedArray(value),
@@ -4446,7 +4446,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           result = skipIndexes ? baseTimes(value.length, String) : [],
           length = result.length;
 
-      for (var key in value) {
+      for (const key in value) {
         if ((inherited || hasOwnProperty.call(value, key)) &&
             !(skipIndexes && (
                // Safari 9 has enumerable `arguments.length` in strict mode.
@@ -4472,7 +4472,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the random element.
      */
     function arraySample(array) {
-      var length = array.length;
+      const length = array.length;
       return length ? array[baseRandom(0, length - 1)] : undefined;
     }
 
@@ -4526,7 +4526,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {*} value The value to assign.
      */
     function assignValue(object, key, value) {
-      var objValue = object[key];
+      const objValue = object[key];
       if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
           (value === undefined && !(key in object))) {
         baseAssignValue(object, key, value);
@@ -4542,7 +4542,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {number} Returns the index of the matched value, else `-1`.
      */
     function assocIndexOf(array, key) {
-      var length = array.length;
+      let length = array.length;
       while (length--) {
         if (eq(array[length][0], key)) {
           return length;
@@ -4626,7 +4626,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the picked elements.
      */
     function baseAt(object, paths) {
-      var index = -1,
+      let index = -1,
           length = paths.length,
           result = Array(length),
           skip = object == null;
@@ -4675,7 +4675,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the cloned value.
      */
     function baseClone(value, bitmask, customizer, key, object, stack) {
-      var result,
+      let result,
           isDeep = bitmask & CLONE_DEEP_FLAG,
           isFlat = bitmask & CLONE_FLAT_FLAG,
           isFull = bitmask & CLONE_SYMBOLS_FLAG;
@@ -4689,14 +4689,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObject(value)) {
         return value;
       }
-      var isArr = isArray(value);
+      const isArr = isArray(value);
       if (isArr) {
         result = initCloneArray(value);
         if (!isDeep) {
           return copyArray(value, result);
         }
       } else {
-        var tag = getTag(value),
+        const tag = getTag(value),
             isFunc = tag == funcTag || tag == genTag;
 
         if (isBuffer(value)) {
@@ -4718,7 +4718,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       // Check for circular references and return its corresponding clone.
       stack || (stack = new Stack);
-      var stacked = stack.get(value);
+      const stacked = stack.get(value);
       if (stacked) {
         return stacked;
       }
@@ -4734,11 +4734,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         });
       }
 
-      var keysFunc = isFull
+      const keysFunc = isFull
         ? (isFlat ? getAllKeysIn : getAllKeys)
         : (isFlat ? keysIn : keys);
 
-      var props = isArr ? undefined : keysFunc(value);
+      const props = isArr ? undefined : keysFunc(value);
       arrayEach(props || value, function(subValue, key) {
         if (props) {
           key = subValue;
@@ -4758,7 +4758,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new spec function.
      */
     function baseConforms(source) {
-      var props = keys(source);
+      const props = keys(source);
       return function(object) {
         return baseConformsTo(object, source, props);
       };
@@ -4773,13 +4773,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if `object` conforms, else `false`.
      */
     function baseConformsTo(object, source, props) {
-      var length = props.length;
+      let length = props.length;
       if (object == null) {
         return !length;
       }
       object = Object(object);
       while (length--) {
-        var key = props[length],
+        const key = props[length],
             predicate = source[key],
             value = object[key];
 
@@ -4819,7 +4819,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new array of filtered values.
      */
     function baseDifference(array, values, iteratee, comparator) {
-      var index = -1,
+      let index = -1,
           includes = arrayIncludes,
           isCommon = true,
           length = array.length,
@@ -4843,12 +4843,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       outer:
       while (++index < length) {
-        var value = array[index],
+        let value = array[index],
             computed = iteratee == null ? value : iteratee(value);
 
         value = (comparator || value !== 0) ? value : 0;
         if (isCommon && computed === computed) {
-          var valuesIndex = valuesLength;
+          let valuesIndex = valuesLength;
           while (valuesIndex--) {
             if (values[valuesIndex] === computed) {
               continue outer;
@@ -4881,7 +4881,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Function} iteratee The function invoked per iteration.
      * @returns {Array|Object} Returns `collection`.
      */
-    var baseEachRight = createBaseEach(baseForOwnRight, true);
+    const baseEachRight = createBaseEach(baseForOwnRight, true);
 
     /**
      * The base implementation of `_.every` without support for iteratee shorthands.
@@ -4893,7 +4893,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  else `false`
      */
     function baseEvery(collection, predicate) {
-      var result = true;
+      let result = true;
       baseEach(collection, function(value, index, collection) {
         result = !!predicate(value, index, collection);
         return result;
@@ -4912,11 +4912,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the extremum value.
      */
     function baseExtremum(array, iteratee, comparator) {
-      var index = -1,
+      let index = -1,
           length = array.length;
 
       while (++index < length) {
-        var value = array[index],
+        const value = array[index],
             current = iteratee(value);
 
         if (current != null && (computed === undefined
@@ -4941,7 +4941,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function baseFill(array, value, start, end) {
-      var length = array.length;
+      const length = array.length;
 
       start = toInteger(start);
       if (start < 0) {
@@ -4967,7 +4967,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new filtered array.
      */
     function baseFilter(collection, predicate) {
-      var result = [];
+      const result = [];
       baseEach(collection, function(value, index, collection) {
         if (predicate(value, index, collection)) {
           result.push(value);
@@ -4988,14 +4988,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new flattened array.
      */
     function baseFlatten(array, depth, predicate, isStrict, result) {
-      var index = -1,
+      let index = -1,
           length = array.length;
 
       predicate || (predicate = isFlattenable);
       result || (result = []);
 
       while (++index < length) {
-        var value = array[index];
+        const value = array[index];
         if (depth > 0 && predicate(value)) {
           if (depth > 1) {
             // Recursively flatten arrays (susceptible to call stack limits).
@@ -5021,7 +5021,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Function} keysFunc The function to get the keys of `object`.
      * @returns {Object} Returns `object`.
      */
-    var baseFor = createBaseFor();
+    const baseFor = createBaseFor();
 
     /**
      * This function is like `baseFor` except that it iterates over properties
@@ -5033,7 +5033,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Function} keysFunc The function to get the keys of `object`.
      * @returns {Object} Returns `object`.
      */
-    var baseForRight = createBaseFor(true);
+    const baseForRight = createBaseFor(true);
 
     /**
      * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -5085,7 +5085,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function baseGet(object, path) {
       path = castPath(path, object);
 
-      var index = 0,
+      let index = 0,
           length = path.length;
 
       while (object != null && index < length) {
@@ -5106,7 +5106,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the array of property names and symbols.
      */
     function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-      var result = keysFunc(object);
+      const result = keysFunc(object);
       return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
     }
 
@@ -5187,7 +5187,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new array of shared values.
      */
     function baseIntersection(arrays, iteratee, comparator) {
-      var includes = comparator ? arrayIncludesWith : arrayIncludes,
+      let includes = comparator ? arrayIncludesWith : arrayIncludes,
           length = arrays[0].length,
           othLength = arrays.length,
           othIndex = othLength,
@@ -5207,12 +5207,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       array = arrays[0];
 
-      var index = -1,
+      let index = -1,
           seen = caches[0];
 
       outer:
       while (++index < length && result.length < maxLength) {
-        var value = array[index],
+        let value = array[index],
             computed = iteratee ? iteratee(value) : value;
 
         value = (comparator || value !== 0) ? value : 0;
@@ -5222,7 +5222,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             )) {
           othIndex = othLength;
           while (--othIndex) {
-            var cache = caches[othIndex];
+            const cache = caches[othIndex];
             if (!(cache
                   ? cacheHas(cache, computed)
                   : includes(arrays[othIndex], computed, comparator))
@@ -5270,7 +5270,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function baseInvoke(object, path, args) {
       path = castPath(path, object);
       object = parent(object, path);
-      var func = object == null ? object : object[toKey(last(path))];
+      const func = object == null ? object : object[toKey(last(path))];
       return func == null ? undefined : apply(func, object, args);
     }
 
@@ -5346,7 +5346,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
      */
     function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-      var objIsArr = isArray(object),
+      let objIsArr = isArray(object),
           othIsArr = isArray(other),
           objTag = objIsArr ? arrayTag : getTag(object),
           othTag = othIsArr ? arrayTag : getTag(other);
@@ -5354,7 +5354,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       objTag = objTag == argsTag ? objectTag : objTag;
       othTag = othTag == argsTag ? objectTag : othTag;
 
-      var objIsObj = objTag == objectTag,
+      let objIsObj = objTag == objectTag,
           othIsObj = othTag == objectTag,
           isSameTag = objTag == othTag;
 
@@ -5372,11 +5372,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
       }
       if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-        var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        const objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
             othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
 
         if (objIsWrapped || othIsWrapped) {
-          var objUnwrapped = objIsWrapped ? object.value() : object,
+          const objUnwrapped = objIsWrapped ? object.value() : object,
               othUnwrapped = othIsWrapped ? other.value() : other;
 
           stack || (stack = new Stack);
@@ -5412,7 +5412,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if `object` is a match, else `false`.
      */
     function baseIsMatch(object, source, matchData, customizer) {
-      var index = matchData.length,
+      let index = matchData.length,
           length = index,
           noCustomizer = !customizer;
 
@@ -5431,7 +5431,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       while (++index < length) {
         data = matchData[index];
-        var key = data[0],
+        const key = data[0],
             objValue = object[key],
             srcValue = data[1];
 
@@ -5440,7 +5440,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             return false;
           }
         } else {
-          var stack = new Stack;
+          const stack = new Stack;
           if (customizer) {
             var result = customizer(objValue, srcValue, key, object, source, stack);
           }
@@ -5467,7 +5467,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObject(value) || isMasked(value)) {
         return false;
       }
-      var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+      const pattern = isFunction(value) ? reIsNative : reIsHostCtor;
       return pattern.test(toSource(value));
     }
 
@@ -5540,8 +5540,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isPrototype(object)) {
         return nativeKeys(object);
       }
-      var result = [];
-      for (var key in Object(object)) {
+      const result = [];
+      for (const key in Object(object)) {
         if (hasOwnProperty.call(object, key) && key != 'constructor') {
           result.push(key);
         }
@@ -5560,10 +5560,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObject(object)) {
         return nativeKeysIn(object);
       }
-      var isProto = isPrototype(object),
+      const isProto = isPrototype(object),
           result = [];
 
-      for (var key in object) {
+      for (const key in object) {
         if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
           result.push(key);
         }
@@ -5593,7 +5593,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new mapped array.
      */
     function baseMap(collection, iteratee) {
-      var index = -1,
+      let index = -1,
           result = isArrayLike(collection) ? Array(collection.length) : [];
 
       baseEach(collection, function(value, key, collection) {
@@ -5610,7 +5610,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new spec function.
      */
     function baseMatches(source) {
-      var matchData = getMatchData(source);
+      const matchData = getMatchData(source);
       if (matchData.length == 1 && matchData[0][2]) {
         return matchesStrictComparable(matchData[0][0], matchData[0][1]);
       }
@@ -5632,7 +5632,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return matchesStrictComparable(toKey(path), srcValue);
       }
       return function(object) {
-        var objValue = get(object, path);
+        const objValue = get(object, path);
         return (objValue === undefined && objValue === srcValue)
           ? hasIn(object, path)
           : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
@@ -5660,7 +5660,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
-          var newValue = customizer
+          let newValue = customizer
             ? customizer(safeGet(object, key), srcValue, (key + ''), object, source, stack)
             : undefined;
 
@@ -5688,7 +5688,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  counterparts.
      */
     function baseMergeDeep(object, source, key, srcIndex, mergeFunc, customizer, stack) {
-      var objValue = safeGet(object, key),
+      const objValue = safeGet(object, key),
           srcValue = safeGet(source, key),
           stacked = stack.get(srcValue);
 
@@ -5696,14 +5696,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         assignMergeValue(object, key, stacked);
         return;
       }
-      var newValue = customizer
+      let newValue = customizer
         ? customizer(objValue, srcValue, (key + ''), object, source, stack)
         : undefined;
 
-      var isCommon = newValue === undefined;
+      let isCommon = newValue === undefined;
 
       if (isCommon) {
-        var isArr = isArray(srcValue),
+        const isArr = isArray(srcValue),
             isBuff = !isArr && isBuffer(srcValue),
             isTyped = !isArr && !isBuff && isTypedArray(srcValue);
 
@@ -5758,7 +5758,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the nth element of `array`.
      */
     function baseNth(array, n) {
-      var length = array.length;
+      const length = array.length;
       if (!length) {
         return;
       }
@@ -5789,11 +5789,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         iteratees = [identity];
       }
 
-      var index = -1;
+      let index = -1;
       iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
 
-      var result = baseMap(collection, function(value, key, collection) {
-        var criteria = arrayMap(iteratees, function(iteratee) {
+      const result = baseMap(collection, function(value, key, collection) {
+        const criteria = arrayMap(iteratees, function(iteratee) {
           return iteratee(value);
         });
         return { 'criteria': criteria, 'index': ++index, 'value': value };
@@ -5829,12 +5829,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the new object.
      */
     function basePickBy(object, paths, predicate) {
-      var index = -1,
+      let index = -1,
           length = paths.length,
           result = {};
 
       while (++index < length) {
-        var path = paths[index],
+        const path = paths[index],
             value = baseGet(object, path);
 
         if (predicate(value, path)) {
@@ -5869,7 +5869,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function basePullAll(array, values, iteratee, comparator) {
-      var indexOf = comparator ? baseIndexOfWith : baseIndexOf,
+      let indexOf = comparator ? baseIndexOfWith : baseIndexOf,
           index = -1,
           length = values.length,
           seen = array;
@@ -5881,7 +5881,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         seen = arrayMap(array, baseUnary(iteratee));
       }
       while (++index < length) {
-        var fromIndex = 0,
+        let fromIndex = 0,
             value = values[index],
             computed = iteratee ? iteratee(value) : value;
 
@@ -5905,11 +5905,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function basePullAt(array, indexes) {
-      var length = array ? indexes.length : 0,
+      let length = array ? indexes.length : 0,
           lastIndex = length - 1;
 
       while (length--) {
-        var index = indexes[length];
+        const index = indexes[length];
         if (length == lastIndex || index !== previous) {
           var previous = index;
           if (isIndex(index)) {
@@ -5947,7 +5947,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the range of numbers.
      */
     function baseRange(start, end, step, fromRight) {
-      var index = -1,
+      let index = -1,
           length = nativeMax(nativeCeil((end - start) / (step || 1)), 0),
           result = Array(length);
 
@@ -5967,7 +5967,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {string} Returns the repeated string.
      */
     function baseRepeat(string, n) {
-      var result = '';
+      let result = '';
       if (!string || n < 1 || n > MAX_SAFE_INTEGER) {
         return result;
       }
@@ -6018,7 +6018,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the random elements.
      */
     function baseSampleSize(collection, n) {
-      var array = values(collection);
+      const array = values(collection);
       return shuffleSelf(array, baseClamp(n, 0, array.length));
     }
 
@@ -6038,13 +6038,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       path = castPath(path, object);
 
-      var index = -1,
+      let index = -1,
           length = path.length,
           lastIndex = length - 1,
           nested = object;
 
       while (nested != null && ++index < length) {
-        var key = toKey(path[index]),
+        let key = toKey(path[index]),
             newValue = value;
 
         if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
@@ -6052,7 +6052,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
 
         if (index != lastIndex) {
-          var objValue = nested[key];
+          const objValue = nested[key];
           newValue = customizer ? customizer(objValue, key, nested) : undefined;
           if (newValue === undefined) {
             newValue = isObject(objValue)
@@ -6074,7 +6074,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {*} data The metadata.
      * @returns {Function} Returns `func`.
      */
-    var baseSetData = !metaMap ? identity : function(func, data) {
+    const baseSetData = !metaMap ? identity : function(func, data) {
       metaMap.set(func, data);
       return func;
     };
@@ -6087,7 +6087,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Function} string The `toString` result.
      * @returns {Function} Returns `func`.
      */
-    var baseSetToString = !defineProperty ? identity : function(func, string) {
+    const baseSetToString = !defineProperty ? identity : function(func, string) {
       return defineProperty(func, 'toString', {
         'configurable': true,
         'enumerable': false,
@@ -6117,7 +6117,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the slice of `array`.
      */
     function baseSlice(array, start, end) {
-      var index = -1,
+      let index = -1,
           length = array.length;
 
       if (start < 0) {
@@ -6130,7 +6130,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       length = start > end ? 0 : ((end - start) >>> 0);
       start >>>= 0;
 
-      var result = Array(length);
+      const result = Array(length);
       while (++index < length) {
         result[index] = array[index + start];
       }
@@ -6147,7 +6147,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  else `false`.
      */
     function baseSome(collection, predicate) {
-      var result;
+      let result;
 
       baseEach(collection, function(value, index, collection) {
         result = predicate(value, index, collection);
@@ -6169,12 +6169,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  into `array`.
      */
     function baseSortedIndex(array, value, retHighest) {
-      var low = 0,
+      let low = 0,
           high = array == null ? low : array.length;
 
       if (typeof value == 'number' && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
         while (low < high) {
-          var mid = (low + high) >>> 1,
+          const mid = (low + high) >>> 1,
               computed = array[mid];
 
           if (computed !== null && !isSymbol(computed) &&
@@ -6203,20 +6203,20 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  into `array`.
      */
     function baseSortedIndexBy(array, value, iteratee, retHighest) {
-      var low = 0,
+      let low = 0,
           high = array == null ? 0 : array.length;
       if (high === 0) {
         return 0;
       }
 
       value = iteratee(value);
-      var valIsNaN = value !== value,
+      const valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
           valIsUndefined = value === undefined;
 
       while (low < high) {
-        var mid = nativeFloor((low + high) / 2),
+        const mid = nativeFloor((low + high) / 2),
             computed = iteratee(array[mid]),
             othIsDefined = computed !== undefined,
             othIsNull = computed === null,
@@ -6255,13 +6255,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new duplicate free array.
      */
     function baseSortedUniq(array, iteratee) {
-      var index = -1,
+      let index = -1,
           length = array.length,
           resIndex = 0,
           result = [];
 
       while (++index < length) {
-        var value = array[index],
+        const value = array[index],
             computed = iteratee ? iteratee(value) : value;
 
         if (!index || !eq(computed, seen)) {
@@ -6310,7 +6310,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isSymbol(value)) {
         return symbolToString ? symbolToString.call(value) : '';
       }
-      var result = (value + '');
+      const result = (value + '');
       return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
     }
 
@@ -6324,7 +6324,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new duplicate free array.
      */
     function baseUniq(array, iteratee, comparator) {
-      var index = -1,
+      let index = -1,
           includes = arrayIncludes,
           length = array.length,
           isCommon = true,
@@ -6336,7 +6336,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         includes = arrayIncludesWith;
       }
       else if (length >= LARGE_ARRAY_SIZE) {
-        var set = iteratee ? null : createSet(array);
+        const set = iteratee ? null : createSet(array);
         if (set) {
           return setToArray(set);
         }
@@ -6349,12 +6349,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       outer:
       while (++index < length) {
-        var value = array[index],
+        let value = array[index],
             computed = iteratee ? iteratee(value) : value;
 
         value = (comparator || value !== 0) ? value : 0;
         if (isCommon && computed === computed) {
-          var seenIndex = seen.length;
+          let seenIndex = seen.length;
           while (seenIndex--) {
             if (seen[seenIndex] === computed) {
               continue outer;
@@ -6389,7 +6389,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       // Prevent prototype pollution:
       // https://github.com/lodash/lodash/security/advisories/GHSA-xxjr-mmjv-4gpg
       // https://github.com/lodash/lodash/security/advisories/GHSA-f23m-r3pf-42rh
-      var index = -1,
+      let index = -1,
           length = path.length;
 
       if (!length) {
@@ -6397,7 +6397,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       while (++index < length) {
-        var key = toKey(path[index]);
+        const key = toKey(path[index]);
 
         // Always block "__proto__" anywhere in the path if it's not expected
         if (key === '__proto__' && !hasOwnProperty.call(object, '__proto__')) {
@@ -6411,7 +6411,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
       }
 
-      var obj = parent(object, path);
+      const obj = parent(object, path);
       return obj == null || delete obj[toKey(last(path))];
     }
 
@@ -6441,7 +6441,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the slice of `array`.
      */
     function baseWhile(array, predicate, isDrop, fromRight) {
-      var length = array.length,
+      let length = array.length,
           index = fromRight ? length : -1;
 
       while ((fromRight ? index-- : ++index < length) &&
@@ -6463,7 +6463,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the resolved value.
      */
     function baseWrapperValue(value, actions) {
-      var result = value;
+      let result = value;
       if (result instanceof LazyWrapper) {
         result = result.value();
       }
@@ -6483,15 +6483,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new array of values.
      */
     function baseXor(arrays, iteratee, comparator) {
-      var length = arrays.length;
+      const length = arrays.length;
       if (length < 2) {
         return length ? baseUniq(arrays[0]) : [];
       }
-      var index = -1,
+      let index = -1,
           result = Array(length);
 
       while (++index < length) {
-        var array = arrays[index],
+        let array = arrays[index],
             othIndex = -1;
 
         while (++othIndex < length) {
@@ -6513,13 +6513,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the new object.
      */
     function baseZipObject(props, values, assignFunc) {
-      var index = -1,
+      let index = -1,
           length = props.length,
           valsLength = values.length,
           result = {};
 
       while (++index < length) {
-        var value = index < valsLength ? values[index] : undefined;
+        const value = index < valsLength ? values[index] : undefined;
         assignFunc(result, props[index], value);
       }
       return result;
@@ -6571,7 +6571,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {Function} func The function to apply a rest parameter to.
      * @returns {Function} Returns the new function.
      */
-    var castRest = baseRest;
+    const castRest = baseRest;
 
     /**
      * Casts `array` to a slice if it's needed.
@@ -6583,7 +6583,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the cast slice.
      */
     function castSlice(array, start, end) {
-      var length = array.length;
+      const length = array.length;
       end = end === undefined ? length : end;
       return (!start && end >= length) ? array : baseSlice(array, start, end);
     }
@@ -6594,7 +6594,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @private
      * @param {number|Object} id The timer id or timeout object of the timer to clear.
      */
-    var clearTimeout = ctxClearTimeout || function(id) {
+    const clearTimeout = ctxClearTimeout || function(id) {
       return root.clearTimeout(id);
     };
 
@@ -6610,7 +6610,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isDeep) {
         return buffer.slice();
       }
-      var length = buffer.length,
+      const length = buffer.length,
           result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
 
       buffer.copy(result);
@@ -6625,7 +6625,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {ArrayBuffer} Returns the cloned array buffer.
      */
     function cloneArrayBuffer(arrayBuffer) {
-      var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+      const result = new arrayBuffer.constructor(arrayBuffer.byteLength);
       new Uint8Array(result).set(new Uint8Array(arrayBuffer));
       return result;
     }
@@ -6639,7 +6639,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the cloned data view.
      */
     function cloneDataView(dataView, isDeep) {
-      var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+      const buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
       return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
     }
 
@@ -6651,7 +6651,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the cloned regexp.
      */
     function cloneRegExp(regexp) {
-      var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+      const result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
       result.lastIndex = regexp.lastIndex;
       return result;
     }
@@ -6676,7 +6676,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the cloned typed array.
      */
     function cloneTypedArray(typedArray, isDeep) {
-      var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+      const buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
       return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
     }
 
@@ -6690,12 +6690,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function compareAscending(value, other) {
       if (value !== other) {
-        var valIsDefined = value !== undefined,
+        const valIsDefined = value !== undefined,
             valIsNull = value === null,
             valIsReflexive = value === value,
             valIsSymbol = isSymbol(value);
 
-        var othIsDefined = other !== undefined,
+        const othIsDefined = other !== undefined,
             othIsNull = other === null,
             othIsReflexive = other === other,
             othIsSymbol = isSymbol(other);
@@ -6733,19 +6733,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {number} Returns the sort order indicator for `object`.
      */
     function compareMultiple(object, other, orders) {
-      var index = -1,
+      let index = -1,
           objCriteria = object.criteria,
           othCriteria = other.criteria,
           length = objCriteria.length,
           ordersLength = orders.length;
 
       while (++index < length) {
-        var result = compareAscending(objCriteria[index], othCriteria[index]);
+        const result = compareAscending(objCriteria[index], othCriteria[index]);
         if (result) {
           if (index >= ordersLength) {
             return result;
           }
-          var order = orders[index];
+          const order = orders[index];
           return result * (order == 'desc' ? -1 : 1);
         }
       }
@@ -6771,7 +6771,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new array of composed arguments.
      */
     function composeArgs(args, partials, holders, isCurried) {
-      var argsIndex = -1,
+      let argsIndex = -1,
           argsLength = args.length,
           holdersLength = holders.length,
           leftIndex = -1,
@@ -6806,7 +6806,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the new array of composed arguments.
      */
     function composeArgsRight(args, partials, holders, isCurried) {
-      var argsIndex = -1,
+      let argsIndex = -1,
           argsLength = args.length,
           holdersIndex = -1,
           holdersLength = holders.length,
@@ -6819,7 +6819,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       while (++argsIndex < rangeLength) {
         result[argsIndex] = args[argsIndex];
       }
-      var offset = argsIndex;
+      const offset = argsIndex;
       while (++rightIndex < rightLength) {
         result[offset + rightIndex] = partials[rightIndex];
       }
@@ -6840,7 +6840,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function copyArray(source, array) {
-      var index = -1,
+      let index = -1,
           length = source.length;
 
       array || (array = Array(length));
@@ -6861,16 +6861,16 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns `object`.
      */
     function copyObject(source, props, object, customizer) {
-      var isNew = !object;
+      const isNew = !object;
       object || (object = {});
 
-      var index = -1,
+      let index = -1,
           length = props.length;
 
       while (++index < length) {
-        var key = props[index];
+        const key = props[index];
 
-        var newValue = customizer
+        let newValue = customizer
           ? customizer(object[key], source[key], key, object, source)
           : undefined;
 
@@ -6920,7 +6920,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createAggregator(setter, initializer) {
       return function(collection, iteratee) {
-        var func = isArray(collection) ? arrayAggregator : baseAggregator,
+        const func = isArray(collection) ? arrayAggregator : baseAggregator,
             accumulator = initializer ? initializer() : {};
 
         return func(collection, setter, getIteratee(iteratee, 2), accumulator);
@@ -6936,7 +6936,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createAssigner(assigner) {
       return baseRest(function(object, sources) {
-        var index = -1,
+        let index = -1,
             length = sources.length,
             customizer = length > 1 ? sources[length - 1] : undefined,
             guard = length > 2 ? sources[2] : undefined;
@@ -6951,7 +6951,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
         object = Object(object);
         while (++index < length) {
-          var source = sources[index];
+          const source = sources[index];
           if (source) {
             assigner(object, source, index, customizer);
           }
@@ -6976,7 +6976,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         if (!isArrayLike(collection)) {
           return eachFunc(collection, iteratee);
         }
-        var length = collection.length,
+        let length = collection.length,
             index = fromRight ? length : -1,
             iterable = Object(collection);
 
@@ -6998,13 +6998,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createBaseFor(fromRight) {
       return function(object, iteratee, keysFunc) {
-        var index = -1,
+        let index = -1,
             iterable = Object(object),
             props = keysFunc(object),
             length = props.length;
 
         while (length--) {
-          var key = props[fromRight ? length : ++index];
+          const key = props[fromRight ? length : ++index];
           if (iteratee(iterable[key], key, iterable) === false) {
             break;
           }
@@ -7024,11 +7024,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createBind(func, bitmask, thisArg) {
-      var isBind = bitmask & WRAP_BIND_FLAG,
+      const isBind = bitmask & WRAP_BIND_FLAG,
           Ctor = createCtor(func);
 
       function wrapper() {
-        var fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
+        const fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
         return fn.apply(isBind ? thisArg : this, arguments);
       }
       return wrapper;
@@ -7045,15 +7045,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       return function(string) {
         string = toString(string);
 
-        var strSymbols = hasUnicode(string)
+        const strSymbols = hasUnicode(string)
           ? stringToArray(string)
           : undefined;
 
-        var chr = strSymbols
+        const chr = strSymbols
           ? strSymbols[0]
           : string.charAt(0);
 
-        var trailing = strSymbols
+        const trailing = strSymbols
           ? castSlice(strSymbols, 1).join('')
           : string.slice(1);
 
@@ -7087,7 +7087,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         // Use a `switch` statement to work with class constructors. See
         // http://ecma-international.org/ecma-262/7.0/#sec-ecmascript-function-objects-call-thisargument-argumentslist
         // for more details.
-        var args = arguments;
+        const args = arguments;
         switch (args.length) {
           case 0: return new Ctor;
           case 1: return new Ctor(args[0]);
@@ -7098,7 +7098,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           case 6: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5]);
           case 7: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
         }
-        var thisBinding = baseCreate(Ctor.prototype),
+        const thisBinding = baseCreate(Ctor.prototype),
             result = Ctor.apply(thisBinding, args);
 
         // Mimic the constructor's `return` behavior.
@@ -7117,10 +7117,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createCurry(func, bitmask, arity) {
-      var Ctor = createCtor(func);
+      const Ctor = createCtor(func);
 
       function wrapper() {
-        var length = arguments.length,
+        let length = arguments.length,
             args = Array(length),
             index = length,
             placeholder = getHolder(wrapper);
@@ -7128,7 +7128,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         while (index--) {
           args[index] = arguments[index];
         }
-        var holders = (length < 3 && args[0] !== placeholder && args[length - 1] !== placeholder)
+        const holders = (length < 3 && args[0] !== placeholder && args[length - 1] !== placeholder)
           ? []
           : replaceHolders(args, placeholder);
 
@@ -7138,7 +7138,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             func, bitmask, createHybrid, wrapper.placeholder, undefined,
             args, holders, undefined, undefined, arity - length);
         }
-        var fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
+        const fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
         return apply(fn, this, args);
       }
       return wrapper;
@@ -7153,13 +7153,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createFind(findIndexFunc) {
       return function(collection, predicate, fromIndex) {
-        var iterable = Object(collection);
+        const iterable = Object(collection);
         if (!isArrayLike(collection)) {
           var iteratee = getIteratee(predicate, 3);
           collection = keys(collection);
           predicate = function(key) { return iteratee(iterable[key], key, iterable); };
         }
-        var index = findIndexFunc(collection, predicate, fromIndex);
+        const index = findIndexFunc(collection, predicate, fromIndex);
         return index > -1 ? iterable[iteratee ? collection[index] : index] : undefined;
       };
     }
@@ -7173,7 +7173,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createFlow(fromRight) {
       return flatRest(function(funcs) {
-        var length = funcs.length,
+        let length = funcs.length,
             index = length,
             prereq = LodashWrapper.prototype.thru;
 
@@ -7193,7 +7193,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         while (++index < length) {
           func = funcs[index];
 
-          var funcName = getFuncName(func),
+          const funcName = getFuncName(func),
               data = funcName == 'wrapper' ? getData(func) : undefined;
 
           if (data && isLaziable(data[0]) &&
@@ -7208,13 +7208,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           }
         }
         return function() {
-          var args = arguments,
+          const args = arguments,
               value = args[0];
 
           if (wrapper && args.length == 1 && isArray(value)) {
             return wrapper.plant(value).value();
           }
-          var index = 0,
+          let index = 0,
               result = length ? funcs[index].apply(this, args) : value;
 
           while (++index < length) {
@@ -7245,7 +7245,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createHybrid(func, bitmask, thisArg, partials, holders, partialsRight, holdersRight, argPos, ary, arity) {
-      var isAry = bitmask & WRAP_ARY_FLAG,
+      const isAry = bitmask & WRAP_ARY_FLAG,
           isBind = bitmask & WRAP_BIND_FLAG,
           isBindKey = bitmask & WRAP_BIND_KEY_FLAG,
           isCurried = bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG),
@@ -7253,7 +7253,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           Ctor = isBindKey ? undefined : createCtor(func);
 
       function wrapper() {
-        var length = arguments.length,
+        let length = arguments.length,
             args = Array(length),
             index = length;
 
@@ -7272,13 +7272,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
         length -= holdersCount;
         if (isCurried && length < arity) {
-          var newHolders = replaceHolders(args, placeholder);
+          const newHolders = replaceHolders(args, placeholder);
           return createRecurry(
             func, bitmask, createHybrid, wrapper.placeholder, thisArg,
             args, newHolders, argPos, ary, arity - length
           );
         }
-        var thisBinding = isBind ? thisArg : this,
+        let thisBinding = isBind ? thisArg : this,
             fn = isBindKey ? thisBinding[func] : func;
 
         length = args.length;
@@ -7322,7 +7322,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createMathOperation(operator, defaultValue) {
       return function(value, other) {
-        var result;
+        let result;
         if (value === undefined && other === undefined) {
           return defaultValue;
         }
@@ -7357,7 +7357,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       return flatRest(function(iteratees) {
         iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
         return baseRest(function(args) {
-          var thisArg = this;
+          const thisArg = this;
           return arrayFunc(iteratees, function(iteratee) {
             return apply(iteratee, thisArg, args);
           });
@@ -7377,11 +7377,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function createPadding(length, chars) {
       chars = chars === undefined ? ' ' : baseToString(chars);
 
-      var charsLength = chars.length;
+      const charsLength = chars.length;
       if (charsLength < 2) {
         return charsLength ? baseRepeat(chars, length) : chars;
       }
-      var result = baseRepeat(chars, nativeCeil(length / stringSize(chars)));
+      const result = baseRepeat(chars, nativeCeil(length / stringSize(chars)));
       return hasUnicode(chars)
         ? castSlice(stringToArray(result), 0, length).join('')
         : result.slice(0, length);
@@ -7400,11 +7400,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createPartial(func, bitmask, thisArg, partials) {
-      var isBind = bitmask & WRAP_BIND_FLAG,
+      const isBind = bitmask & WRAP_BIND_FLAG,
           Ctor = createCtor(func);
 
       function wrapper() {
-        var argsIndex = -1,
+        let argsIndex = -1,
             argsLength = arguments.length,
             leftIndex = -1,
             leftLength = partials.length,
@@ -7482,7 +7482,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createRecurry(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {
-      var isCurry = bitmask & WRAP_CURRY_FLAG,
+      const isCurry = bitmask & WRAP_CURRY_FLAG,
           newHolders = isCurry ? holders : undefined,
           newHoldersRight = isCurry ? undefined : holders,
           newPartials = isCurry ? partials : undefined,
@@ -7494,12 +7494,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!(bitmask & WRAP_CURRY_BOUND_FLAG)) {
         bitmask &= ~(WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG);
       }
-      var newData = [
+      const newData = [
         func, bitmask, thisArg, newPartials, newHolders, newPartialsRight,
         newHoldersRight, argPos, ary, arity
       ];
 
-      var result = wrapFunc.apply(undefined, newData);
+      const result = wrapFunc.apply(undefined, newData);
       if (isLaziable(func)) {
         setData(result, newData);
       }
@@ -7515,14 +7515,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new round function.
      */
     function createRound(methodName) {
-      var func = Math[methodName];
+      const func = Math[methodName];
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
         if (precision && nativeIsFinite(number)) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
-          var pair = (toString(number) + 'e').split('e'),
+          let pair = (toString(number) + 'e').split('e'),
               value = func(pair[0] + 'e' + (+pair[1] + precision));
 
           pair = (toString(value) + 'e').split('e');
@@ -7552,7 +7552,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function createToPairs(keysFunc) {
       return function(object) {
-        var tag = getTag(object);
+        const tag = getTag(object);
         if (tag == mapTag) {
           return mapToArray(object);
         }
@@ -7589,11 +7589,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new wrapped function.
      */
     function createWrap(func, bitmask, thisArg, partials, holders, argPos, ary, arity) {
-      var isBindKey = bitmask & WRAP_BIND_KEY_FLAG;
+      const isBindKey = bitmask & WRAP_BIND_KEY_FLAG;
       if (!isBindKey && typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      var length = partials ? partials.length : 0;
+      let length = partials ? partials.length : 0;
       if (!length) {
         bitmask &= ~(WRAP_PARTIAL_FLAG | WRAP_PARTIAL_RIGHT_FLAG);
         partials = holders = undefined;
@@ -7608,9 +7608,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
         partials = holders = undefined;
       }
-      var data = isBindKey ? undefined : getData(func);
+      const data = isBindKey ? undefined : getData(func);
 
-      var newData = [
+      const newData = [
         func, bitmask, thisArg, partials, holders, partialsRight, holdersRight,
         argPos, ary, arity
       ];
@@ -7639,7 +7639,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       } else {
         result = createHybrid.apply(undefined, newData);
       }
-      var setter = data ? baseSetData : setData;
+      const setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
     }
 
@@ -7714,7 +7714,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
      */
     function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      const isPartial = bitmask & COMPARE_PARTIAL_FLAG,
           arrLength = array.length,
           othLength = other.length;
 
@@ -7722,12 +7722,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return false;
       }
       // Check that cyclic values are equal.
-      var arrStacked = stack.get(array);
-      var othStacked = stack.get(other);
+      const arrStacked = stack.get(array);
+      const othStacked = stack.get(other);
       if (arrStacked && othStacked) {
         return arrStacked == other && othStacked == array;
       }
-      var index = -1,
+      let index = -1,
           result = true,
           seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
 
@@ -7871,7 +7871,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
      */
     function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      const isPartial = bitmask & COMPARE_PARTIAL_FLAG,
           objProps = getAllKeys(object),
           objLength = objProps.length,
           othProps = getAllKeys(other),
@@ -7880,7 +7880,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (objLength != othLength && !isPartial) {
         return false;
       }
-      var index = objLength;
+      let index = objLength;
       while (index--) {
         var key = objProps[index];
         if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
@@ -7888,19 +7888,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
       }
       // Check that cyclic values are equal.
-      var objStacked = stack.get(object);
-      var othStacked = stack.get(other);
+      const objStacked = stack.get(object);
+      const othStacked = stack.get(other);
       if (objStacked && othStacked) {
         return objStacked == other && othStacked == object;
       }
-      var result = true;
+      let result = true;
       stack.set(object, other);
       stack.set(other, object);
 
-      var skipCtor = isPartial;
+      let skipCtor = isPartial;
       while (++index < objLength) {
         key = objProps[index];
-        var objValue = object[key],
+        const objValue = object[key],
             othValue = other[key];
 
         if (customizer) {
@@ -7919,7 +7919,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         skipCtor || (skipCtor = key == 'constructor');
       }
       if (result && !skipCtor) {
-        var objCtor = object.constructor,
+        const objCtor = object.constructor,
             othCtor = other.constructor;
 
         // Non `Object` object instances with different constructors are not equal.
@@ -7988,12 +7988,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {string} Returns the function name.
      */
     function getFuncName(func) {
-      var result = (func.name + ''),
+      let result = (func.name + ''),
           array = realNames[result],
           length = hasOwnProperty.call(realNames, result) ? array.length : 0;
 
       while (length--) {
-        var data = array[length],
+        const data = array[length],
             otherFunc = data.func;
         if (otherFunc == null || otherFunc == func) {
           return data.name;
@@ -8010,7 +8010,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the placeholder value.
      */
     function getHolder(func) {
-      var object = hasOwnProperty.call(lodash, 'placeholder') ? lodash : func;
+      const object = hasOwnProperty.call(lodash, 'placeholder') ? lodash : func;
       return object.placeholder;
     }
 
@@ -8026,7 +8026,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the chosen function or its result.
      */
     function getIteratee() {
-      var result = lodash.iteratee || iteratee;
+      let result = lodash.iteratee || iteratee;
       result = result === iteratee ? baseIteratee : result;
       return arguments.length ? result(arguments[0], arguments[1]) : result;
     }
@@ -8040,7 +8040,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the map data.
      */
     function getMapData(map, key) {
-      var data = map.__data__;
+      const data = map.__data__;
       return isKeyable(key)
         ? data[typeof key == 'string' ? 'string' : 'hash']
         : data.map;
@@ -8054,11 +8054,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the match data of `object`.
      */
     function getMatchData(object) {
-      var result = keys(object),
+      let result = keys(object),
           length = result.length;
 
       while (length--) {
-        var key = result[length],
+        const key = result[length],
             value = object[key];
 
         result[length] = [key, value, isStrictComparable(value)];
@@ -8075,7 +8075,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {*} Returns the function if it's native, else `undefined`.
      */
     function getNative(object, key) {
-      var value = getValue(object, key);
+      const value = getValue(object, key);
       return baseIsNative(value) ? value : undefined;
     }
 
@@ -8087,7 +8087,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {string} Returns the raw `toStringTag`.
      */
     function getRawTag(value) {
-      var isOwn = hasOwnProperty.call(value, symToStringTag),
+      const isOwn = hasOwnProperty.call(value, symToStringTag),
           tag = value[symToStringTag];
 
       try {
@@ -8095,7 +8095,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         var unmasked = true;
       } catch (e) {}
 
-      var result = nativeObjectToString.call(value);
+      const result = nativeObjectToString.call(value);
       if (unmasked) {
         if (isOwn) {
           value[symToStringTag] = tag;
@@ -8131,7 +8131,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the array of symbols.
      */
     var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
-      var result = [];
+      const result = [];
       while (object) {
         arrayPush(result, getSymbols(object));
         object = getPrototype(object);
@@ -8155,7 +8155,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         (Set && getTag(new Set) != setTag) ||
         (WeakMap && getTag(new WeakMap) != weakMapTag)) {
       getTag = function(value) {
-        var result = baseGetTag(value),
+        const result = baseGetTag(value),
             Ctor = result == objectTag ? value.constructor : undefined,
             ctorString = Ctor ? toSource(Ctor) : '';
 
@@ -8183,11 +8183,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  positions of the view.
      */
     function getView(start, end, transforms) {
-      var index = -1,
+      let index = -1,
           length = transforms.length;
 
       while (++index < length) {
-        var data = transforms[index],
+        const data = transforms[index],
             size = data.size;
 
         switch (data.type) {
@@ -8208,7 +8208,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the wrapper details.
      */
     function getWrapDetails(source) {
-      var match = source.match(reWrapDetails);
+      const match = source.match(reWrapDetails);
       return match ? match[1].split(reSplitDetails) : [];
     }
 
@@ -8224,7 +8224,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function hasPath(object, path, hasFunc) {
       path = castPath(path, object);
 
-      var index = -1,
+      let index = -1,
           length = path.length,
           result = false;
 
@@ -8251,7 +8251,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the initialized clone.
      */
     function initCloneArray(array) {
-      var length = array.length,
+      const length = array.length,
           result = new array.constructor(length);
 
       // Add properties assigned by `RegExp#exec`.
@@ -8288,7 +8288,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Object} Returns the initialized clone.
      */
     function initCloneByTag(object, tag, isDeep) {
-      var Ctor = object.constructor;
+      const Ctor = object.constructor;
       switch (tag) {
         case arrayBufferTag:
           return cloneArrayBuffer(object);
@@ -8332,11 +8332,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {string} Returns the modified source.
      */
     function insertWrapDetails(source, details) {
-      var length = details.length;
+      const length = details.length;
       if (!length) {
         return source;
       }
-      var lastIndex = length - 1;
+      const lastIndex = length - 1;
       details[lastIndex] = (length > 1 ? '& ' : '') + details[lastIndex];
       details = details.join(length > 2 ? ', ' : ' ');
       return source.replace(reWrapComment, '{\n/* [wrapped with ' + details + '] */\n');
@@ -8363,7 +8363,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
      */
     function isIndex(value, length) {
-      var type = typeof value;
+      const type = typeof value;
       length = length == null ? MAX_SAFE_INTEGER : length;
 
       return !!length &&
@@ -8386,7 +8386,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObject(object)) {
         return false;
       }
-      var type = typeof index;
+      const type = typeof index;
       if (type == 'number'
             ? (isArrayLike(object) && isIndex(index, object.length))
             : (type == 'string' && index in object)
@@ -8408,7 +8408,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isArray(value)) {
         return false;
       }
-      var type = typeof value;
+      const type = typeof value;
       if (type == 'number' || type == 'symbol' || type == 'boolean' ||
           value == null || isSymbol(value)) {
         return true;
@@ -8425,7 +8425,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
      */
     function isKeyable(value) {
-      var type = typeof value;
+      const type = typeof value;
       return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
         ? (value !== '__proto__')
         : (value === null);
@@ -8440,7 +8440,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      *  else `false`.
      */
     function isLaziable(func) {
-      var funcName = getFuncName(func),
+      const funcName = getFuncName(func),
           other = lodash[funcName];
 
       if (typeof other != 'function' || !(funcName in LazyWrapper.prototype)) {
@@ -8449,7 +8449,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (func === other) {
         return true;
       }
-      var data = getData(other);
+      const data = getData(other);
       return !!data && func === data[0];
     }
 
@@ -8471,7 +8471,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @param {*} value The value to check.
      * @returns {boolean} Returns `true` if `func` is maskable, else `false`.
      */
-    var isMaskable = coreJsData ? isFunction : stubFalse;
+    const isMaskable = coreJsData ? isFunction : stubFalse;
 
     /**
      * Checks if `value` is likely a prototype object.
@@ -8481,7 +8481,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
      */
     function isPrototype(value) {
-      var Ctor = value && value.constructor,
+      const Ctor = value && value.constructor,
           proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
 
       return value === proto;
@@ -8527,7 +8527,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new memoized function.
      */
     function memoizeCapped(func) {
-      var result = memoize(func, function(key) {
+      const result = memoize(func, function(key) {
         if (cache.size === MAX_MEMOIZE_SIZE) {
           cache.clear();
         }
@@ -8555,12 +8555,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `data`.
      */
     function mergeData(data, source) {
-      var bitmask = data[1],
+      let bitmask = data[1],
           srcBitmask = source[1],
           newBitmask = bitmask | srcBitmask,
           isCommon = newBitmask < (WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG | WRAP_ARY_FLAG);
 
-      var isCombo =
+      const isCombo =
         ((srcBitmask == WRAP_ARY_FLAG) && (bitmask == WRAP_CURRY_FLAG)) ||
         ((srcBitmask == WRAP_ARY_FLAG) && (bitmask == WRAP_REARG_FLAG) && (data[7].length <= source[8])) ||
         ((srcBitmask == (WRAP_ARY_FLAG | WRAP_REARG_FLAG)) && (source[7].length <= source[8]) && (bitmask == WRAP_CURRY_FLAG));
@@ -8576,7 +8576,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         newBitmask |= bitmask & WRAP_BIND_FLAG ? 0 : WRAP_CURRY_BOUND_FLAG;
       }
       // Compose partial arguments.
-      var value = source[3];
+      let value = source[3];
       if (value) {
         var partials = data[3];
         data[3] = partials ? composeArgs(partials, value, source[4]) : value;
@@ -8619,9 +8619,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the array of property names.
      */
     function nativeKeysIn(object) {
-      var result = [];
+      const result = [];
       if (object != null) {
-        for (var key in Object(object)) {
+        for (const key in Object(object)) {
           result.push(key);
         }
       }
@@ -8651,7 +8651,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function overRest(func, start, transform) {
       start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
       return function() {
-        var args = arguments,
+        let args = arguments,
             index = -1,
             length = nativeMax(args.length - start, 0),
             array = Array(length);
@@ -8660,7 +8660,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           array[index] = args[start + index];
         }
         index = -1;
-        var otherArgs = Array(start + 1);
+        const otherArgs = Array(start + 1);
         while (++index < start) {
           otherArgs[index] = args[index];
         }
@@ -8692,12 +8692,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function reorder(array, indexes) {
-      var arrLength = array.length,
+      let arrLength = array.length,
           length = nativeMin(indexes.length, arrLength),
           oldArray = copyArray(array);
 
       while (length--) {
-        var index = indexes[length];
+        const index = indexes[length];
         array[length] = isIndex(index, arrLength) ? oldArray[index] : undefined;
       }
       return array;
@@ -8772,7 +8772,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns `wrapper`.
      */
     function setWrapToString(wrapper, reference, bitmask) {
-      var source = (reference + '');
+      const source = (reference + '');
       return setToString(wrapper, insertWrapDetails(source, updateWrapDetails(getWrapDetails(source), bitmask)));
     }
 
@@ -8786,11 +8786,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Function} Returns the new shortable function.
      */
     function shortOut(func) {
-      var count = 0,
+      let count = 0,
           lastCalled = 0;
 
       return function() {
-        var stamp = nativeNow(),
+        const stamp = nativeNow(),
             remaining = HOT_SPAN - (stamp - lastCalled);
 
         lastCalled = stamp;
@@ -8814,13 +8814,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns `array`.
      */
     function shuffleSelf(array, size) {
-      var index = -1,
+      let index = -1,
           length = array.length,
           lastIndex = length - 1;
 
       size = size === undefined ? length : size;
       while (++index < size) {
-        var rand = baseRandom(index, lastIndex),
+        const rand = baseRandom(index, lastIndex),
             value = array[rand];
 
         array[rand] = array[index];
@@ -8838,7 +8838,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the property path array.
      */
     var stringToPath = memoizeCapped(function(string) {
-      var result = [];
+      const result = [];
       if (string.charCodeAt(0) === 46 /* . */) {
         result.push('');
       }
@@ -8859,7 +8859,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (typeof value == 'string' || isSymbol(value)) {
         return value;
       }
-      var result = (value + '');
+      const result = (value + '');
       return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
     }
 
@@ -8892,7 +8892,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function updateWrapDetails(details, bitmask) {
       arrayEach(wrapFlags, function(pair) {
-        var value = '_.' + pair[0];
+        const value = '_.' + pair[0];
         if ((bitmask & pair[1]) && !arrayIncludes(details, value)) {
           details.push(value);
         }
@@ -8911,7 +8911,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (wrapper instanceof LazyWrapper) {
         return wrapper.clone();
       }
-      var result = new LodashWrapper(wrapper.__wrapped__, wrapper.__chain__);
+      const result = new LodashWrapper(wrapper.__wrapped__, wrapper.__chain__);
       result.__actions__ = copyArray(wrapper.__actions__);
       result.__index__  = wrapper.__index__;
       result.__values__ = wrapper.__values__;
@@ -8947,11 +8947,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       } else {
         size = nativeMax(toInteger(size), 0);
       }
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length || size < 1) {
         return [];
       }
-      var index = 0,
+      let index = 0,
           resIndex = 0,
           result = Array(nativeCeil(length / size));
 
@@ -8977,13 +8977,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3]
      */
     function compact(array) {
-      var index = -1,
+      let index = -1,
           length = array == null ? 0 : array.length,
           resIndex = 0,
           result = [];
 
       while (++index < length) {
-        var value = array[index];
+        const value = array[index];
         if (value) {
           result[resIndex++] = value;
         }
@@ -9014,11 +9014,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1]
      */
     function concat() {
-      var length = arguments.length;
+      const length = arguments.length;
       if (!length) {
         return [];
       }
-      var args = Array(length - 1),
+      let args = Array(length - 1),
           array = arguments[0],
           index = length;
 
@@ -9049,7 +9049,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.difference([2, 1], [2, 3]);
      * // => [1]
      */
-    var difference = baseRest(function(array, values) {
+    const difference = baseRest(function(array, values) {
       return isArrayLikeObject(array)
         ? baseDifference(array, baseFlatten(values, 1, isArrayLikeObject, true))
         : [];
@@ -9081,8 +9081,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.differenceBy([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 1 }], 'x');
      * // => [{ 'x': 2 }]
      */
-    var differenceBy = baseRest(function(array, values) {
-      var iteratee = last(values);
+    const differenceBy = baseRest(function(array, values) {
+      let iteratee = last(values);
       if (isArrayLikeObject(iteratee)) {
         iteratee = undefined;
       }
@@ -9114,8 +9114,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.differenceWith(objects, [{ 'x': 1, 'y': 2 }], _.isEqual);
      * // => [{ 'x': 2, 'y': 1 }]
      */
-    var differenceWith = baseRest(function(array, values) {
-      var comparator = last(values);
+    const differenceWith = baseRest(function(array, values) {
+      let comparator = last(values);
       if (isArrayLikeObject(comparator)) {
         comparator = undefined;
       }
@@ -9150,7 +9150,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3]
      */
     function drop(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -9184,7 +9184,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3]
      */
     function dropRight(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -9305,7 +9305,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [4, '*', '*', 10]
      */
     function fill(array, value, start, end) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -9352,11 +9352,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 2
      */
     function findIndex(array, predicate, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return -1;
       }
-      var index = fromIndex == null ? 0 : toInteger(fromIndex);
+      let index = fromIndex == null ? 0 : toInteger(fromIndex);
       if (index < 0) {
         index = nativeMax(length + index, 0);
       }
@@ -9399,11 +9399,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 0
      */
     function findLastIndex(array, predicate, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return -1;
       }
-      var index = length - 1;
+      let index = length - 1;
       if (fromIndex !== undefined) {
         index = toInteger(fromIndex);
         index = fromIndex < 0
@@ -9428,7 +9428,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, [3, [4]], 5]
      */
     function flatten(array) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       return length ? baseFlatten(array, 1) : [];
     }
 
@@ -9447,7 +9447,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3, 4, 5]
      */
     function flattenDeep(array) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       return length ? baseFlatten(array, INFINITY) : [];
     }
 
@@ -9472,7 +9472,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2, 3, [4], 5]
      */
     function flattenDepth(array, depth) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -9496,12 +9496,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { 'a': 1, 'b': 2 }
      */
     function fromPairs(pairs) {
-      var index = -1,
+      let index = -1,
           length = pairs == null ? 0 : pairs.length,
           result = {};
 
       while (++index < length) {
-        var pair = pairs[index];
+        const pair = pairs[index];
         baseAssignValue(result, pair[0], pair[1]);
       }
       return result;
@@ -9553,11 +9553,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 3
      */
     function indexOf(array, value, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return -1;
       }
-      var index = fromIndex == null ? 0 : toInteger(fromIndex);
+      let index = fromIndex == null ? 0 : toInteger(fromIndex);
       if (index < 0) {
         index = nativeMax(length + index, 0);
       }
@@ -9579,7 +9579,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 2]
      */
     function initial(array) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       return length ? baseSlice(array, 0, -1) : [];
     }
 
@@ -9600,8 +9600,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.intersection([2, 1], [2, 3]);
      * // => [2]
      */
-    var intersection = baseRest(function(arrays) {
-      var mapped = arrayMap(arrays, castArrayLikeObject);
+    const intersection = baseRest(function(arrays) {
+      const mapped = arrayMap(arrays, castArrayLikeObject);
       return (mapped.length && mapped[0] === arrays[0])
         ? baseIntersection(mapped)
         : [];
@@ -9630,8 +9630,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.intersectionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x');
      * // => [{ 'x': 1 }]
      */
-    var intersectionBy = baseRest(function(arrays) {
-      var iteratee = last(arrays),
+    const intersectionBy = baseRest(function(arrays) {
+      let iteratee = last(arrays),
           mapped = arrayMap(arrays, castArrayLikeObject);
 
       if (iteratee === last(mapped)) {
@@ -9665,8 +9665,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.intersectionWith(objects, others, _.isEqual);
      * // => [{ 'x': 1, 'y': 2 }]
      */
-    var intersectionWith = baseRest(function(arrays) {
-      var comparator = last(arrays),
+    const intersectionWith = baseRest(function(arrays) {
+      let comparator = last(arrays),
           mapped = arrayMap(arrays, castArrayLikeObject);
 
       comparator = typeof comparator == 'function' ? comparator : undefined;
@@ -9712,7 +9712,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 3
      */
     function last(array) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       return length ? array[length - 1] : undefined;
     }
 
@@ -9738,11 +9738,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 1
      */
     function lastIndexOf(array, value, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return -1;
       }
-      var index = length;
+      let index = length;
       if (fromIndex !== undefined) {
         index = toInteger(fromIndex);
         index = index < 0 ? nativeMax(length + index, 0) : nativeMin(index, length - 1);
@@ -9800,7 +9800,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * console.log(array);
      * // => ['b', 'b']
      */
-    var pull = baseRest(pullAll);
+    const pull = baseRest(pullAll);
 
     /**
      * This method is like `_.pull` except that it accepts an array of values to remove.
@@ -9910,8 +9910,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * console.log(pulled);
      * // => ['b', 'd']
      */
-    var pullAt = flatRest(function(array, indexes) {
-      var length = array == null ? 0 : array.length,
+    const pullAt = flatRest(function(array, indexes) {
+      const length = array == null ? 0 : array.length,
           result = baseAt(array, indexes);
 
       basePullAt(array, arrayMap(indexes, function(index) {
@@ -9950,17 +9950,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [2, 4]
      */
     function remove(array, predicate) {
-      var result = [];
+      const result = [];
       if (!(array && array.length)) {
         return result;
       }
-      var index = -1,
+      let index = -1,
           indexes = [],
           length = array.length;
 
       predicate = getIteratee(predicate, 3);
       while (++index < length) {
-        var value = array[index];
+        const value = array[index];
         if (predicate(value, index, array)) {
           result.push(value);
           indexes.push(index);
@@ -10014,7 +10014,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * @returns {Array} Returns the slice of `array`.
      */
     function slice(array, start, end) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -10096,9 +10096,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 1
      */
     function sortedIndexOf(array, value) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (length) {
-        var index = baseSortedIndex(array, value);
+        const index = baseSortedIndex(array, value);
         if (index < length && eq(array[index], value)) {
           return index;
         }
@@ -10174,9 +10174,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 3
      */
     function sortedLastIndexOf(array, value) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (length) {
-        var index = baseSortedIndex(array, value, true) - 1;
+        const index = baseSortedIndex(array, value, true) - 1;
         if (eq(array[index], value)) {
           return index;
         }
@@ -10242,7 +10242,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [2, 3]
      */
     function tail(array) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       return length ? baseSlice(array, 1, length) : [];
     }
 
@@ -10305,7 +10305,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => []
      */
     function takeRight(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      const length = array == null ? 0 : array.length;
       if (!length) {
         return [];
       }
@@ -10412,7 +10412,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.union([2], [1, 2]);
      * // => [2, 1]
      */
-    var union = baseRest(function(arrays) {
+    const union = baseRest(function(arrays) {
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true));
     });
 
@@ -10439,8 +10439,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.unionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x');
      * // => [{ 'x': 1 }, { 'x': 2 }]
      */
-    var unionBy = baseRest(function(arrays) {
-      var iteratee = last(arrays);
+    const unionBy = baseRest(function(arrays) {
+      let iteratee = last(arrays);
       if (isArrayLikeObject(iteratee)) {
         iteratee = undefined;
       }
@@ -10468,8 +10468,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.unionWith(objects, others, _.isEqual);
      * // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 1 }]
      */
-    var unionWith = baseRest(function(arrays) {
-      var comparator = last(arrays);
+    const unionWith = baseRest(function(arrays) {
+      let comparator = last(arrays);
       comparator = typeof comparator == 'function' ? comparator : undefined;
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined, comparator);
     });
@@ -10571,7 +10571,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!(array && array.length)) {
         return [];
       }
-      var length = 0;
+      let length = 0;
       array = arrayFilter(array, function(group) {
         if (isArrayLikeObject(group)) {
           length = nativeMax(group.length, length);
@@ -10608,7 +10608,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!(array && array.length)) {
         return [];
       }
-      var result = unzip(array);
+      const result = unzip(array);
       if (iteratee == null) {
         return result;
       }
@@ -10637,7 +10637,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.without([2, 1, 2, 3], 1, 2);
      * // => [3]
      */
-    var without = baseRest(function(array, values) {
+    const without = baseRest(function(array, values) {
       return isArrayLikeObject(array)
         ? baseDifference(array, values)
         : [];
@@ -10661,7 +10661,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.xor([2, 1], [2, 3]);
      * // => [1, 3]
      */
-    var xor = baseRest(function(arrays) {
+    const xor = baseRest(function(arrays) {
       return baseXor(arrayFilter(arrays, isArrayLikeObject));
     });
 
@@ -10688,8 +10688,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.xorBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x');
      * // => [{ 'x': 2 }]
      */
-    var xorBy = baseRest(function(arrays) {
-      var iteratee = last(arrays);
+    const xorBy = baseRest(function(arrays) {
+      let iteratee = last(arrays);
       if (isArrayLikeObject(iteratee)) {
         iteratee = undefined;
       }
@@ -10717,8 +10717,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.xorWith(objects, others, _.isEqual);
      * // => [{ 'x': 2, 'y': 1 }, { 'x': 1, 'y': 1 }]
      */
-    var xorWith = baseRest(function(arrays) {
-      var comparator = last(arrays);
+    const xorWith = baseRest(function(arrays) {
+      let comparator = last(arrays);
       comparator = typeof comparator == 'function' ? comparator : undefined;
       return baseXor(arrayFilter(arrays, isArrayLikeObject), undefined, comparator);
     });
@@ -10739,7 +10739,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.zip(['a', 'b'], [1, 2], [true, false]);
      * // => [['a', 1, true], ['b', 2, false]]
      */
-    var zip = baseRest(unzip);
+    const zip = baseRest(unzip);
 
     /**
      * This method is like `_.fromPairs` except that it accepts two arrays,
@@ -10800,8 +10800,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * });
      * // => [111, 222]
      */
-    var zipWith = baseRest(function(arrays) {
-      var length = arrays.length,
+    const zipWith = baseRest(function(arrays) {
+      let length = arrays.length,
           iteratee = length > 1 ? arrays[length - 1] : undefined;
 
       iteratee = typeof iteratee == 'function' ? (arrays.pop(), iteratee) : undefined;
@@ -10840,7 +10840,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'pebbles is 1'
      */
     function chain(value) {
-      var result = lodash(value);
+      const result = lodash(value);
       result.__chain__ = true;
       return result;
     }
@@ -10916,8 +10916,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _(object).at(['a[0].b.c', 'a[1]']).value();
      * // => [3, 4]
      */
-    var wrapperAt = flatRest(function(paths) {
-      var length = paths.length,
+    const wrapperAt = flatRest(function(paths) {
+      let length = paths.length,
           start = length ? paths[0] : 0,
           value = this.__wrapped__,
           interceptor = function(object) { return baseAt(object, paths); };
@@ -11027,7 +11027,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (this.__values__ === undefined) {
         this.__values__ = toArray(this.value());
       }
-      var done = this.__index__ >= this.__values__.length,
+      const done = this.__index__ >= this.__values__.length,
           value = done ? undefined : this.__values__[this.__index__++];
 
       return { 'done': done, 'value': value };
@@ -11080,11 +11080,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [1, 4]
      */
     function wrapperPlant(value) {
-      var result,
+      let result,
           parent = this;
 
       while (parent instanceof baseLodash) {
-        var clone = wrapperClone(parent);
+        const clone = wrapperClone(parent);
         clone.__index__ = 0;
         clone.__values__ = undefined;
         if (result) {
@@ -11120,9 +11120,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [3, 2, 1]
      */
     function wrapperReverse() {
-      var value = this.__wrapped__;
+      const value = this.__wrapped__;
       if (value instanceof LazyWrapper) {
-        var wrapped = value;
+        let wrapped = value;
         if (this.__actions__.length) {
           wrapped = new LazyWrapper(this);
         }
@@ -11179,7 +11179,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.countBy(['one', 'two', 'three'], 'length');
      * // => { '3': 2, '5': 1 }
      */
-    var countBy = createAggregator(function(result, value, key) {
+    const countBy = createAggregator(function(result, value, key) {
       if (hasOwnProperty.call(result, key)) {
         ++result[key];
       } else {
@@ -11229,7 +11229,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => false
      */
     function every(collection, predicate, guard) {
-      var func = isArray(collection) ? arrayEvery : baseEvery;
+      const func = isArray(collection) ? arrayEvery : baseEvery;
       if (guard && isIterateeCall(collection, predicate, guard)) {
         predicate = undefined;
       }
@@ -11278,7 +11278,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => objects for ['fred', 'barney']
      */
     function filter(collection, predicate) {
-      var func = isArray(collection) ? arrayFilter : baseFilter;
+      const func = isArray(collection) ? arrayFilter : baseFilter;
       return func(collection, getIteratee(predicate, 3));
     }
 
@@ -11318,7 +11318,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.find(users, 'active');
      * // => object for 'barney'
      */
-    var find = createFind(findIndex);
+    const find = createFind(findIndex);
 
     /**
      * This method is like `_.find` except that it iterates over elements of
@@ -11339,7 +11339,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * });
      * // => 3
      */
-    var findLast = createFind(findLastIndex);
+    const findLast = createFind(findLastIndex);
 
     /**
      * Creates a flattened array of values by running each element in `collection`
@@ -11447,7 +11447,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => Logs 'a' then 'b' (iteration order is not guaranteed).
      */
     function forEach(collection, iteratee) {
-      var func = isArray(collection) ? arrayEach : baseEach;
+      const func = isArray(collection) ? arrayEach : baseEach;
       return func(collection, getIteratee(iteratee, 3));
     }
 
@@ -11472,7 +11472,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => Logs `2` then `1`.
      */
     function forEachRight(collection, iteratee) {
-      var func = isArray(collection) ? arrayEachRight : baseEachRight;
+      const func = isArray(collection) ? arrayEachRight : baseEachRight;
       return func(collection, getIteratee(iteratee, 3));
     }
 
@@ -11499,7 +11499,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.groupBy(['one', 'two', 'three'], 'length');
      * // => { '3': ['one', 'two'], '5': ['three'] }
      */
-    var groupBy = createAggregator(function(result, value, key) {
+    const groupBy = createAggregator(function(result, value, key) {
       if (hasOwnProperty.call(result, key)) {
         result[key].push(value);
       } else {
@@ -11541,7 +11541,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       collection = isArrayLike(collection) ? collection : values(collection);
       fromIndex = (fromIndex && !guard) ? toInteger(fromIndex) : 0;
 
-      var length = collection.length;
+      const length = collection.length;
       if (fromIndex < 0) {
         fromIndex = nativeMax(length + fromIndex, 0);
       }
@@ -11573,8 +11573,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.invokeMap([123, 456], String.prototype.split, '');
      * // => [['1', '2', '3'], ['4', '5', '6']]
      */
-    var invokeMap = baseRest(function(collection, path, args) {
-      var index = -1,
+    const invokeMap = baseRest(function(collection, path, args) {
+      let index = -1,
           isFunc = typeof path == 'function',
           result = isArrayLike(collection) ? Array(collection.length) : [];
 
@@ -11612,7 +11612,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.keyBy(array, 'dir');
      * // => { 'left': { 'dir': 'left', 'code': 97 }, 'right': { 'dir': 'right', 'code': 100 } }
      */
-    var keyBy = createAggregator(function(result, value, key) {
+    const keyBy = createAggregator(function(result, value, key) {
       baseAssignValue(result, key, value);
     });
 
@@ -11659,7 +11659,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => ['barney', 'fred']
      */
     function map(collection, iteratee) {
-      var func = isArray(collection) ? arrayMap : baseMap;
+      const func = isArray(collection) ? arrayMap : baseMap;
       return func(collection, getIteratee(iteratee, 3));
     }
 
@@ -11742,7 +11742,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.partition(users, 'active');
      * // => objects for [['fred'], ['barney', 'pebbles']]
      */
-    var partition = createAggregator(function(result, value, key) {
+    const partition = createAggregator(function(result, value, key) {
       result[key ? 0 : 1].push(value);
     }, function() { return [[], []]; });
 
@@ -11784,7 +11784,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { '1': ['a', 'c'], '2': ['b'] } (iteration order is not guaranteed)
      */
     function reduce(collection, iteratee, accumulator) {
-      var func = isArray(collection) ? arrayReduce : baseReduce,
+      const func = isArray(collection) ? arrayReduce : baseReduce,
           initAccum = arguments.length < 3;
 
       return func(collection, getIteratee(iteratee, 4), accumulator, initAccum, baseEach);
@@ -11813,7 +11813,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [4, 5, 2, 3, 0, 1]
      */
     function reduceRight(collection, iteratee, accumulator) {
-      var func = isArray(collection) ? arrayReduceRight : baseReduce,
+      const func = isArray(collection) ? arrayReduceRight : baseReduce,
           initAccum = arguments.length < 3;
 
       return func(collection, getIteratee(iteratee, 4), accumulator, initAccum, baseEachRight);
@@ -11854,7 +11854,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => objects for ['barney']
      */
     function reject(collection, predicate) {
-      var func = isArray(collection) ? arrayFilter : baseFilter;
+      const func = isArray(collection) ? arrayFilter : baseFilter;
       return func(collection, negate(getIteratee(predicate, 3)));
     }
 
@@ -11873,7 +11873,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 2
      */
     function sample(collection) {
-      var func = isArray(collection) ? arraySample : baseSample;
+      const func = isArray(collection) ? arraySample : baseSample;
       return func(collection);
     }
 
@@ -11903,7 +11903,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       } else {
         n = toInteger(n);
       }
-      var func = isArray(collection) ? arraySampleSize : baseSampleSize;
+      const func = isArray(collection) ? arraySampleSize : baseSampleSize;
       return func(collection, n);
     }
 
@@ -11923,7 +11923,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => [4, 1, 3, 2]
      */
     function shuffle(collection) {
-      var func = isArray(collection) ? arrayShuffle : baseShuffle;
+      const func = isArray(collection) ? arrayShuffle : baseShuffle;
       return func(collection);
     }
 
@@ -11955,7 +11955,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isArrayLike(collection)) {
         return isString(collection) ? stringSize(collection) : collection.length;
       }
-      var tag = getTag(collection);
+      const tag = getTag(collection);
       if (tag == mapTag || tag == setTag) {
         return collection.size;
       }
@@ -11999,7 +11999,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => true
      */
     function some(collection, predicate, guard) {
-      var func = isArray(collection) ? arraySome : baseSome;
+      const func = isArray(collection) ? arraySome : baseSome;
       if (guard && isIterateeCall(collection, predicate, guard)) {
         predicate = undefined;
       }
@@ -12035,11 +12035,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.sortBy(users, ['user', 'age']);
      * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
      */
-    var sortBy = baseRest(function(collection, iteratees) {
+    const sortBy = baseRest(function(collection, iteratees) {
       if (collection == null) {
         return [];
       }
-      var length = iteratees.length;
+      const length = iteratees.length;
       if (length > 1 && isIterateeCall(collection, iteratees[0], iteratees[1])) {
         iteratees = [];
       } else if (length > 2 && isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
@@ -12066,7 +12066,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * }, _.now());
      * // => Logs the number of milliseconds it took for the deferred invocation.
      */
-    var now = ctxNow || function() {
+    const now = ctxNow || function() {
       return root.Date.now();
     };
 
@@ -12149,7 +12149,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => Allows adding up to 4 contacts to the list.
      */
     function before(n, func) {
-      var result;
+      let result;
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
@@ -12201,7 +12201,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'hi fred!'
      */
     var bind = baseRest(function(func, thisArg, partials) {
-      var bitmask = WRAP_BIND_FLAG;
+      let bitmask = WRAP_BIND_FLAG;
       if (partials.length) {
         var holders = replaceHolders(partials, getHolder(bind));
         bitmask |= WRAP_PARTIAL_FLAG;
@@ -12255,7 +12255,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'hiya fred!'
      */
     var bindKey = baseRest(function(object, key, partials) {
-      var bitmask = WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG;
+      let bitmask = WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG;
       if (partials.length) {
         var holders = replaceHolders(partials, getHolder(bindKey));
         bitmask |= WRAP_PARTIAL_FLAG;
@@ -12306,7 +12306,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function curry(func, arity, guard) {
       arity = guard ? undefined : arity;
-      var result = createWrap(func, WRAP_CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
+      const result = createWrap(func, WRAP_CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
       result.placeholder = curry.placeholder;
       return result;
     }
@@ -12351,7 +12351,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function curryRight(func, arity, guard) {
       arity = guard ? undefined : arity;
-      var result = createWrap(func, WRAP_CURRY_RIGHT_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
+      const result = createWrap(func, WRAP_CURRY_RIGHT_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
       result.placeholder = curryRight.placeholder;
       return result;
     }
@@ -12411,7 +12411,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * jQuery(window).on('popstate', debounced.cancel);
      */
     function debounce(func, wait, options) {
-      var lastArgs,
+      let lastArgs,
           lastThis,
           maxWait,
           result,
@@ -12434,7 +12434,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function invokeFunc(time) {
-        var args = lastArgs,
+        const args = lastArgs,
             thisArg = lastThis;
 
         lastArgs = lastThis = undefined;
@@ -12453,7 +12453,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function remainingWait(time) {
-        var timeSinceLastCall = time - lastCallTime,
+        const timeSinceLastCall = time - lastCallTime,
             timeSinceLastInvoke = time - lastInvokeTime,
             timeWaiting = wait - timeSinceLastCall;
 
@@ -12463,7 +12463,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function shouldInvoke(time) {
-        var timeSinceLastCall = time - lastCallTime,
+        const timeSinceLastCall = time - lastCallTime,
             timeSinceLastInvoke = time - lastInvokeTime;
 
         // Either this is the first call, activity has stopped and we're at the
@@ -12474,7 +12474,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function timerExpired() {
-        var time = now();
+        const time = now();
         if (shouldInvoke(time)) {
           return trailingEdge(time);
         }
@@ -12507,7 +12507,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
 
       function debounced() {
-        var time = now(),
+        const time = now(),
             isInvoking = shouldInvoke(time);
 
         lastArgs = arguments;
@@ -12553,7 +12553,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * }, 'deferred');
      * // => Logs 'deferred' after one millisecond.
      */
-    var defer = baseRest(function(func, args) {
+    const defer = baseRest(function(func, args) {
       return baseDelay(func, 1, args);
     });
 
@@ -12576,7 +12576,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * }, 1000, 'later');
      * // => Logs 'later' after one second.
      */
-    var delay = baseRest(function(func, wait, args) {
+    const delay = baseRest(function(func, wait, args) {
       return baseDelay(func, toNumber(wait) || 0, args);
     });
 
@@ -12650,15 +12650,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      var memoized = function() {
-        var args = arguments,
+      const memoized = function() {
+        const args = arguments,
             key = resolver ? resolver.apply(this, args) : args[0],
             cache = memoized.cache;
 
         if (cache.has(key)) {
           return cache.get(key);
         }
-        var result = func.apply(this, args);
+        const result = func.apply(this, args);
         memoized.cache = cache.set(key, result) || cache;
         return result;
       };
@@ -12694,7 +12694,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         throw new TypeError(FUNC_ERROR_TEXT);
       }
       return function() {
-        var args = arguments;
+        const args = arguments;
         switch (args.length) {
           case 0: return !predicate.call(this);
           case 1: return !predicate.call(this, args[0]);
@@ -12758,14 +12758,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * func(10, 5);
      * // => [100, 10]
      */
-    var overArgs = castRest(function(func, transforms) {
+    const overArgs = castRest(function(func, transforms) {
       transforms = (transforms.length == 1 && isArray(transforms[0]))
         ? arrayMap(transforms[0], baseUnary(getIteratee()))
         : arrayMap(baseFlatten(transforms, 1), baseUnary(getIteratee()));
 
-      var funcsLength = transforms.length;
+      const funcsLength = transforms.length;
       return baseRest(function(args) {
-        var index = -1,
+        let index = -1,
             length = nativeMin(args.length, funcsLength);
 
         while (++index < length) {
@@ -12809,7 +12809,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'hi fred'
      */
     var partial = baseRest(function(func, partials) {
-      var holders = replaceHolders(partials, getHolder(partial));
+      const holders = replaceHolders(partials, getHolder(partial));
       return createWrap(func, WRAP_PARTIAL_FLAG, undefined, partials, holders);
     });
 
@@ -12846,7 +12846,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'hello fred'
      */
     var partialRight = baseRest(function(func, partials) {
-      var holders = replaceHolders(partials, getHolder(partialRight));
+      const holders = replaceHolders(partials, getHolder(partialRight));
       return createWrap(func, WRAP_PARTIAL_RIGHT_FLAG, undefined, partials, holders);
     });
 
@@ -12872,7 +12872,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * rearged('b', 'c', 'a')
      * // => ['a', 'b', 'c']
      */
-    var rearg = flatRest(function(func, indexes) {
+    const rearg = flatRest(function(func, indexes) {
       return createWrap(func, WRAP_REARG_FLAG, undefined, undefined, undefined, indexes);
     });
 
@@ -12949,7 +12949,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       start = start == null ? 0 : nativeMax(toInteger(start), 0);
       return baseRest(function(args) {
-        var array = args[start],
+        const array = args[start],
             otherArgs = castSlice(args, 0, start);
 
         if (array) {
@@ -13004,7 +13004,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * jQuery(window).on('popstate', throttled.cancel);
      */
     function throttle(func, wait, options) {
-      var leading = true,
+      let leading = true,
           trailing = true;
 
       if (typeof func != 'function') {
@@ -13105,7 +13105,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!arguments.length) {
         return [];
       }
-      var value = arguments[0];
+      const value = arguments[0];
       return isArray(value) ? value : [value];
     }
 
@@ -13317,7 +13317,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.gt(1, 3);
      * // => false
      */
-    var gt = createRelationalOperation(baseGt);
+    const gt = createRelationalOperation(baseGt);
 
     /**
      * Checks if `value` is greater than or equal to `other`.
@@ -13342,7 +13342,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.gte(1, 3);
      * // => false
      */
-    var gte = createRelationalOperation(function(value, other) {
+    const gte = createRelationalOperation(function(value, other) {
       return value >= other;
     });
 
@@ -13411,7 +13411,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.isArrayBuffer(new Array(2));
      * // => false
      */
-    var isArrayBuffer = nodeIsArrayBuffer ? baseUnary(nodeIsArrayBuffer) : baseIsArrayBuffer;
+    const isArrayBuffer = nodeIsArrayBuffer ? baseUnary(nodeIsArrayBuffer) : baseIsArrayBuffer;
 
     /**
      * Checks if `value` is array-like. A value is considered array-like if it's
@@ -13529,7 +13529,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.isDate('Mon April 23 2012');
      * // => false
      */
-    var isDate = nodeIsDate ? baseUnary(nodeIsDate) : baseIsDate;
+    const isDate = nodeIsDate ? baseUnary(nodeIsDate) : baseIsDate;
 
     /**
      * Checks if `value` is likely a DOM element.
@@ -13594,14 +13594,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
             isBuffer(value) || isTypedArray(value) || isArguments(value))) {
         return !value.length;
       }
-      var tag = getTag(value);
+      const tag = getTag(value);
       if (tag == mapTag || tag == setTag) {
         return !value.size;
       }
       if (isPrototype(value)) {
         return !baseKeys(value).length;
       }
-      for (var key in value) {
+      for (const key in value) {
         if (hasOwnProperty.call(value, key)) {
           return false;
         }
@@ -13675,7 +13675,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      */
     function isEqualWith(value, other, customizer) {
       customizer = typeof customizer == 'function' ? customizer : undefined;
-      var result = customizer ? customizer(value, other) : undefined;
+      const result = customizer ? customizer(value, other) : undefined;
       return result === undefined ? baseIsEqual(value, other, undefined, customizer) : !!result;
     }
 
@@ -13701,7 +13701,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObjectLike(value)) {
         return false;
       }
-      var tag = baseGetTag(value);
+      const tag = baseGetTag(value);
       return tag == errorTag || tag == domExcTag ||
         (typeof value.message == 'string' && typeof value.name == 'string' && !isPlainObject(value));
     }
@@ -13759,7 +13759,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       // The use of `Object#toString` avoids issues with the `typeof` operator
       // in Safari 9 which returns 'object' for typed arrays and other constructors.
-      var tag = baseGetTag(value);
+      const tag = baseGetTag(value);
       return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
     }
 
@@ -13850,7 +13850,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => false
      */
     function isObject(value) {
-      var type = typeof value;
+      const type = typeof value;
       return value != null && (type == 'object' || type == 'function');
     }
 
@@ -14146,11 +14146,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
         return false;
       }
-      var proto = getPrototype(value);
+      const proto = getPrototype(value);
       if (proto === null) {
         return true;
       }
-      var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+      const Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
       return typeof Ctor == 'function' && Ctor instanceof Ctor &&
         funcToString.call(Ctor) == objectCtorString;
     }
@@ -14172,7 +14172,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.isRegExp('/abc/');
      * // => false
      */
-    var isRegExp = nodeIsRegExp ? baseUnary(nodeIsRegExp) : baseIsRegExp;
+    const isRegExp = nodeIsRegExp ? baseUnary(nodeIsRegExp) : baseIsRegExp;
 
     /**
      * Checks if `value` is a safe integer. An integer is safe if it's an IEEE-754
@@ -14373,7 +14373,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.lt(3, 1);
      * // => false
      */
-    var lt = createRelationalOperation(baseLt);
+    const lt = createRelationalOperation(baseLt);
 
     /**
      * Checks if `value` is less than or equal to `other`.
@@ -14398,7 +14398,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.lte(3, 1);
      * // => false
      */
-    var lte = createRelationalOperation(function(value, other) {
+    const lte = createRelationalOperation(function(value, other) {
       return value <= other;
     });
 
@@ -14435,7 +14435,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (symIterator && value[symIterator]) {
         return iteratorToArray(value[symIterator]());
       }
-      var tag = getTag(value),
+      const tag = getTag(value),
           func = tag == mapTag ? mapToArray : (tag == setTag ? setToArray : values);
 
       return func(value);
@@ -14470,7 +14470,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       value = toNumber(value);
       if (value === INFINITY || value === -INFINITY) {
-        var sign = (value < 0 ? -1 : 1);
+        const sign = (value < 0 ? -1 : 1);
         return sign * MAX_INTEGER;
       }
       return value === value ? value : 0;
@@ -14503,7 +14503,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 3
      */
     function toInteger(value) {
-      var result = toFinite(value),
+      const result = toFinite(value),
           remainder = result % 1;
 
       return result === result ? (remainder ? result - remainder : result) : 0;
@@ -14571,14 +14571,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return NAN;
       }
       if (isObject(value)) {
-        var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+        const other = typeof value.valueOf == 'function' ? value.valueOf() : value;
         value = isObject(other) ? (other + '') : other;
       }
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
       }
       value = baseTrim(value);
-      var isBinary = reIsBinary.test(value);
+      const isBinary = reIsBinary.test(value);
       return (isBinary || reIsOctal.test(value))
         ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
         : (reIsBadHex.test(value) ? NAN : +value);
@@ -14701,12 +14701,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.assign({ 'a': 0 }, new Foo, new Bar);
      * // => { 'a': 1, 'c': 3 }
      */
-    var assign = createAssigner(function(object, source) {
+    const assign = createAssigner(function(object, source) {
       if (isPrototype(source) || isArrayLike(source)) {
         copyObject(source, keys(source), object);
         return;
       }
-      for (var key in source) {
+      for (const key in source) {
         if (hasOwnProperty.call(source, key)) {
           assignValue(object, key, source[key]);
         }
@@ -14744,7 +14744,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.assignIn({ 'a': 0 }, new Foo, new Bar);
      * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4 }
      */
-    var assignIn = createAssigner(function(object, source) {
+    const assignIn = createAssigner(function(object, source) {
       copyObject(source, keysIn(source), object);
     });
 
@@ -14777,7 +14777,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
      * // => { 'a': 1, 'b': 2 }
      */
-    var assignInWith = createAssigner(function(object, source, srcIndex, customizer) {
+    const assignInWith = createAssigner(function(object, source, srcIndex, customizer) {
       copyObject(source, keysIn(source), object, customizer);
     });
 
@@ -14809,7 +14809,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
      * // => { 'a': 1, 'b': 2 }
      */
-    var assignWith = createAssigner(function(object, source, srcIndex, customizer) {
+    const assignWith = createAssigner(function(object, source, srcIndex, customizer) {
       copyObject(source, keys(source), object, customizer);
     });
 
@@ -14830,7 +14830,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.at(object, ['a[0].b.c', 'a[1]']);
      * // => [3, 4]
      */
-    var at = flatRest(baseAt);
+    const at = flatRest(baseAt);
 
     /**
      * Creates an object that inherits from the `prototype` object. If a
@@ -14867,7 +14867,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => true
      */
     function create(prototype, properties) {
-      var result = baseCreate(prototype);
+      const result = baseCreate(prototype);
       return properties == null ? result : baseAssign(result, properties);
     }
 
@@ -14892,26 +14892,26 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
      * // => { 'a': 1, 'b': 2 }
      */
-    var defaults = baseRest(function(object, sources) {
+    const defaults = baseRest(function(object, sources) {
       object = Object(object);
 
-      var index = -1;
-      var length = sources.length;
-      var guard = length > 2 ? sources[2] : undefined;
+      let index = -1;
+      let length = sources.length;
+      const guard = length > 2 ? sources[2] : undefined;
 
       if (guard && isIterateeCall(sources[0], sources[1], guard)) {
         length = 1;
       }
 
       while (++index < length) {
-        var source = sources[index];
-        var props = keysIn(source);
-        var propsIndex = -1;
-        var propsLength = props.length;
+        const source = sources[index];
+        const props = keysIn(source);
+        let propsIndex = -1;
+        const propsLength = props.length;
 
         while (++propsIndex < propsLength) {
-          var key = props[propsIndex];
-          var value = object[key];
+          const key = props[propsIndex];
+          const value = object[key];
 
           if (value === undefined ||
               (eq(value, objectProto[key]) && !hasOwnProperty.call(object, key))) {
@@ -14942,7 +14942,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.defaultsDeep({ 'a': { 'b': 2 } }, { 'a': { 'b': 1, 'c': 3 } });
      * // => { 'a': { 'b': 2, 'c': 3 } }
      */
-    var defaultsDeep = baseRest(function(args) {
+    const defaultsDeep = baseRest(function(args) {
       args.push(undefined, customDefaultsMerge);
       return apply(mergeWith, undefined, args);
     });
@@ -15233,7 +15233,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'default'
      */
     function get(object, path, defaultValue) {
-      var result = object == null ? undefined : baseGet(object, path);
+      const result = object == null ? undefined : baseGet(object, path);
       return result === undefined ? defaultValue : result;
     }
 
@@ -15316,7 +15316,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.invert(object);
      * // => { '1': 'c', '2': 'b' }
      */
-    var invert = createInverter(function(result, value, key) {
+    const invert = createInverter(function(result, value, key) {
       if (value != null &&
           typeof value.toString != 'function') {
         value = nativeObjectToString.call(value);
@@ -15351,7 +15351,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * });
      * // => { 'group1': ['a', 'c'], 'group2': ['b'] }
      */
-    var invertBy = createInverter(function(result, value, key) {
+    const invertBy = createInverter(function(result, value, key) {
       if (value != null &&
           typeof value.toString != 'function') {
         value = nativeObjectToString.call(value);
@@ -15382,7 +15382,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.invoke(object, 'a[0].b.c.slice', 1, 3);
      * // => [2, 3]
      */
-    var invoke = baseRest(baseInvoke);
+    const invoke = baseRest(baseInvoke);
 
     /**
      * Creates an array of the own enumerable property names of `object`.
@@ -15465,7 +15465,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { 'a1': 1, 'b2': 2 }
      */
     function mapKeys(object, iteratee) {
-      var result = {};
+      const result = {};
       iteratee = getIteratee(iteratee, 3);
 
       baseForOwn(object, function(value, key, object) {
@@ -15503,7 +15503,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
      */
     function mapValues(object, iteratee) {
-      var result = {};
+      const result = {};
       iteratee = getIteratee(iteratee, 3);
 
       baseForOwn(object, function(value, key, object) {
@@ -15543,7 +15543,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.merge(object, other);
      * // => { 'a': [{ 'b': 2, 'c': 3 }, { 'd': 4, 'e': 5 }] }
      */
-    var merge = createAssigner(function(object, source, srcIndex) {
+    const merge = createAssigner(function(object, source, srcIndex) {
       baseMerge(object, source, srcIndex);
     });
 
@@ -15602,12 +15602,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.omit(object, ['a', 'c']);
      * // => { 'b': '2' }
      */
-    var omit = flatRest(function(object, paths) {
-      var result = {};
+    const omit = flatRest(function(object, paths) {
+      let result = {};
       if (object == null) {
         return result;
       }
-      var isDeep = false;
+      let isDeep = false;
       paths = arrayMap(paths, function(path) {
         path = castPath(path, object);
         isDeep || (isDeep = path.length > 1);
@@ -15617,7 +15617,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (isDeep) {
         result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
       }
-      var length = paths.length;
+      let length = paths.length;
       while (length--) {
         baseUnset(result, paths[length]);
       }
@@ -15665,7 +15665,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.pick(object, ['a', 'c']);
      * // => { 'a': 1, 'c': 3 }
      */
-    var pick = flatRest(function(object, paths) {
+    const pick = flatRest(function(object, paths) {
       return object == null ? {} : basePick(object, paths);
     });
 
@@ -15691,7 +15691,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (object == null) {
         return {};
       }
-      var props = arrayMap(getAllKeysIn(object), function(prop) {
+      const props = arrayMap(getAllKeysIn(object), function(prop) {
         return [prop];
       });
       predicate = getIteratee(predicate);
@@ -15732,7 +15732,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     function result(object, path, defaultValue) {
       path = castPath(path, object);
 
-      var index = -1,
+      let index = -1,
           length = path.length;
 
       // Ensure the loop is entered when path is empty.
@@ -15741,7 +15741,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         object = undefined;
       }
       while (++index < length) {
-        var value = object == null ? undefined : object[toKey(path[index])];
+        let value = object == null ? undefined : object[toKey(path[index])];
         if (value === undefined) {
           index = length;
           value = defaultValue;
@@ -15836,7 +15836,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.toPairs(new Foo);
      * // => [['a', 1], ['b', 2]] (iteration order is not guaranteed)
      */
-    var toPairs = createToPairs(keys);
+    const toPairs = createToPairs(keys);
 
     /**
      * Creates an array of own and inherited enumerable string keyed-value pairs
@@ -15862,7 +15862,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.toPairsIn(new Foo);
      * // => [['a', 1], ['b', 2], ['c', 3]] (iteration order is not guaranteed)
      */
-    var toPairsIn = createToPairs(keysIn);
+    const toPairsIn = createToPairs(keysIn);
 
     /**
      * An alternative to `_.reduce`; this method transforms `object` to a new
@@ -15895,12 +15895,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => { '1': ['a', 'c'], '2': ['b'] }
      */
     function transform(object, iteratee, accumulator) {
-      var isArr = isArray(object),
+      const isArr = isArray(object),
           isArrLike = isArr || isBuffer(object) || isTypedArray(object);
 
       iteratee = getIteratee(iteratee, 4);
       if (accumulator == null) {
-        var Ctor = object && object.constructor;
+        const Ctor = object && object.constructor;
         if (isArrLike) {
           accumulator = isArr ? new Ctor : [];
         }
@@ -16221,12 +16221,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
       }
       if (lower > upper) {
-        var temp = lower;
+        const temp = lower;
         lower = upper;
         upper = temp;
       }
       if (floating || lower % 1 || upper % 1) {
-        var rand = nativeRandom();
+        const rand = nativeRandom();
         return nativeMin(lower + (rand * (upper - lower + freeParseFloat('1e-' + ((rand + '').length - 1)))), upper);
       }
       return baseRandom(lower, upper);
@@ -16254,7 +16254,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.camelCase('__FOO_BAR__');
      * // => 'fooBar'
      */
-    var camelCase = createCompounder(function(result, word, index) {
+    const camelCase = createCompounder(function(result, word, index) {
       word = word.toLowerCase();
       return result + (index ? capitalize(word) : word);
     });
@@ -16328,12 +16328,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       string = toString(string);
       target = baseToString(target);
 
-      var length = string.length;
+      const length = string.length;
       position = position === undefined
         ? length
         : baseClamp(toInteger(position), 0, length);
 
-      var end = position;
+      const end = position;
       position -= target.length;
       return position >= 0 && string.slice(position, end) == target;
     }
@@ -16416,7 +16416,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.kebabCase('__FOO_BAR__');
      * // => 'foo-bar'
      */
-    var kebabCase = createCompounder(function(result, word, index) {
+    const kebabCase = createCompounder(function(result, word, index) {
       return result + (index ? '-' : '') + word.toLowerCase();
     });
 
@@ -16440,7 +16440,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.lowerCase('__FOO_BAR__');
      * // => 'foo bar'
      */
-    var lowerCase = createCompounder(function(result, word, index) {
+    const lowerCase = createCompounder(function(result, word, index) {
       return result + (index ? ' ' : '') + word.toLowerCase();
     });
 
@@ -16461,7 +16461,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.lowerFirst('FRED');
      * // => 'fRED'
      */
-    var lowerFirst = createCaseFirst('toLowerCase');
+    const lowerFirst = createCaseFirst('toLowerCase');
 
     /**
      * Pads `string` on the left and right sides if it's shorter than `length`.
@@ -16490,11 +16490,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       string = toString(string);
       length = toInteger(length);
 
-      var strLength = length ? stringSize(string) : 0;
+      const strLength = length ? stringSize(string) : 0;
       if (!length || strLength >= length) {
         return string;
       }
-      var mid = (length - strLength) / 2;
+      const mid = (length - strLength) / 2;
       return (
         createPadding(nativeFloor(mid), chars) +
         string +
@@ -16529,7 +16529,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       string = toString(string);
       length = toInteger(length);
 
-      var strLength = length ? stringSize(string) : 0;
+      const strLength = length ? stringSize(string) : 0;
       return (length && strLength < length)
         ? (string + createPadding(length - strLength, chars))
         : string;
@@ -16562,7 +16562,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       string = toString(string);
       length = toInteger(length);
 
-      var strLength = length ? stringSize(string) : 0;
+      const strLength = length ? stringSize(string) : 0;
       return (length && strLength < length)
         ? (createPadding(length - strLength, chars) + string)
         : string;
@@ -16652,7 +16652,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'Hi Barney'
      */
     function replace() {
-      var args = arguments,
+      const args = arguments,
           string = toString(args[0]);
 
       return args.length < 3 ? string : string.replace(args[1], args[2]);
@@ -16679,7 +16679,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.snakeCase('--FOO-BAR--');
      * // => 'foo_bar'
      */
-    var snakeCase = createCompounder(function(result, word, index) {
+    const snakeCase = createCompounder(function(result, word, index) {
       return result + (index ? '_' : '') + word.toLowerCase();
     });
 
@@ -16744,7 +16744,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.startCase('__FOO_BAR__');
      * // => 'FOO BAR'
      */
-    var startCase = createCompounder(function(result, word, index) {
+    const startCase = createCompounder(function(result, word, index) {
       return result + (index ? ' ' : '') + upperFirst(word);
     });
 
@@ -16893,7 +16893,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       // Based on John Resig's `tmpl` implementation
       // (http://ejohn.org/blog/javascript-micro-templating/)
       // and Laura Doktorova's doT.js (https://github.com/olado/doT).
-      var settings = lodash.templateSettings;
+      const settings = lodash.templateSettings;
 
       if (guard && isIterateeCall(string, options, guard)) {
         options = undefined;
@@ -16901,7 +16901,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       string = toString(string);
       options = assignWith({}, options, settings, customDefaultsAssignIn);
 
-      var imports = assignWith({}, options.imports, settings.imports, customDefaultsAssignIn),
+      const imports = assignWith({}, options.imports, settings.imports, customDefaultsAssignIn),
           importsKeys = keys(imports),
           importsValues = baseValues(imports, importsKeys);
 
@@ -16911,14 +16911,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         }
       });
 
-      var isEscaping,
+      let isEscaping,
           isEvaluating,
           index = 0,
           interpolate = options.interpolate || reNoMatch,
           source = "__p += '";
 
       // Compile the regexp to match each delimiter.
-      var reDelimiters = RegExp(
+      const reDelimiters = RegExp(
         (options.escape || reNoMatch).source + '|' +
         interpolate.source + '|' +
         (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + '|' +
@@ -16929,7 +16929,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       // The sourceURL gets injected into the source that's eval-ed, so be careful
       // to normalize all kinds of whitespace, so e.g. newlines (and unicode versions of it) can't sneak in
       // and escape the comment, thus injecting code that gets evaled.
-      var sourceURL = '//# sourceURL=' +
+      const sourceURL = '//# sourceURL=' +
         (hasOwnProperty.call(options, 'sourceURL')
           ? (options.sourceURL + '').replace(/\s/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
@@ -16964,7 +16964,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
+      const variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
@@ -16998,7 +16998,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         source +
         'return __p\n}';
 
-      var result = attempt(function() {
+      const result = attempt(function() {
         return Function(importsKeys, sourceURL + 'return ' + source)
           .apply(undefined, importsValues);
       });
@@ -17092,7 +17092,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!string || !(chars = baseToString(chars))) {
         return string;
       }
-      var strSymbols = stringToArray(string),
+      const strSymbols = stringToArray(string),
           chrSymbols = stringToArray(chars),
           start = charsStartIndex(strSymbols, chrSymbols),
           end = charsEndIndex(strSymbols, chrSymbols) + 1;
@@ -17127,7 +17127,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!string || !(chars = baseToString(chars))) {
         return string;
       }
-      var strSymbols = stringToArray(string),
+      const strSymbols = stringToArray(string),
           end = charsEndIndex(strSymbols, stringToArray(chars)) + 1;
 
       return castSlice(strSymbols, 0, end).join('');
@@ -17160,7 +17160,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (!string || !(chars = baseToString(chars))) {
         return string;
       }
-      var strSymbols = stringToArray(string),
+      const strSymbols = stringToArray(string),
           start = charsStartIndex(strSymbols, stringToArray(chars));
 
       return castSlice(strSymbols, start).join('');
@@ -17204,7 +17204,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'hi-diddly-ho there, neig [...]'
      */
     function truncate(string, options) {
-      var length = DEFAULT_TRUNC_LENGTH,
+      let length = DEFAULT_TRUNC_LENGTH,
           omission = DEFAULT_TRUNC_OMISSION;
 
       if (isObject(options)) {
@@ -17214,7 +17214,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       string = toString(string);
 
-      var strLength = string.length;
+      let strLength = string.length;
       if (hasUnicode(string)) {
         var strSymbols = stringToArray(string);
         strLength = strSymbols.length;
@@ -17222,11 +17222,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (length >= strLength) {
         return string;
       }
-      var end = length - stringSize(omission);
+      let end = length - stringSize(omission);
       if (end < 1) {
         return omission;
       }
-      var result = strSymbols
+      let result = strSymbols
         ? castSlice(strSymbols, 0, end).join('')
         : string.slice(0, end);
 
@@ -17238,7 +17238,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       }
       if (isRegExp(separator)) {
         if (string.slice(end).search(separator)) {
-          var match,
+          let match,
               substring = result;
 
           if (!separator.global) {
@@ -17251,7 +17251,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
           result = result.slice(0, newEnd === undefined ? end : newEnd);
         }
       } else if (string.indexOf(baseToString(separator), end) != end) {
-        var index = result.lastIndexOf(separator);
+        const index = result.lastIndexOf(separator);
         if (index > -1) {
           result = result.slice(0, index);
         }
@@ -17305,7 +17305,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.upperCase('__foo_bar__');
      * // => 'FOO BAR'
      */
-    var upperCase = createCompounder(function(result, word, index) {
+    const upperCase = createCompounder(function(result, word, index) {
       return result + (index ? ' ' : '') + word.toUpperCase();
     });
 
@@ -17415,7 +17415,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * jQuery(element).on('click', view.click);
      * // => Logs 'clicked docs' when clicked.
      */
-    var bindAll = flatRest(function(object, methodNames) {
+    const bindAll = flatRest(function(object, methodNames) {
       arrayEach(methodNames, function(key) {
         key = toKey(key);
         baseAssignValue(object, key, bind(object[key], object));
@@ -17453,7 +17453,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => 'no match'
      */
     function cond(pairs) {
-      var length = pairs == null ? 0 : pairs.length,
+      const length = pairs == null ? 0 : pairs.length,
           toIteratee = getIteratee();
 
       pairs = !length ? [] : arrayMap(pairs, function(pair) {
@@ -17464,9 +17464,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       });
 
       return baseRest(function(args) {
-        var index = -1;
+        let index = -1;
         while (++index < length) {
-          var pair = pairs[index];
+          const pair = pairs[index];
           if (apply(pair[0], this, args)) {
             return apply(pair[1], this, args);
           }
@@ -17573,7 +17573,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * addSquare(1, 2);
      * // => 9
      */
-    var flow = createFlow();
+    const flow = createFlow();
 
     /**
      * This method is like `_.flow` except that it creates a function that
@@ -17596,7 +17596,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * addSquare(1, 2);
      * // => 9
      */
-    var flowRight = createFlow(true);
+    const flowRight = createFlow(true);
 
     /**
      * This method returns the first argument it receives.
@@ -17764,7 +17764,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.map(objects, _.method(['a', 'b']));
      * // => [2, 1]
      */
-    var method = baseRest(function(path, args) {
+    const method = baseRest(function(path, args) {
       return function(object) {
         return baseInvoke(object, path, args);
       };
@@ -17793,7 +17793,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.map([['a', '2'], ['c', '0']], _.methodOf(object));
      * // => [2, 0]
      */
-    var methodOf = baseRest(function(object, args) {
+    const methodOf = baseRest(function(object, args) {
       return function(path) {
         return baseInvoke(object, path, args);
       };
@@ -17836,7 +17836,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => ['e']
      */
     function mixin(object, source, options) {
-      var props = keys(source),
+      let props = keys(source),
           methodNames = baseFunctions(source, props);
 
       if (options == null &&
@@ -17846,17 +17846,17 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         object = this;
         methodNames = baseFunctions(source, keys(source));
       }
-      var chain = !(isObject(options) && 'chain' in options) || !!options.chain,
+      const chain = !(isObject(options) && 'chain' in options) || !!options.chain,
           isFunc = isFunction(object);
 
       arrayEach(methodNames, function(methodName) {
-        var func = source[methodName];
+        const func = source[methodName];
         object[methodName] = func;
         if (isFunc) {
           object.prototype[methodName] = function() {
-            var chainAll = this.__chain__;
+            const chainAll = this.__chain__;
             if (chain || chainAll) {
-              var result = object(this.__wrapped__),
+              const result = object(this.__wrapped__),
                   actions = result.__actions__ = copyArray(this.__actions__);
 
               actions.push({ 'func': func, 'args': arguments, 'thisArg': object });
@@ -17952,7 +17952,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * func(1, 2, 3, 4);
      * // => [4, 1]
      */
-    var over = createOver(arrayMap);
+    const over = createOver(arrayMap);
 
     /**
      * Creates a function that checks if **all** of the `predicates` return
@@ -17982,7 +17982,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * func(NaN);
      * // => false
      */
-    var overEvery = createOver(arrayEvery);
+    const overEvery = createOver(arrayEvery);
 
     /**
      * Creates a function that checks if **any** of the `predicates` return
@@ -18015,7 +18015,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * var matchesFunc = _.overSome([{ 'a': 1 }, { 'a': 2 }])
      * var matchesPropertyFunc = _.overSome([['a', 1], ['a', 2]])
      */
-    var overSome = createOver(arraySome);
+    const overSome = createOver(arraySome);
 
     /**
      * Creates a function that returns the value at `path` of a given object.
@@ -18111,7 +18111,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.range(0);
      * // => []
      */
-    var range = createRange();
+    const range = createRange();
 
     /**
      * This method is like `_.range` except that it populates values in
@@ -18149,7 +18149,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.rangeRight(0);
      * // => []
      */
-    var rangeRight = createRange(true);
+    const rangeRight = createRange(true);
 
     /**
      * This method returns a new empty array.
@@ -18270,13 +18270,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       if (n < 1 || n > MAX_SAFE_INTEGER) {
         return [];
       }
-      var index = MAX_ARRAY_LENGTH,
+      let index = MAX_ARRAY_LENGTH,
           length = nativeMin(n, MAX_ARRAY_LENGTH);
 
       iteratee = getIteratee(iteratee);
       n -= MAX_ARRAY_LENGTH;
 
-      var result = baseTimes(length, iteratee);
+      const result = baseTimes(length, iteratee);
       while (++index < n) {
         iteratee(index);
       }
@@ -18325,7 +18325,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * // => '105'
      */
     function uniqueId(prefix) {
-      var id = ++idCounter;
+      const id = ++idCounter;
       return toString(prefix) + id;
     }
 
@@ -18346,7 +18346,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.add(6, 4);
      * // => 10
      */
-    var add = createMathOperation(function(augend, addend) {
+    const add = createMathOperation(function(augend, addend) {
       return augend + addend;
     }, 0);
 
@@ -18371,7 +18371,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.ceil(6040, -2);
      * // => 6100
      */
-    var ceil = createRound('ceil');
+    const ceil = createRound('ceil');
 
     /**
      * Divide two numbers.
@@ -18388,7 +18388,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.divide(6, 4);
      * // => 1.5
      */
-    var divide = createMathOperation(function(dividend, divisor) {
+    const divide = createMathOperation(function(dividend, divisor) {
       return dividend / divisor;
     }, 1);
 
@@ -18413,7 +18413,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.floor(4060, -2);
      * // => 4000
      */
-    var floor = createRound('floor');
+    const floor = createRound('floor');
 
     /**
      * Computes the maximum value of `array`. If `array` is empty or falsey,
@@ -18581,7 +18581,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.multiply(6, 4);
      * // => 24
      */
-    var multiply = createMathOperation(function(multiplier, multiplicand) {
+    const multiply = createMathOperation(function(multiplier, multiplicand) {
       return multiplier * multiplicand;
     }, 1);
 
@@ -18606,7 +18606,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.round(4060, -2);
      * // => 4100
      */
-    var round = createRound('round');
+    const round = createRound('round');
 
     /**
      * Subtract two numbers.
@@ -18623,7 +18623,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
      * _.subtract(6, 4);
      * // => 2
      */
-    var subtract = createMathOperation(function(minuend, subtrahend) {
+    const subtract = createMathOperation(function(minuend, subtrahend) {
       return minuend - subtrahend;
     }, 0);
 
@@ -18997,7 +18997,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     lodash.first = head;
 
     mixin(lodash, (function() {
-      var source = {};
+      const source = {};
       baseForOwn(lodash, function(func, methodName) {
         if (!hasOwnProperty.call(lodash.prototype, methodName)) {
           source[methodName] = func;
@@ -19027,7 +19027,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
       LazyWrapper.prototype[methodName] = function(n) {
         n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
 
-        var result = (this.__filtered__ && !index)
+        const result = (this.__filtered__ && !index)
           ? new LazyWrapper(this)
           : this.clone();
 
@@ -19049,11 +19049,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Add `LazyWrapper` methods that accept an `iteratee` value.
     arrayEach(['filter', 'map', 'takeWhile'], function(methodName, index) {
-      var type = index + 1,
+      const type = index + 1,
           isFilter = type == LAZY_FILTER_FLAG || type == LAZY_WHILE_FLAG;
 
       LazyWrapper.prototype[methodName] = function(iteratee) {
-        var result = this.clone();
+        const result = this.clone();
         result.__iteratees__.push({
           'iteratee': getIteratee(iteratee, 3),
           'type': type
@@ -19065,7 +19065,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Add `LazyWrapper` methods for `_.head` and `_.last`.
     arrayEach(['head', 'last'], function(methodName, index) {
-      var takeName = 'take' + (index ? 'Right' : '');
+      const takeName = 'take' + (index ? 'Right' : '');
 
       LazyWrapper.prototype[methodName] = function() {
         return this[takeName](1).value()[0];
@@ -19074,7 +19074,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Add `LazyWrapper` methods for `_.initial` and `_.tail`.
     arrayEach(['initial', 'tail'], function(methodName, index) {
-      var dropName = 'drop' + (index ? '' : 'Right');
+      const dropName = 'drop' + (index ? '' : 'Right');
 
       LazyWrapper.prototype[methodName] = function() {
         return this.__filtered__ ? new LazyWrapper(this) : this[dropName](1);
@@ -19109,7 +19109,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     LazyWrapper.prototype.slice = function(start, end) {
       start = toInteger(start);
 
-      var result = this;
+      let result = this;
       if (result.__filtered__ && (start > 0 || end < 0)) {
         return new LazyWrapper(result);
       }
@@ -19135,7 +19135,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Add `LazyWrapper` methods to `lodash.prototype`.
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
-      var checkIteratee = /^(?:filter|find|map|reject)|While$/.test(methodName),
+      const checkIteratee = /^(?:filter|find|map|reject)|While$/.test(methodName),
           isTaker = /^(?:head|last)$/.test(methodName),
           lodashFunc = lodash[isTaker ? ('take' + (methodName == 'last' ? 'Right' : '')) : methodName],
           retUnwrapped = isTaker || /^find/.test(methodName);
@@ -19144,14 +19144,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
         return;
       }
       lodash.prototype[methodName] = function() {
-        var value = this.__wrapped__,
+        let value = this.__wrapped__,
             args = isTaker ? [1] : arguments,
             isLazy = value instanceof LazyWrapper,
             iteratee = args[0],
             useLazy = isLazy || isArray(value);
 
-        var interceptor = function(value) {
-          var result = lodashFunc.apply(lodash, arrayPush([value], args));
+        const interceptor = function(value) {
+          const result = lodashFunc.apply(lodash, arrayPush([value], args));
           return (isTaker && chainAll) ? result[0] : result;
         };
 
@@ -19180,14 +19180,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Add `Array` methods to `lodash.prototype`.
     arrayEach(['pop', 'push', 'shift', 'sort', 'splice', 'unshift'], function(methodName) {
-      var func = arrayProto[methodName],
+      const func = arrayProto[methodName],
           chainName = /^(?:push|sort|unshift)$/.test(methodName) ? 'tap' : 'thru',
           retUnwrapped = /^(?:pop|shift)$/.test(methodName);
 
       lodash.prototype[methodName] = function() {
-        var args = arguments;
+        const args = arguments;
         if (retUnwrapped && !this.__chain__) {
-          var value = this.value();
+          const value = this.value();
           return func.apply(isArray(value) ? value : [], args);
         }
         return this[chainName](function(value) {
@@ -19198,9 +19198,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     // Map minified method names to their real names.
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
-      var lodashFunc = lodash[methodName];
+      const lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = lodashFunc.name + '';
+        const key = lodashFunc.name + '';
         if (!hasOwnProperty.call(realNames, key)) {
           realNames[key] = [];
         }
@@ -19300,16 +19300,16 @@ module.exports = __webpack_require__(7080)
  * @private
  */
 
-var db = __webpack_require__(6713)
-var extname = (__webpack_require__(6928).extname)
+const db = __webpack_require__(6713)
+const extname = (__webpack_require__(6928).extname)
 
 /**
  * Module variables.
  * @private
  */
 
-var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/
-var TEXT_TYPE_REGEXP = /^text\//i
+const EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/
+const TEXT_TYPE_REGEXP = /^text\//i
 
 /**
  * Module exports.
@@ -19340,8 +19340,8 @@ function charset (type) {
   }
 
   // TODO: use media-typer
-  var match = EXTRACT_TYPE_REGEXP.exec(type)
-  var mime = match && db[match[1].toLowerCase()]
+  const match = EXTRACT_TYPE_REGEXP.exec(type)
+  const mime = match && db[match[1].toLowerCase()]
 
   if (mime && mime.charset) {
     return mime.charset
@@ -19368,7 +19368,7 @@ function contentType (str) {
     return false
   }
 
-  var mime = str.indexOf('/') === -1
+  let mime = str.indexOf('/') === -1
     ? exports.lookup(str)
     : str
 
@@ -19378,7 +19378,7 @@ function contentType (str) {
 
   // TODO: use content-type or other module
   if (mime.indexOf('charset') === -1) {
-    var charset = exports.charset(mime)
+    const charset = exports.charset(mime)
     if (charset) mime += '; charset=' + charset.toLowerCase()
   }
 
@@ -19398,10 +19398,10 @@ function extension (type) {
   }
 
   // TODO: use media-typer
-  var match = EXTRACT_TYPE_REGEXP.exec(type)
+  const match = EXTRACT_TYPE_REGEXP.exec(type)
 
   // get extensions
-  var exts = match && exports.extensions[match[1].toLowerCase()]
+  const exts = match && exports.extensions[match[1].toLowerCase()]
 
   if (!exts || !exts.length) {
     return false
@@ -19423,7 +19423,7 @@ function lookup (path) {
   }
 
   // get the extension ("ext" or ".ext" or full path)
-  var extension = extname('x.' + path)
+  const extension = extname('x.' + path)
     .toLowerCase()
     .substr(1)
 
@@ -19441,11 +19441,11 @@ function lookup (path) {
 
 function populateMaps (extensions, types) {
   // source preference (least -> most)
-  var preference = ['nginx', 'apache', undefined, 'iana']
+  const preference = ['nginx', 'apache', undefined, 'iana']
 
   Object.keys(db).forEach(function forEachMimeType (type) {
-    var mime = db[type]
-    var exts = mime.extensions
+    const mime = db[type]
+    const exts = mime.extensions
 
     if (!exts || !exts.length) {
       return
@@ -19455,12 +19455,12 @@ function populateMaps (extensions, types) {
     extensions[type] = exts
 
     // extension -> mime
-    for (var i = 0; i < exts.length; i++) {
-      var extension = exts[i]
+    for (let i = 0; i < exts.length; i++) {
+      const extension = exts[i]
 
       if (types[extension]) {
-        var from = preference.indexOf(db[types[extension]].source)
-        var to = preference.indexOf(mime.source)
+        const from = preference.indexOf(db[types[extension]].source)
+        const to = preference.indexOf(mime.source)
 
         if (types[extension] !== 'application/octet-stream' &&
           (from > to || (from === to && types[extension].substr(0, 12) === 'application/'))) {
@@ -19485,12 +19485,12 @@ function populateMaps (extensions, types) {
  * Helpers.
  */
 
-var s = 1000;
-var m = s * 60;
-var h = m * 60;
-var d = h * 24;
-var w = d * 7;
-var y = d * 365.25;
+const s = 1000;
+const m = s * 60;
+const h = m * 60;
+const d = h * 24;
+const w = d * 7;
+const y = d * 365.25;
 
 /**
  * Parse or format the given `val`.
@@ -19508,7 +19508,7 @@ var y = d * 365.25;
 
 module.exports = function (val, options) {
   options = options || {};
-  var type = typeof val;
+  const type = typeof val;
   if (type === 'string' && val.length > 0) {
     return parse(val);
   } else if (type === 'number' && isFinite(val)) {
@@ -19533,14 +19533,14 @@ function parse(str) {
   if (str.length > 100) {
     return;
   }
-  var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+  const match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
     str
   );
   if (!match) {
     return;
   }
-  var n = parseFloat(match[1]);
-  var type = (match[2] || 'ms').toLowerCase();
+  const n = parseFloat(match[1]);
+  const type = (match[2] || 'ms').toLowerCase();
   switch (type) {
     case 'years':
     case 'year':
@@ -19594,7 +19594,7 @@ function parse(str) {
  */
 
 function fmtShort(ms) {
-  var msAbs = Math.abs(ms);
+  const msAbs = Math.abs(ms);
   if (msAbs >= d) {
     return Math.round(ms / d) + 'd';
   }
@@ -19619,7 +19619,7 @@ function fmtShort(ms) {
  */
 
 function fmtLong(ms) {
-  var msAbs = Math.abs(ms);
+  const msAbs = Math.abs(ms);
   if (msAbs >= d) {
     return plural(ms, msAbs, d, 'day');
   }
@@ -19640,7 +19640,7 @@ function fmtLong(ms) {
  */
 
 function plural(ms, msAbs, n, name) {
-  var isPlural = msAbs >= n * 1.5;
+  const isPlural = msAbs >= n * 1.5;
   return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
@@ -19660,10 +19660,10 @@ function plural(ms, msAbs, n, name) {
 
 
 
-var preferredCharsets = __webpack_require__(8958)
-var preferredEncodings = __webpack_require__(8417)
-var preferredLanguages = __webpack_require__(2338)
-var preferredMediaTypes = __webpack_require__(5434)
+const preferredCharsets = __webpack_require__(8958)
+const preferredEncodings = __webpack_require__(8417)
+const preferredLanguages = __webpack_require__(2338)
+const preferredMediaTypes = __webpack_require__(5434)
 
 /**
  * Module exports.
@@ -19688,7 +19688,7 @@ function Negotiator(request) {
 }
 
 Negotiator.prototype.charset = function charset(available) {
-  var set = this.charsets(available);
+  const set = this.charsets(available);
   return set && set[0];
 };
 
@@ -19697,7 +19697,7 @@ Negotiator.prototype.charsets = function charsets(available) {
 };
 
 Negotiator.prototype.encoding = function encoding(available) {
-  var set = this.encodings(available);
+  const set = this.encodings(available);
   return set && set[0];
 };
 
@@ -19706,7 +19706,7 @@ Negotiator.prototype.encodings = function encodings(available) {
 };
 
 Negotiator.prototype.language = function language(available) {
-  var set = this.languages(available);
+  const set = this.languages(available);
   return set && set[0];
 };
 
@@ -19715,7 +19715,7 @@ Negotiator.prototype.languages = function languages(available) {
 };
 
 Negotiator.prototype.mediaType = function mediaType(available) {
-  var set = this.mediaTypes(available);
+  const set = this.mediaTypes(available);
   return set && set[0];
 };
 
@@ -19762,7 +19762,7 @@ module.exports.preferredCharsets = preferredCharsets;
  * @private
  */
 
-var simpleCharsetRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
+const simpleCharsetRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
 
 /**
  * Parse the Accept-Charset header.
@@ -19770,10 +19770,10 @@ var simpleCharsetRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
  */
 
 function parseAcceptCharset(accept) {
-  var accepts = accept.split(',');
+  const accepts = accept.split(',');
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
-    var charset = parseCharset(accepts[i].trim(), i);
+    const charset = parseCharset(accepts[i].trim(), i);
 
     if (charset) {
       accepts[j++] = charset;
@@ -19792,15 +19792,15 @@ function parseAcceptCharset(accept) {
  */
 
 function parseCharset(str, i) {
-  var match = simpleCharsetRegExp.exec(str);
+  const match = simpleCharsetRegExp.exec(str);
   if (!match) return null;
 
-  var charset = match[1];
-  var q = 1;
+  const charset = match[1];
+  let q = 1;
   if (match[2]) {
-    var params = match[2].split(';')
-    for (var j = 0; j < params.length; j++) {
-      var p = params[j].trim().split('=');
+    const params = match[2].split(';')
+    for (let j = 0; j < params.length; j++) {
+      const p = params[j].trim().split('=');
       if (p[0] === 'q') {
         q = parseFloat(p[1]);
         break;
@@ -19821,10 +19821,10 @@ function parseCharset(str, i) {
  */
 
 function getCharsetPriority(charset, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  let priority = {o: -1, q: 0, s: 0};
 
-  for (var i = 0; i < accepted.length; i++) {
-    var spec = specify(charset, accepted[i], index);
+  for (let i = 0; i < accepted.length; i++) {
+    const spec = specify(charset, accepted[i], index);
 
     if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
       priority = spec;
@@ -19840,7 +19840,7 @@ function getCharsetPriority(charset, accepted, index) {
  */
 
 function specify(charset, spec, index) {
-  var s = 0;
+  let s = 0;
   if(spec.charset.toLowerCase() === charset.toLowerCase()){
     s |= 1;
   } else if (spec.charset !== '*' ) {
@@ -19862,7 +19862,7 @@ function specify(charset, spec, index) {
 
 function preferredCharsets(accept, provided) {
   // RFC 2616 sec 14.2: no header = *
-  var accepts = parseAcceptCharset(accept === undefined ? '*' : accept || '');
+  const accepts = parseAcceptCharset(accept === undefined ? '*' : accept || '');
 
   if (!provided) {
     // sorted list of all charsets
@@ -19872,7 +19872,7 @@ function preferredCharsets(accept, provided) {
       .map(getFullCharset);
   }
 
-  var priorities = provided.map(function getPriority(type, index) {
+  const priorities = provided.map(function getPriority(type, index) {
     return getCharsetPriority(type, accepts, index);
   });
 
@@ -19938,7 +19938,7 @@ module.exports.preferredEncodings = preferredEncodings;
  * @private
  */
 
-var simpleEncodingRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
+const simpleEncodingRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
 
 /**
  * Parse the Accept-Encoding header.
@@ -19946,12 +19946,12 @@ var simpleEncodingRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
  */
 
 function parseAcceptEncoding(accept) {
-  var accepts = accept.split(',');
-  var hasIdentity = false;
-  var minQuality = 1;
+  const accepts = accept.split(',');
+  let hasIdentity = false;
+  let minQuality = 1;
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
-    var encoding = parseEncoding(accepts[i].trim(), i);
+    const encoding = parseEncoding(accepts[i].trim(), i);
 
     if (encoding) {
       accepts[j++] = encoding;
@@ -19984,15 +19984,15 @@ function parseAcceptEncoding(accept) {
  */
 
 function parseEncoding(str, i) {
-  var match = simpleEncodingRegExp.exec(str);
+  const match = simpleEncodingRegExp.exec(str);
   if (!match) return null;
 
-  var encoding = match[1];
-  var q = 1;
+  const encoding = match[1];
+  let q = 1;
   if (match[2]) {
-    var params = match[2].split(';');
-    for (var j = 0; j < params.length; j++) {
-      var p = params[j].trim().split('=');
+    const params = match[2].split(';');
+    for (let j = 0; j < params.length; j++) {
+      const p = params[j].trim().split('=');
       if (p[0] === 'q') {
         q = parseFloat(p[1]);
         break;
@@ -20013,10 +20013,10 @@ function parseEncoding(str, i) {
  */
 
 function getEncodingPriority(encoding, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  let priority = {o: -1, q: 0, s: 0};
 
-  for (var i = 0; i < accepted.length; i++) {
-    var spec = specify(encoding, accepted[i], index);
+  for (let i = 0; i < accepted.length; i++) {
+    const spec = specify(encoding, accepted[i], index);
 
     if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
       priority = spec;
@@ -20032,7 +20032,7 @@ function getEncodingPriority(encoding, accepted, index) {
  */
 
 function specify(encoding, spec, index) {
-  var s = 0;
+  let s = 0;
   if(spec.encoding.toLowerCase() === encoding.toLowerCase()){
     s |= 1;
   } else if (spec.encoding !== '*' ) {
@@ -20053,7 +20053,7 @@ function specify(encoding, spec, index) {
  */
 
 function preferredEncodings(accept, provided) {
-  var accepts = parseAcceptEncoding(accept || '');
+  const accepts = parseAcceptEncoding(accept || '');
 
   if (!provided) {
     // sorted list of all encodings
@@ -20063,7 +20063,7 @@ function preferredEncodings(accept, provided) {
       .map(getFullEncoding);
   }
 
-  var priorities = provided.map(function getPriority(type, index) {
+  const priorities = provided.map(function getPriority(type, index) {
     return getEncodingPriority(type, accepts, index);
   });
 
@@ -20129,7 +20129,7 @@ module.exports.preferredLanguages = preferredLanguages;
  * @private
  */
 
-var simpleLanguageRegExp = /^\s*([^\s\-;]+)(?:-([^\s;]+))?\s*(?:;(.*))?$/;
+const simpleLanguageRegExp = /^\s*([^\s\-;]+)(?:-([^\s;]+))?\s*(?:;(.*))?$/;
 
 /**
  * Parse the Accept-Language header.
@@ -20137,10 +20137,10 @@ var simpleLanguageRegExp = /^\s*([^\s\-;]+)(?:-([^\s;]+))?\s*(?:;(.*))?$/;
  */
 
 function parseAcceptLanguage(accept) {
-  var accepts = accept.split(',');
+  const accepts = accept.split(',');
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
-    var language = parseLanguage(accepts[i].trim(), i);
+    const language = parseLanguage(accepts[i].trim(), i);
 
     if (language) {
       accepts[j++] = language;
@@ -20159,20 +20159,20 @@ function parseAcceptLanguage(accept) {
  */
 
 function parseLanguage(str, i) {
-  var match = simpleLanguageRegExp.exec(str);
+  const match = simpleLanguageRegExp.exec(str);
   if (!match) return null;
 
-  var prefix = match[1]
-  var suffix = match[2]
-  var full = prefix
+  const prefix = match[1]
+  const suffix = match[2]
+  let full = prefix
 
   if (suffix) full += "-" + suffix;
 
-  var q = 1;
+  let q = 1;
   if (match[3]) {
-    var params = match[3].split(';')
-    for (var j = 0; j < params.length; j++) {
-      var p = params[j].split('=');
+    const params = match[3].split(';')
+    for (let j = 0; j < params.length; j++) {
+      const p = params[j].split('=');
       if (p[0] === 'q') q = parseFloat(p[1]);
     }
   }
@@ -20192,10 +20192,10 @@ function parseLanguage(str, i) {
  */
 
 function getLanguagePriority(language, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  let priority = {o: -1, q: 0, s: 0};
 
-  for (var i = 0; i < accepted.length; i++) {
-    var spec = specify(language, accepted[i], index);
+  for (let i = 0; i < accepted.length; i++) {
+    const spec = specify(language, accepted[i], index);
 
     if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
       priority = spec;
@@ -20211,9 +20211,9 @@ function getLanguagePriority(language, accepted, index) {
  */
 
 function specify(language, spec, index) {
-  var p = parseLanguage(language)
+  const p = parseLanguage(language)
   if (!p) return null;
-  var s = 0;
+  let s = 0;
   if(spec.full.toLowerCase() === p.full.toLowerCase()){
     s |= 4;
   } else if (spec.prefix.toLowerCase() === p.full.toLowerCase()) {
@@ -20239,7 +20239,7 @@ function specify(language, spec, index) {
 
 function preferredLanguages(accept, provided) {
   // RFC 2616 sec 14.4: no header = *
-  var accepts = parseAcceptLanguage(accept === undefined ? '*' : accept || '');
+  const accepts = parseAcceptLanguage(accept === undefined ? '*' : accept || '');
 
   if (!provided) {
     // sorted list of all languages
@@ -20249,7 +20249,7 @@ function preferredLanguages(accept, provided) {
       .map(getFullLanguage);
   }
 
-  var priorities = provided.map(function getPriority(type, index) {
+  const priorities = provided.map(function getPriority(type, index) {
     return getLanguagePriority(type, accepts, index);
   });
 
@@ -20315,7 +20315,7 @@ module.exports.preferredMediaTypes = preferredMediaTypes;
  * @private
  */
 
-var simpleMediaTypeRegExp = /^\s*([^\s\/;]+)\/([^;\s]+)\s*(?:;(.*))?$/;
+const simpleMediaTypeRegExp = /^\s*([^\s\/;]+)\/([^;\s]+)\s*(?:;(.*))?$/;
 
 /**
  * Parse the Accept header.
@@ -20323,10 +20323,10 @@ var simpleMediaTypeRegExp = /^\s*([^\s\/;]+)\/([^;\s]+)\s*(?:;(.*))?$/;
  */
 
 function parseAccept(accept) {
-  var accepts = splitMediaTypes(accept);
+  const accepts = splitMediaTypes(accept);
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
-    var mediaType = parseMediaType(accepts[i].trim(), i);
+    const mediaType = parseMediaType(accepts[i].trim(), i);
 
     if (mediaType) {
       accepts[j++] = mediaType;
@@ -20345,24 +20345,24 @@ function parseAccept(accept) {
  */
 
 function parseMediaType(str, i) {
-  var match = simpleMediaTypeRegExp.exec(str);
+  const match = simpleMediaTypeRegExp.exec(str);
   if (!match) return null;
 
-  var params = Object.create(null);
-  var q = 1;
-  var subtype = match[2];
-  var type = match[1];
+  const params = Object.create(null);
+  let q = 1;
+  const subtype = match[2];
+  const type = match[1];
 
   if (match[3]) {
-    var kvps = splitParameters(match[3]).map(splitKeyValuePair);
+    const kvps = splitParameters(match[3]).map(splitKeyValuePair);
 
-    for (var j = 0; j < kvps.length; j++) {
-      var pair = kvps[j];
-      var key = pair[0].toLowerCase();
-      var val = pair[1];
+    for (let j = 0; j < kvps.length; j++) {
+      const pair = kvps[j];
+      const key = pair[0].toLowerCase();
+      const val = pair[1];
 
       // get the value, unwrapping quotes
-      var value = val && val[0] === '"' && val[val.length - 1] === '"'
+      const value = val && val[0] === '"' && val[val.length - 1] === '"'
         ? val.substr(1, val.length - 2)
         : val;
 
@@ -20391,10 +20391,10 @@ function parseMediaType(str, i) {
  */
 
 function getMediaTypePriority(type, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  let priority = {o: -1, q: 0, s: 0};
 
-  for (var i = 0; i < accepted.length; i++) {
-    var spec = specify(type, accepted[i], index);
+  for (let i = 0; i < accepted.length; i++) {
+    const spec = specify(type, accepted[i], index);
 
     if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
       priority = spec;
@@ -20410,8 +20410,8 @@ function getMediaTypePriority(type, accepted, index) {
  */
 
 function specify(type, spec, index) {
-  var p = parseMediaType(type);
-  var s = 0;
+  const p = parseMediaType(type);
+  let s = 0;
 
   if (!p) {
     return null;
@@ -20429,7 +20429,7 @@ function specify(type, spec, index) {
     return null;
   }
 
-  var keys = Object.keys(spec.params);
+  const keys = Object.keys(spec.params);
   if (keys.length > 0) {
     if (keys.every(function (k) {
       return spec.params[k] == '*' || (spec.params[k] || '').toLowerCase() == (p.params[k] || '').toLowerCase();
@@ -20455,7 +20455,7 @@ function specify(type, spec, index) {
 
 function preferredMediaTypes(accept, provided) {
   // RFC 2616 sec 14.2: no header = */*
-  var accepts = parseAccept(accept === undefined ? '*/*' : accept || '');
+  const accepts = parseAccept(accept === undefined ? '*/*' : accept || '');
 
   if (!provided) {
     // sorted list of all types
@@ -20465,7 +20465,7 @@ function preferredMediaTypes(accept, provided) {
       .map(getFullType);
   }
 
-  var priorities = provided.map(function getPriority(type, index) {
+  const priorities = provided.map(function getPriority(type, index) {
     return getMediaTypePriority(type, accepts, index);
   });
 
@@ -20508,8 +20508,8 @@ function isQuality(spec) {
  */
 
 function quoteCount(string) {
-  var count = 0;
-  var index = 0;
+  let count = 0;
+  let index = 0;
 
   while ((index = string.indexOf('"', index)) !== -1) {
     count++;
@@ -20525,9 +20525,9 @@ function quoteCount(string) {
  */
 
 function splitKeyValuePair(str) {
-  var index = str.indexOf('=');
-  var key;
-  var val;
+  const index = str.indexOf('=');
+  let key;
+  let val;
 
   if (index === -1) {
     key = str;
@@ -20545,7 +20545,7 @@ function splitKeyValuePair(str) {
  */
 
 function splitMediaTypes(accept) {
-  var accepts = accept.split(',');
+  const accepts = accept.split(',');
 
   for (var i = 1, j = 0; i < accepts.length; i++) {
     if (quoteCount(accepts[j]) % 2 == 0) {
@@ -20567,7 +20567,7 @@ function splitMediaTypes(accept) {
  */
 
 function splitParameters(str) {
-  var parameters = str.split(';');
+  const parameters = str.split(';');
 
   for (var i = 1, j = 0; i < parameters.length; i++) {
     if (quoteCount(parameters[j]) % 2 == 0) {
@@ -20606,23 +20606,23 @@ if (typeof runtimeRequire.addon === 'function') { // if the platform supports na
 /***/ 4321
 (module, __unused_webpack_exports, __webpack_require__) {
 
-var fs = __webpack_require__(9896)
-var path = __webpack_require__(6928)
-var os = __webpack_require__(857)
+const fs = __webpack_require__(9896)
+const path = __webpack_require__(6928)
+const os = __webpack_require__(857)
 
 // Workaround to fix webpack's build warnings: 'the request of a dependency is an expression'
 var runtimeRequire =  true ? __WEBPACK_EXTERNAL_createRequire_require : 0 // eslint-disable-line
 
-var vars = (process.config && process.config.variables) || {}
-var prebuildsOnly = !!process.env.PREBUILDS_ONLY
-var abi = process.versions.modules // TODO: support old node where this is undef
-var runtime = isElectron() ? 'electron' : (isNwjs() ? 'node-webkit' : 'node')
+const vars = (process.config && process.config.variables) || {}
+const prebuildsOnly = !!process.env.PREBUILDS_ONLY
+const abi = process.versions.modules // TODO: support old node where this is undef
+const runtime = isElectron() ? 'electron' : (isNwjs() ? 'node-webkit' : 'node')
 
-var arch = process.env.npm_config_arch || os.arch()
-var platform = process.env.npm_config_platform || os.platform()
-var libc = process.env.LIBC || (isAlpine(platform) ? 'musl' : 'glibc')
-var armv = process.env.ARM_VERSION || (arch === 'arm64' ? '8' : vars.arm_version) || ''
-var uv = (process.versions.uv || '').split('.')[0]
+const arch = process.env.npm_config_arch || os.arch()
+const platform = process.env.npm_config_platform || os.platform()
+const libc = process.env.LIBC || (isAlpine(platform) ? 'musl' : 'glibc')
+const armv = process.env.ARM_VERSION || (arch === 'arm64' ? '8' : vars.arm_version) || ''
+const uv = (process.versions.uv || '').split('.')[0]
 
 module.exports = load
 
@@ -20634,25 +20634,25 @@ load.resolve = load.path = function (dir) {
   dir = path.resolve(dir || '.')
 
   try {
-    var name = runtimeRequire(path.join(dir, 'package.json')).name.toUpperCase().replace(/-/g, '_')
+    const name = runtimeRequire(path.join(dir, 'package.json')).name.toUpperCase().replace(/-/g, '_')
     if (process.env[name + '_PREBUILD']) dir = process.env[name + '_PREBUILD']
   } catch (err) {}
 
   if (!prebuildsOnly) {
-    var release = getFirst(path.join(dir, 'build/Release'), matchBuild)
+    const release = getFirst(path.join(dir, 'build/Release'), matchBuild)
     if (release) return release
 
-    var debug = getFirst(path.join(dir, 'build/Debug'), matchBuild)
+    const debug = getFirst(path.join(dir, 'build/Debug'), matchBuild)
     if (debug) return debug
   }
 
-  var prebuild = resolve(dir)
+  const prebuild = resolve(dir)
   if (prebuild) return prebuild
 
-  var nearby = resolve(path.dirname(process.execPath))
+  const nearby = resolve(path.dirname(process.execPath))
   if (nearby) return nearby
 
-  var target = [
+  const target = [
     'platform=' + platform,
     'arch=' + arch,
     'runtime=' + runtime,
@@ -20669,15 +20669,15 @@ load.resolve = load.path = function (dir) {
 
   function resolve (dir) {
     // Find matching "prebuilds/<platform>-<arch>" directory
-    var tuples = readdirSync(path.join(dir, 'prebuilds')).map(parseTuple)
-    var tuple = tuples.filter(matchTuple(platform, arch)).sort(compareTuples)[0]
+    const tuples = readdirSync(path.join(dir, 'prebuilds')).map(parseTuple)
+    const tuple = tuples.filter(matchTuple(platform, arch)).sort(compareTuples)[0]
     if (!tuple) return
 
     // Find most specific flavor first
-    var prebuilds = path.join(dir, 'prebuilds', tuple.name)
-    var parsed = readdirSync(prebuilds).map(parseTags)
-    var candidates = parsed.filter(matchTags(runtime, abi))
-    var winner = candidates.sort(compareTags(runtime))[0]
+    const prebuilds = path.join(dir, 'prebuilds', tuple.name)
+    const parsed = readdirSync(prebuilds).map(parseTags)
+    const candidates = parsed.filter(matchTags(runtime, abi))
+    const winner = candidates.sort(compareTags(runtime))[0]
     if (winner) return path.join(prebuilds, winner.file)
   }
 }
@@ -20691,7 +20691,7 @@ function readdirSync (dir) {
 }
 
 function getFirst (dir, filter) {
-  var files = readdirSync(dir).filter(filter)
+  const files = readdirSync(dir).filter(filter)
   return files[0] && path.join(dir, files[0])
 }
 
@@ -20701,11 +20701,11 @@ function matchBuild (name) {
 
 function parseTuple (name) {
   // Example: darwin-x64+arm64
-  var arr = name.split('-')
+  const arr = name.split('-')
   if (arr.length !== 2) return
 
-  var platform = arr[0]
-  var architectures = arr[1].split('+')
+  const platform = arr[0]
+  const architectures = arr[1].split('+')
 
   if (!platform) return
   if (!architectures.length) return
@@ -20728,14 +20728,14 @@ function compareTuples (a, b) {
 }
 
 function parseTags (file) {
-  var arr = file.split('.')
-  var extension = arr.pop()
-  var tags = { file: file, specificity: 0 }
+  const arr = file.split('.')
+  const extension = arr.pop()
+  const tags = { file: file, specificity: 0 }
 
   if (extension !== 'node') return
 
-  for (var i = 0; i < arr.length; i++) {
-    var tag = arr[i]
+  for (let i = 0; i < arr.length; i++) {
+    const tag = arr[i]
 
     if (tag === 'node' || tag === 'electron' || tag === 'node-webkit') {
       tags.runtime = tag
@@ -20828,9 +20828,9 @@ object-assign
 
 
 /* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+const getOwnPropertySymbols = Object.getOwnPropertySymbols;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
 function toObject(val) {
 	if (val === null || val === undefined) {
@@ -20849,18 +20849,18 @@ function shouldUseNative() {
 		// Detect buggy property enumeration order in older V8 versions.
 
 		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		const test1 = new String('abc');   
 		test1[5] = 'de';
 		if (Object.getOwnPropertyNames(test1)[0] === '5') {
 			return false;
 		}
 
 		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
+		const test2 = {};
+		for (let i = 0; i < 10; i++) {
 			test2['_' + String.fromCharCode(i)] = i;
 		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+		const order2 = Object.getOwnPropertyNames(test2).map(function (n) {
 			return test2[n];
 		});
 		if (order2.join('') !== '0123456789') {
@@ -20868,7 +20868,7 @@ function shouldUseNative() {
 		}
 
 		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
+		const test3 = {};
 		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
 			test3[letter] = letter;
 		});
@@ -20885,14 +20885,14 @@ function shouldUseNative() {
 }
 
 module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
+	let from;
+	const to = toObject(target);
+	let symbols;
 
-	for (var s = 1; s < arguments.length; s++) {
+	for (let s = 1; s < arguments.length; s++) {
 		from = Object(arguments[s]);
 
-		for (var key in from) {
+		for (const key in from) {
 			if (hasOwnProperty.call(from, key)) {
 				to[key] = from[key];
 			}
@@ -20900,7 +20900,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 		if (getOwnPropertySymbols) {
 			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
+			for (let i = 0; i < symbols.length; i++) {
 				if (propIsEnumerable.call(from, symbols[i])) {
 					to[symbols[i]] = from[symbols[i]];
 				}
@@ -20924,12 +20924,12 @@ function decode (data) {
     data = data.data
   }
 
-  var naming = true
-  var text = ''
-  var name = ''
+  let naming = true
+  let text = ''
+  let name = ''
 
-  for (var i = 0; i < data.length; i++) {
-    var code = data[i]
+  for (let i = 0; i < data.length; i++) {
+    const code = data[i]
 
     if (naming) {
       if (code) {
@@ -20937,13 +20937,11 @@ function decode (data) {
       } else {
         naming = false
       }
-    } else {
-      if (code) {
+    } else if (code) {
         text += String.fromCharCode(code)
       } else {
         throw new Error('Invalid NULL character found. 0x00 character is not permitted in tEXt content')
       }
-    }
   }
 
   return {
@@ -20972,12 +20970,12 @@ function encode (keyword, content) {
     throw new Error('Keyword "' + keyword + '" is longer than the 79-character limit imposed by the PNG specification')
   }
 
-  var totalSize = keyword.length + content.length + 1
-  var output = new Uint8Array(totalSize)
-  var idx = 0
-  var code
+  const totalSize = keyword.length + content.length + 1
+  const output = new Uint8Array(totalSize)
+  let idx = 0
+  let code
 
-  for (var i = 0; i < keyword.length; i++) {
+  for (let i = 0; i < keyword.length; i++) {
     if (!(code = keyword.charCodeAt(i))) {
       throw new Error('0x00 character is not permitted in tEXt keywords')
     }
@@ -20987,7 +20985,7 @@ function encode (keyword, content) {
 
   output[idx++] = 0
 
-  for (var j = 0; j < content.length; j++) {
+  for (let j = 0; j < content.length; j++) {
     if (!(code = content.charCodeAt(j))) {
       throw new Error('0x00 character is not permitted in tEXt content')
     }
@@ -21016,16 +21014,16 @@ exports.decode = __webpack_require__(5118)
 /***/ 3074
 (module, __unused_webpack_exports, __webpack_require__) {
 
-var crc32 = __webpack_require__(2355)
+const crc32 = __webpack_require__(2355)
 
 module.exports = extractChunks
 
 // Used for fast-ish conversion between uint8s and uint32s/int32s.
 // Also required in order to remain agnostic for both Node Buffers and
 // Uint8Arrays.
-var uint8 = new Uint8Array(4)
-var int32 = new Int32Array(uint8.buffer)
-var uint32 = new Uint32Array(uint8.buffer)
+const uint8 = new Uint8Array(4)
+const int32 = new Int32Array(uint8.buffer)
+const uint32 = new Uint32Array(uint8.buffer)
 
 function extractChunks (data) {
   if (data[0] !== 0x89) throw new Error('Invalid .png file header')
@@ -21037,9 +21035,9 @@ function extractChunks (data) {
   if (data[6] !== 0x1A) throw new Error('Invalid .png file header')
   if (data[7] !== 0x0A) throw new Error('Invalid .png file header: possibly caused by DOS-Unix line ending conversion?')
 
-  var ended = false
-  var chunks = []
-  var idx = 8
+  let ended = false
+  const chunks = []
+  let idx = 8
 
   while (idx < data.length) {
     // Read the length of the current chunk,
@@ -21050,15 +21048,15 @@ function extractChunks (data) {
     uint8[0] = data[idx++]
 
     // Chunk includes name/type for CRC check (see below).
-    var length = uint32[0] + 4
-    var chunk = new Uint8Array(length)
+    const length = uint32[0] + 4
+    const chunk = new Uint8Array(length)
     chunk[0] = data[idx++]
     chunk[1] = data[idx++]
     chunk[2] = data[idx++]
     chunk[3] = data[idx++]
 
     // Get the name in ASCII for identification.
-    var name = (
+    const name = (
       String.fromCharCode(chunk[0]) +
       String.fromCharCode(chunk[1]) +
       String.fromCharCode(chunk[2]) +
@@ -21083,7 +21081,7 @@ function extractChunks (data) {
     }
 
     // Read the contents of the chunk out of the main buffer.
-    for (var i = 4; i < length; i++) {
+    for (let i = 4; i < length; i++) {
       chunk[i] = data[idx++]
     }
 
@@ -21094,8 +21092,8 @@ function extractChunks (data) {
     uint8[1] = data[idx++]
     uint8[0] = data[idx++]
 
-    var crcActual = int32[0]
-    var crcExpect = crc32.buf(chunk)
+    const crcActual = int32[0]
+    const crcExpect = crc32.buf(chunk)
     if (crcExpect !== crcActual) {
       throw new Error(
         'CRC values for ' + name + ' header do not match, PNG file is likely corrupted'
@@ -21104,7 +21102,7 @@ function extractChunks (data) {
 
     // The chunk data is now copied to remove the 4 preceding
     // bytes used for the chunk name/type.
-    var chunkData = new Uint8Array(chunk.buffer.slice(4))
+    const chunkData = new Uint8Array(chunk.buffer.slice(4))
 
     chunks.push({
       name: name,
@@ -21126,8 +21124,8 @@ function extractChunks (data) {
 (__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
+const __rest = (this && this.__rest) || function (s, e) {
+    const t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
         t[p] = s[p];
     if (s != null && typeof Object.getOwnPropertySymbols === "function")
@@ -21148,7 +21146,7 @@ const DEFAULT_TIMEOUT = 5000;
 function randomId() {
     return (0, crypto_1.randomBytes)(8).toString("hex");
 }
-var MessageType;
+let MessageType;
 (function (MessageType) {
     MessageType[MessageType["INITIAL_HEARTBEAT"] = 1] = "INITIAL_HEARTBEAT";
     MessageType[MessageType["HEARTBEAT"] = 2] = "HEARTBEAT";
@@ -21320,7 +21318,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
      * @protected
      */
     onResponse(response) {
-        var _a, _b;
+        let _a, _b;
         const requestId = response.data.requestId;
         debug("[%s] received response %s to request %s", this.uid, response.type, requestId);
         switch (response.type) {
@@ -21367,7 +21365,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         }
     }
     async broadcast(packet, opts) {
-        var _a;
+        let _a;
         const onlyLocal = (_a = opts.flags) === null || _a === void 0 ? void 0 : _a.local;
         if (!onlyLocal) {
             try {
@@ -21396,7 +21394,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
      * @private
      */
     addOffsetIfNecessary(packet, opts, offset) {
-        var _a;
+        let _a;
         if (!this.nsp.server.opts.connectionStateRecovery) {
             return;
         }
@@ -21410,7 +21408,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         }
     }
     broadcastWithAck(packet, opts, clientCountCallback, ack) {
-        var _a;
+        let _a;
         const onlyLocal = (_a = opts === null || opts === void 0 ? void 0 : opts.flags) === null || _a === void 0 ? void 0 : _a.local;
         if (!onlyLocal) {
             const requestId = randomId();
@@ -21435,7 +21433,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         super.broadcastWithAck(packet, opts, clientCountCallback, ack);
     }
     async addSockets(opts, rooms) {
-        var _a;
+        let _a;
         const onlyLocal = (_a = opts.flags) === null || _a === void 0 ? void 0 : _a.local;
         if (!onlyLocal) {
             try {
@@ -21454,7 +21452,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         super.addSockets(opts, rooms);
     }
     async delSockets(opts, rooms) {
-        var _a;
+        let _a;
         const onlyLocal = (_a = opts.flags) === null || _a === void 0 ? void 0 : _a.local;
         if (!onlyLocal) {
             try {
@@ -21473,7 +21471,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         super.delSockets(opts, rooms);
     }
     async disconnectSockets(opts, close) {
-        var _a;
+        let _a;
         const onlyLocal = (_a = opts.flags) === null || _a === void 0 ? void 0 : _a.local;
         if (!onlyLocal) {
             try {
@@ -21492,7 +21490,7 @@ class ClusterAdapter extends in_memory_adapter_1.Adapter {
         super.disconnectSockets(opts, close);
     }
     async fetchSockets(opts) {
-        var _a;
+        let _a;
         const [localSockets, serverCount] = await Promise.all([
             super.fetchSockets(opts),
             this.serverCount(),
@@ -21708,7 +21706,7 @@ class ClusterAdapterWithHeartbeat extends ClusterAdapter {
         });
     }
     async fetchSockets(opts) {
-        var _a;
+        let _a;
         const [localSockets, serverCount] = await Promise.all([
             super.fetchSockets({
                 rooms: opts.rooms,
@@ -21872,7 +21870,7 @@ for (; i < length; i++)
 (__unused_webpack_module, exports, __webpack_require__) {
 
 
-var _a;
+let _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SessionAwareAdapter = exports.Adapter = void 0;
 const events_1 = __webpack_require__(4434);
@@ -22240,7 +22238,7 @@ class SessionAwareAdapter extends Adapter {
         return Promise.resolve(Object.assign(Object.assign({}, session), { missedPackets }));
     }
     broadcast(packet, opts) {
-        var _a;
+        let _a;
         const isEventPacket = packet.type === 2;
         // packets with acknowledgement are not stored because the acknowledgement function cannot be serialized and
         // restored on another server upon reconnection
@@ -22277,10 +22275,10 @@ function shouldIncludePacket(sessionRooms, opts) {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MessageType = exports.ClusterAdapterWithHeartbeat = exports.ClusterAdapter = exports.SessionAwareAdapter = exports.Adapter = void 0;
-var in_memory_adapter_1 = __webpack_require__(5352);
+const in_memory_adapter_1 = __webpack_require__(5352);
 Object.defineProperty(exports, "Adapter", ({ enumerable: true, get: function () { return in_memory_adapter_1.Adapter; } }));
 Object.defineProperty(exports, "SessionAwareAdapter", ({ enumerable: true, get: function () { return in_memory_adapter_1.SessionAwareAdapter; } }));
-var cluster_adapter_1 = __webpack_require__(2875);
+const cluster_adapter_1 = __webpack_require__(2875);
 Object.defineProperty(exports, "ClusterAdapter", ({ enumerable: true, get: function () { return cluster_adapter_1.ClusterAdapter; } }));
 Object.defineProperty(exports, "ClusterAdapterWithHeartbeat", ({ enumerable: true, get: function () { return cluster_adapter_1.ClusterAdapterWithHeartbeat; } }));
 Object.defineProperty(exports, "MessageType", ({ enumerable: true, get: function () { return cluster_adapter_1.MessageType; } }));
@@ -22520,7 +22518,7 @@ try {
 
 (function(){
 
-  var
+  let
     buf,
     bufIdx = 0,
     hexBytes = [],
@@ -22555,7 +22553,7 @@ try {
   };
 
   // Node & Browser support
-  var crypt0;
+  let crypt0;
   if (typeof crypto !== 'undefined') {
     crypt0 = crypto;
   } else if( (typeof window !== 'undefined') && (typeof window.msCrypto !== 'undefined')) {
@@ -22578,20 +22576,20 @@ try {
       if (crypt0.getRandomValues) {
         if (typeof Uint8Array.prototype.slice !== 'function') {
           return function(n) {
-            var bytes = new Uint8Array(n);
+            const bytes = new Uint8Array(n);
             crypt0.getRandomValues(bytes);
             return Array.from(bytes);
           };
         }
         return function(n) {
-          var bytes = new Uint8Array(n);
+          const bytes = new Uint8Array(n);
           crypt0.getRandomValues(bytes);
           return bytes;
         };
       }
     }
     return function(n) {
-      var i, r = [];
+      let i, r = [];
       for (i = 0; i < n; i++) {
         r.push(Math.floor(Math.random() * 256));
       }
@@ -22610,7 +22608,7 @@ try {
 
   // uuid.bin
   function uuidBin() {
-    var b = randomBytesBuffered(16);
+    const b = randomBytesBuffered(16);
     b[6] = (b[6] & 0x0f) | 0x40;
     b[8] = (b[8] & 0x3f) | 0x80;
     return b;
@@ -22618,7 +22616,7 @@ try {
 
   // String UUIDv4 (Random)
   function uuid() {
-    var b = uuidBin();
+    const b = uuidBin();
     return hexBytes[b[0]] + hexBytes[b[1]] +
       hexBytes[b[2]] + hexBytes[b[3]] + '-' +
       hexBytes[b[4]] + hexBytes[b[5]] + '-' +
@@ -22664,7 +22662,7 @@ module.exports.append = append
  *               ; any VCHAR, except delimiters
  */
 
-var FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
+const FIELD_NAME_REGEXP = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
 
 /**
  * Append a field to a vary header.
@@ -22685,12 +22683,12 @@ function append (header, field) {
   }
 
   // get fields array
-  var fields = !Array.isArray(field)
+  const fields = !Array.isArray(field)
     ? parse(String(field))
     : field
 
   // assert on invalid field names
-  for (var j = 0; j < fields.length; j++) {
+  for (let j = 0; j < fields.length; j++) {
     if (!FIELD_NAME_REGEXP.test(fields[j])) {
       throw new TypeError('field argument contains an invalid header name')
     }
@@ -22702,16 +22700,16 @@ function append (header, field) {
   }
 
   // enumerate current values
-  var val = header
-  var vals = parse(header.toLowerCase())
+  let val = header
+  const vals = parse(header.toLowerCase())
 
   // unspecified vary
   if (fields.indexOf('*') !== -1 || vals.indexOf('*') !== -1) {
     return '*'
   }
 
-  for (var i = 0; i < fields.length; i++) {
-    var fld = fields[i].toLowerCase()
+  for (let i = 0; i < fields.length; i++) {
+    const fld = fields[i].toLowerCase()
 
     // append value (case-preserving)
     if (vals.indexOf(fld) === -1) {
@@ -22734,12 +22732,12 @@ function append (header, field) {
  */
 
 function parse (header) {
-  var end = 0
-  var list = []
-  var start = 0
+  let end = 0
+  const list = []
+  let start = 0
 
   // gather tokens
-  for (var i = 0, len = header.length; i < len; i++) {
+  for (let i = 0, len = header.length; i < len; i++) {
     switch (header.charCodeAt(i)) {
       case 0x20: /*   */
         if (start === end) {
@@ -22777,8 +22775,8 @@ function vary (res, field) {
   }
 
   // get existing header
-  var val = res.getHeader('Vary') || ''
-  var header = Array.isArray(val)
+  let val = res.getHeader('Vary') || ''
+  const header = Array.isArray(val)
     ? val.join(', ')
     : String(val)
 
@@ -28101,7 +28099,7 @@ exports.humanReadableArgName = humanReadableArgName;
 /***/ 146
 (__unused_webpack_module, exports, __webpack_require__) {
 
-var __webpack_unused_export__;
+let __webpack_unused_export__;
 const EventEmitter = (__webpack_require__(8474).EventEmitter);
 const childProcess = __webpack_require__(1421);
 const path = __webpack_require__(6760);
@@ -32335,11 +32333,11 @@ const index_1 = __webpack_require__(3209);
 exports.transports = index_1.default;
 const parser = __webpack_require__(2680);
 exports.parser = parser;
-var userver_1 = __webpack_require__(6958);
+const userver_1 = __webpack_require__(6958);
 Object.defineProperty(exports, "uServer", ({ enumerable: true, get: function () { return userver_1.uServer; } }));
-var socket_1 = __webpack_require__(7629);
+const socket_1 = __webpack_require__(7629);
 Object.defineProperty(exports, "Socket", ({ enumerable: true, get: function () { return socket_1.Socket; } }));
-var transport_1 = __webpack_require__(1119);
+const transport_1 = __webpack_require__(1119);
 Object.defineProperty(exports, "Transport", ({ enumerable: true, get: function () { return transport_1.Transport; } }));
 exports.protocol = parser.protocol;
 /**
@@ -32351,7 +32349,7 @@ exports.protocol = parser.protocol;
  * @return engine.io server
  */
 function listen(port, options, listenCallback) {
-    if ("function" === typeof options) {
+    if (typeof options === "function") {
         listenCallback = options;
         options = {};
     }
@@ -32399,7 +32397,7 @@ exports.decodePayloadAsBinary = decodePayloadAsBinary;
 /**
  * Module dependencies.
  */
-var utf8 = __webpack_require__(2169);
+const utf8 = __webpack_require__(2169);
 /**
  * Current protocol version.
  */
@@ -32426,11 +32424,11 @@ exports.packets = {
     upgrade: 5,
     noop: 6
 };
-var packetslist = Object.keys(exports.packets);
+const packetslist = Object.keys(exports.packets);
 /**
  * Premade error packet.
  */
-var err = { type: 'error', data: 'parser error' };
+const err = { type: 'error', data: 'parser error' };
 const EMPTY_BUFFER = Buffer.concat([]);
 /**
  * Encodes a packet.
@@ -32463,7 +32461,7 @@ function encodePacket(packet, supportsBinary, utf8encode, callback) {
         return encodeBuffer({ type: packet.type, data: arrayBufferToBuffer(packet.data) }, supportsBinary, callback);
     }
     // Sending data as a utf-8 string
-    var encoded = exports.packets[packet.type];
+    let encoded = exports.packets[packet.type];
     // data fragment is optional
     if (undefined !== packet.data) {
         encoded += utf8encode ? utf8.encode(String(packet.data), { strict: false }) : String(packet.data);
@@ -32477,8 +32475,8 @@ function encodeBuffer(packet, supportsBinary, callback) {
     if (!supportsBinary) {
         return encodeBase64Packet(packet, callback);
     }
-    var data = packet.data;
-    var typeBuffer = Buffer.allocUnsafe(1);
+    const data = packet.data;
+    const typeBuffer = Buffer.allocUnsafe(1);
     typeBuffer[0] = exports.packets[packet.type];
     return callback(Buffer.concat([typeBuffer, data]));
 }
@@ -32489,8 +32487,8 @@ function encodeBuffer(packet, supportsBinary, callback) {
  * @return {String} base64 encoded message
  */
 function encodeBase64Packet(packet, callback) {
-    var data = Buffer.isBuffer(packet.data) ? packet.data : arrayBufferToBuffer(packet.data);
-    var message = 'b' + exports.packets[packet.type];
+    const data = Buffer.isBuffer(packet.data) ? packet.data : arrayBufferToBuffer(packet.data);
+    let message = 'b' + exports.packets[packet.type];
     message += data.toString('base64');
     return callback(message);
 }
@@ -32532,7 +32530,7 @@ function decodePacket(data, binaryType, utf8decode) {
     // Binary data
     if (binaryType === 'arraybuffer') {
         // wrap Buffer/ArrayBuffer data into an Uint8Array
-        var intArray = new Uint8Array(data);
+        const intArray = new Uint8Array(data);
         type = intArray[0];
         return { type: packetslist[type], data: intArray.buffer.slice(1) };
     }
@@ -32559,11 +32557,11 @@ function tryDecode(data) {
  * @return {Object} with `type` and `data` (if any)
  */
 function decodeBase64Packet(msg, binaryType) {
-    var type = packetslist[msg.charAt(0)];
-    var data = Buffer.from(msg.slice(1), 'base64');
+    const type = packetslist[msg.charAt(0)];
+    let data = Buffer.from(msg.slice(1), 'base64');
     if (binaryType === 'arraybuffer') {
-        var abv = new Uint8Array(data.length);
-        for (var i = 0; i < abv.length; i++) {
+        const abv = new Uint8Array(data.length);
+        for (let i = 0; i < abv.length; i++) {
             abv[i] = data[i];
         }
         // @ts-ignore
@@ -32645,9 +32643,9 @@ function decodePayload(data, binaryType, callback) {
         // parser error - ignoring payload
         return callback(err, 0, 1);
     }
-    var length = '', n, msg, packet;
-    for (var i = 0, l = data.length; i < l; i++) {
-        var chr = data.charAt(i);
+    let length = '', n, msg, packet;
+    for (let i = 0, l = data.length; i < l; i++) {
+        const chr = data.charAt(i);
         if (chr !== ':') {
             length += chr;
             continue;
@@ -32668,8 +32666,8 @@ function decodePayload(data, binaryType, callback) {
                 // parser error in individual packet - ignoring payload
                 return callback(err, 0, 1);
             }
-            var more = callback(packet, i + n, l);
-            if (false === more)
+            const more = callback(packet, i + n, l);
+            if (more === false)
                 return;
         }
         // advance cursor
@@ -32689,8 +32687,8 @@ function decodePayload(data, binaryType, callback) {
  * @api private
  */
 function bufferToString(buffer) {
-    var str = '';
-    for (var i = 0, l = buffer.length; i < l; i++) {
+    let str = '';
+    for (let i = 0, l = buffer.length; i < l; i++) {
         str += String.fromCharCode(buffer[i]);
     }
     return str;
@@ -32702,8 +32700,8 @@ function bufferToString(buffer) {
  * @api private
  */
 function stringToBuffer(string) {
-    var buf = Buffer.allocUnsafe(string.length);
-    for (var i = 0, l = string.length; i < l; i++) {
+    const buf = Buffer.allocUnsafe(string.length);
+    for (let i = 0, l = string.length; i < l; i++) {
         buf.writeUInt8(string.charCodeAt(i), i);
     }
     return buf;
@@ -32716,8 +32714,8 @@ function stringToBuffer(string) {
  */
 function arrayBufferToBuffer(data) {
     // data is either an ArrayBuffer or ArrayBufferView.
-    var length = data.byteLength || data.length;
-    var offset = data.byteOffset || 0;
+    const length = data.byteLength || data.length;
+    const offset = data.byteOffset || 0;
     return Buffer.from(data.buffer || data, offset, length);
 }
 /**
@@ -32744,8 +32742,8 @@ function encodePayloadAsBinary(packets, callback) {
 ;
 function encodeOneBinaryPacket(p, doneCallback) {
     function onBinaryPacketEncode(packet) {
-        var encodingLength = '' + packet.length;
-        var sizeBuffer;
+        const encodingLength = '' + packet.length;
+        let sizeBuffer;
         if (typeof packet === 'string') {
             sizeBuffer = Buffer.allocUnsafe(encodingLength.length + 2);
             sizeBuffer[0] = 0; // is a string (not true binary = 0)
@@ -32778,12 +32776,12 @@ function decodePayloadAsBinary(data, binaryType, callback) {
         callback = binaryType;
         binaryType = null;
     }
-    var bufferTail = data;
-    var buffers = [];
-    var i;
+    let bufferTail = data;
+    const buffers = [];
+    let i;
     while (bufferTail.length > 0) {
-        var strLen = '';
-        var isString = bufferTail[0] === 0;
+        let strLen = '';
+        const isString = bufferTail[0] === 0;
         for (i = 1;; i++) {
             if (bufferTail[i] === 255)
                 break;
@@ -32794,16 +32792,16 @@ function decodePayloadAsBinary(data, binaryType, callback) {
             strLen += '' + bufferTail[i];
         }
         bufferTail = bufferTail.slice(strLen.length + 1);
-        var msgLength = parseInt(strLen, 10);
-        var msg = bufferTail.slice(1, msgLength + 1);
+        const msgLength = parseInt(strLen, 10);
+        let msg = bufferTail.slice(1, msgLength + 1);
         if (isString)
             msg = bufferToString(msg);
         buffers.push(msg);
         bufferTail = bufferTail.slice(msgLength + 1);
     }
-    var total = buffers.length;
+    const total = buffers.length;
     for (i = 0; i < total; i++) {
-        var buffer = buffers[i];
+        const buffer = buffers[i];
         callback(decodePacket(buffer, binaryType, true), i, total);
     }
 }
@@ -32816,14 +32814,14 @@ function decodePayloadAsBinary(data, binaryType, callback) {
 (module) {
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
-var stringFromCharCode = String.fromCharCode;
+const stringFromCharCode = String.fromCharCode;
 // Taken from https://mths.be/punycode
 function ucs2decode(string) {
-    var output = [];
-    var counter = 0;
-    var length = string.length;
-    var value;
-    var extra;
+    const output = [];
+    let counter = 0;
+    const length = string.length;
+    let value;
+    let extra;
     while (counter < length) {
         value = string.charCodeAt(counter++);
         if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
@@ -32847,10 +32845,10 @@ function ucs2decode(string) {
 }
 // Taken from https://mths.be/punycode
 function ucs2encode(array) {
-    var length = array.length;
-    var index = -1;
-    var value;
-    var output = '';
+    const length = array.length;
+    let index = -1;
+    let value;
+    let output = '';
     while (++index < length) {
         value = array[index];
         if (value > 0xFFFF) {
@@ -32880,7 +32878,7 @@ function encodeCodePoint(codePoint, strict) {
     if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
         return stringFromCharCode(codePoint);
     }
-    var symbol = '';
+    let symbol = '';
     if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
         symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
     }
@@ -32901,12 +32899,12 @@ function encodeCodePoint(codePoint, strict) {
 }
 function utf8encode(string, opts) {
     opts = opts || {};
-    var strict = false !== opts.strict;
-    var codePoints = ucs2decode(string);
-    var length = codePoints.length;
-    var index = -1;
-    var codePoint;
-    var byteString = '';
+    const strict = opts.strict !== false;
+    const codePoints = ucs2decode(string);
+    const length = codePoints.length;
+    let index = -1;
+    let codePoint;
+    let byteString = '';
     while (++index < length) {
         codePoint = codePoints[index];
         byteString += encodeCodePoint(codePoint, strict);
@@ -32918,7 +32916,7 @@ function readContinuationByte() {
     if (byteIndex >= byteCount) {
         throw Error('Invalid byte index');
     }
-    var continuationByte = byteArray[byteIndex] & 0xFF;
+    const continuationByte = byteArray[byteIndex] & 0xFF;
     byteIndex++;
     if ((continuationByte & 0xC0) == 0x80) {
         return continuationByte & 0x3F;
@@ -32927,11 +32925,11 @@ function readContinuationByte() {
     throw Error('Invalid continuation byte');
 }
 function decodeSymbol(strict) {
-    var byte1;
-    var byte2;
-    var byte3;
-    var byte4;
-    var codePoint;
+    let byte1;
+    let byte2;
+    let byte3;
+    let byte4;
+    let codePoint;
     if (byteIndex > byteCount) {
         throw Error('Invalid byte index');
     }
@@ -32981,17 +32979,17 @@ function decodeSymbol(strict) {
     }
     throw Error('Invalid UTF-8 detected');
 }
-var byteArray;
-var byteCount;
-var byteIndex;
+let byteArray;
+let byteCount;
+let byteIndex;
 function utf8decode(byteString, opts) {
     opts = opts || {};
-    var strict = false !== opts.strict;
+    const strict = opts.strict !== false;
     byteArray = ucs2decode(byteString);
     byteCount = byteArray.length;
     byteIndex = 0;
-    var codePoints = [];
-    var tmp;
+    const codePoints = [];
+    let tmp;
     while ((tmp = decodeSymbol(strict)) !== false) {
         codePoints.push(tmp);
     }
@@ -33151,7 +33149,7 @@ class BaseServer extends events_1.EventEmitter {
         }
         else {
             // handshake is GET only
-            if ("GET" !== req.method) {
+            if (req.method !== "GET") {
                 return fn(Server.errors.BAD_HANDSHAKE_METHOD, {
                     method: req.method,
                 });
@@ -33284,11 +33282,11 @@ class BaseServer extends events_1.EventEmitter {
         debug('handshaking client "%s"', id);
         try {
             var transport = this.createTransport(transportName, req);
-            if ("polling" === transportName) {
+            if (transportName === "polling") {
                 transport.maxHttpBufferSize = this.opts.maxHttpBufferSize;
                 transport.httpCompression = this.opts.httpCompression;
             }
-            else if ("websocket" === transportName) {
+            else if (transportName === "websocket") {
                 transport.perMessageDeflate = this.opts.perMessageDeflate;
             }
         }
@@ -33677,7 +33675,7 @@ class Server extends BaseServer {
                 if (check(req)) {
                     this.handleUpgrade(req, socket, head);
                 }
-                else if (false !== options.destroyUpgrade) {
+                else if (options.destroyUpgrade !== false) {
                     // default node behavior is to disconnect when no handlers
                     // but by adding a handler, we prevent that
                     // and if no eio thing handles the upgrade
@@ -40193,7 +40191,7 @@ class Composer {
             else
                 this.errors.push(new errors.YAMLParseError(pos, code, message));
         };
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+         
         this.directives = new directives.Directives({ version: options.version || '1.2' });
         this.options = options;
     }
@@ -41622,7 +41620,7 @@ class Document {
         if (!node.anchor) {
             const prev = anchors.anchorNames(this);
             node.anchor =
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                 
                 !name || prev.has(name) ? anchors.findNewAnchor(name || 'a', prev) : name;
         }
         return new Alias.Alias(node.anchor);
@@ -41646,7 +41644,7 @@ class Document {
         }
         const { aliasDuplicateObjects, anchorPrefix, flow, keepUndefined, onTagObj, tag } = options ?? {};
         const { onAnchor, setAnchors, sourceObjects } = anchors.createNodeAnchors(this, 
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+         
         anchorPrefix || 'a');
         const ctx = {
             aliasDuplicateObjects: aliasDuplicateObjects ?? true,
@@ -41959,7 +41957,7 @@ function applyReviver(reviver, obj, key, val) {
             for (let i = 0, len = val.length; i < len; ++i) {
                 const v0 = val[i];
                 const v1 = applyReviver(reviver, val, String(i), v0);
-                // eslint-disable-next-line @typescript-eslint/no-array-delete
+                 
                 if (v1 === undefined)
                     delete val[i];
                 else if (v1 !== v0)
@@ -42063,7 +42061,7 @@ function createNode(value, tagName, ctx) {
     let tagObj = findTagObject(value, tagName, schema.tags);
     if (!tagObj) {
         if (value && typeof value.toJSON === 'function') {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+             
             value = value.toJSON();
         }
         if (!value || typeof value !== 'object') {
@@ -43169,7 +43167,7 @@ function addPairToJSMap(ctx, map, { key, value }) {
 function stringifyKey(key, jsKey, ctx) {
     if (jsKey === null)
         return '';
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+     
     if (typeof jsKey !== 'object')
         return String(jsKey);
     if (identity.isNode(key) && ctx?.doc) {
@@ -43275,11 +43273,11 @@ var identity = __webpack_require__(6730);
  *   stringification.
  */
 function toJS(value, arg, ctx) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+     
     if (Array.isArray(value))
         return value.map((v, i) => toJS(v, String(i), ctx));
     if (value && typeof value.toJSON === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+         
         if (!ctx || !identity.hasAnchor(value))
             return value.toJSON(arg, ctx);
         const data = { aliasCount: 0, count: 1, res: undefined };
@@ -56726,8 +56724,8 @@ const crc1 = (current, previous = 0) => {
 ;// external "buffer"
 
 ;// ./node_modules/.pnpm/crc@4.3.2/node_modules/crc/mjs/create_buffer.js
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-prototype-builtins */
+ 
+ 
 
 const createBuffer = (value, encoding) => __WEBPACK_EXTERNAL_MODULE_buffer_Buffer__.from(value, encoding);
 /* harmony default export */ const create_buffer = (createBuffer);
@@ -57143,7 +57141,7 @@ if (typeof Int32Array !== 'undefined') {
     crc32_TABLE = new Int32Array(crc32_TABLE);
 }
 const crc32 = (current, previous) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     let crc = previous === 0 ? 0 : ~~previous ^ -1;
     for (let index = 0; index < current.length; index++) {
         crc = crc32_TABLE[(crc ^ current[index]) & 0xff] ^ (crc >>> 8);
@@ -59009,7 +59007,7 @@ class FSWatcher extends __WEBPACK_EXTERNAL_MODULE_events_EventEmitter__ {
             actionPath.count++;
             return false;
         }
-        // eslint-disable-next-line prefer-const
+         
         let timeoutObject;
         const clear = () => {
             const item = action.get(path);
@@ -59909,7 +59907,7 @@ function createDedent(options) {
       if (i < values.length) {
         const value = alignValues ? alignValue(values[i], result) : values[i];
 
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+         
         result += value;
       }
     }
@@ -59933,7 +59931,7 @@ function createDedent(options) {
       const m = mindent; // appease TypeScript
       result = lines
       // https://github.com/typescript-eslint/typescript-eslint/issues/7140
-      // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+       
       .map(l => l[0] === " " || l[0] === "\t" ? l.slice(m) : l).join("\n");
     }
 

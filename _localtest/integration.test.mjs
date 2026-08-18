@@ -23,7 +23,7 @@ function makeVarStore(initialStatData = {}) {
 // （真实 store 还有 2s 轮询，这里只验证"前端改 data → 写回变量"这条关键链）
 function makeMvuStore(schema, varStore) {
   const data = reactive(schema.parse(_.get(varStore.getVariables(), 'stat_data', {})));
-  let ignoring = false;
+  const ignoring = false;
   watch(data, (nv) => {
     if (ignoring) return;
     const result = schema.safeParse(_.cloneDeep(nv));

@@ -4,7 +4,7 @@
       <span class="vh-label">{{ label }}<InfoI v-if="term" :term="term" /></span>
       <span class="vh-ico">{{ icon }}</span>
     </div>
-    <div class="vh-val">{{ display }}<span class="u" v-if="unit">{{ unit }}</span></div>
+    <div class="vh-val">{{ display }}<span v-if="unit" class="u">{{ unit }}</span></div>
     <div class="vh-bar"><i :style="{ width: pct + '%', background: barColor }"></i></div>
     <div class="vh-trend">{{ trend }}</div>
   </div>

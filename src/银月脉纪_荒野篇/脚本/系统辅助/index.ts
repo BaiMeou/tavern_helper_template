@@ -111,9 +111,7 @@ async function init() {
         };
         variables.stat_data.$崩溃轮次 = 0;
       }
-    } else {
-      if (variables.stat_data.$崩溃轮次) variables.stat_data.$崩溃轮次 = 0;
-    }
+    } else if (variables.stat_data.$崩溃轮次) variables.stat_data.$崩溃轮次 = 0;
   });
 
   // ─── 掷骰引擎：AI 写 stat_data.$掷骰请求 = { 类型, ... } 触发 ───

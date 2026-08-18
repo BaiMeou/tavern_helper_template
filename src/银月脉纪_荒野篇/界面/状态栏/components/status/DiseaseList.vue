@@ -9,10 +9,10 @@
         <span style="font-size:11px;color:var(--text-secondary);">{{ dz.阶段 }}</span>
       </div>
       <div class="wound-detail">症状：{{ dz.症状 }}</div>
-      <div class="wound-detail" v-if="dz.传染性 !== '无'">
+      <div v-if="dz.传染性 !== '无'" class="wound-detail">
         <DotBadge :kind="dz.传染性 === '高' ? 'bad' : dz.传染性 === '中' ? 'warn' : 'info'">{{ dz.传染性 }}</DotBadge> 传染性
       </div>
-      <div class="wound-detail" v-if="dz.处理方式">处理：{{ dz.处理方式 }}</div>
+      <div v-if="dz.处理方式" class="wound-detail">处理：{{ dz.处理方式 }}</div>
     </div>
   </template>
 </template>

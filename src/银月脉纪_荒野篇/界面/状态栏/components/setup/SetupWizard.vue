@@ -11,9 +11,9 @@
           <span class="attr-icon">{{ attr.icon }}</span>
           <span class="attr-label">{{ attr.label }}</span>
           <span class="attr-desc">{{ attr.desc }}</span>
-          <button class="attr-btn" @click="adjust(attr.key, -1)" :disabled="attrs[attr.key] <= 1">−</button>
+          <button class="attr-btn" :disabled="attrs[attr.key] <= 1" @click="adjust(attr.key, -1)">−</button>
           <span class="attr-val">{{ attrs[attr.key] }}</span>
-          <button class="attr-btn" @click="adjust(attr.key, +1)" :disabled="remainingPoints <= 0 || attrs[attr.key] >= 20">+</button>
+          <button class="attr-btn" :disabled="remainingPoints <= 0 || attrs[attr.key] >= 20" @click="adjust(attr.key, +1)">+</button>
         </div>
       </section>
 
@@ -91,7 +91,7 @@
       <!-- 物品选择弹窗：点物品卡时浮出，紧贴被点击的物品卡出现（iframe 内 position:fixed 会锚定到被撑高的文档，
            而非可视区，故改用 absolute 锚定到点击卡片附近，无论 iframe 多高都在玩家眼前） -->
       <div v-if="pickerItem" class="picker-mask" @click.self="closeItemPicker">
-        <div class="picker-card" ref="pickerCardEl" :style="pickerCardStyle" :class="{ flip: pickerFlip }">
+        <div ref="pickerCardEl" class="picker-card" :style="pickerCardStyle" :class="{ flip: pickerFlip }">
           <div class="picker-head">
             <span class="pk-icon">{{ pickerItem.icon }}</span>
             <div class="pk-title-wrap">
@@ -106,19 +106,22 @@
           <div v-if="selectedIds.has(pickerItem.id)" class="pk-section">
             <div class="pk-label">放在哪里</div>
             <div class="pk-row">
-              <button :class="['pk-pill','large', { active: carryChoice[pickerItem.id] !== 'cargo' }]"
+              <button
+:class="['pk-pill','large', { active: carryChoice[pickerItem.id] !== 'cargo' }]"
                       @click="setCarry(pickerItem.id, 'carry')">✋ 随身携带</button>
-              <button :class="['pk-pill','large', { active: carryChoice[pickerItem.id] === 'cargo' }]"
+              <button
+:class="['pk-pill','large', { active: carryChoice[pickerItem.id] === 'cargo' }]"
                       @click="setCarry(pickerItem.id, 'cargo')">📦 放入行李舱</button>
             </div>
-            <div class="pk-hint" v-if="carryChoice[pickerItem.id] === 'cargo'">
+            <div v-if="carryChoice[pickerItem.id] === 'cargo'" class="pk-hint">
               📦 行李舱物品坠机时可能损坏（感知越高存活率越高），但<strong>不计入随身负重</strong>
             </div>
 
             <template v-if="carryChoice[pickerItem.id] !== 'cargo'">
               <div class="pk-label" style="margin-top:14px;">具体位置</div>
               <div class="pk-pos-grid">
-                <button v-for="p in availablePositions" :key="p.value"
+                <button
+v-for="p in availablePositions" :key="p.value"
                         :class="['pk-pos', { active: (itemPositions[pickerItem.id] || '背包') === p.value }]"
                         @click="itemPositions[pickerItem.id] = p.value">
                   <span class="pk-pos-icon">{{ p.icon }}</span>

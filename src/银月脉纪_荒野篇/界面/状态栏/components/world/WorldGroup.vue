@@ -42,7 +42,7 @@
 
     <div class="sec-hdr">🧭 四向地形</div>
     <div class="terrain-grid">
-      <div class="terrain-card" v-for="dir in directions" :key="dir.label">
+      <div v-for="dir in directions" :key="dir.label" class="terrain-card">
         <span class="t-icon">{{ dir.icon }}</span>
         <div>
           <div class="t-name"><span class="t-dir">{{ dir.label }}</span> {{ dir.desc }}</div>

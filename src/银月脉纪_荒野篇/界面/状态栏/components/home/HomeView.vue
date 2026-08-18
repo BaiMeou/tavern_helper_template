@@ -25,8 +25,8 @@
         <div class="lingli-track">
           <div class="lingli-fill" :style="{ width: 灵力条占比 + '%' }"></div>
           <div
-            class="lingli-peak"
             v-if="灵力峰值 > 灵力满格参考 * 0 + 50 && 灵力峰值 > 灵力值"
+            class="lingli-peak"
             :style="{ left: 灵力峰值占比 + '%' }"
             :title="`历史峰值 ${灵力峰值}`"
           ></div>
@@ -70,7 +70,7 @@
     </div>
 
     <!-- 今日近况 -->
-    <div class="today" v-if="latestLog"><b>「今日」</b>{{ latestLog }}</div>
+    <div v-if="latestLog" class="today"><b>「今日」</b>{{ latestLog }}</div>
 
     <!-- AI 操作记忆 -->
     <div v-if="recentOps.length && hasTimeProgression" class="oplog">
