@@ -1,18 +1,18 @@
 # 银月脉纪：荒野篇 — 完整交接文档
-> 生成时间: 2026-06-26 22:25
-> 上一 agent 模型: Claude Opus (GLM-5.2)
-> 当前分支: `feat/lingli-core-refactor` (领先 master 2 个提交)
-> PR: https://github.com/BaiMeou/tavern_helper_template/pull/1
-> 本地测试: 33 项全绿 (脚本12 + schema16 + 集成5)
-> 构建: 0 错
+
+> 生成时间: 2026-06-26 22:25上一 agent 模型: Claude Opus (GLM-5.2) 当前分支: `feat/lingli-core-refactor` (领先 master
+> 2 个提交) PR: https://github.com/BaiMeou/tavern_helper_template/pull/1 本地测试: 33 项全绿 (脚本12 +
+> schema16 + 集成5) 构建: 0 错
 
 ---
 
 ## 一、项目是什么
 
-这是一个 **酒馆助手 (SillyTavern) MVU 角色卡**：`银月脉纪：荒野篇`。玩家扮演 14 岁九尾白狐娘「晓光」，坠机后在荒野求生的生存 RPG 世界引擎。
+这是一个 **酒馆助手 (SillyTavern)
+MVU 角色卡**：`银月脉纪：荒野篇`。玩家扮演 14 岁九尾白狐娘「晓光」，坠机后在荒野求生的生存 RPG 世界引擎。
 
 **技术栈**：
+
 - Vue 3 + Pinia + webpack（前端界面）
 - Zod 4.x schema + `.transform()` 派生字段（变量结构）
 - 酒馆助手 MVU 框架（`@c1ae3a9` commit，CDN 加载）
@@ -20,16 +20,19 @@
 - 每条消息楼层有独立的 `stat_data` 变量
 
 **打包命令**：
+
 ```bash
 node tavern_sync.mjs bundle 银月脉纪_荒野篇   # → src/银月脉纪_荒野篇/银月脉纪_荒野篇.png
 ```
 
 **测试命令**：
+
 ```bash
 npm test   # → node _localtest/run-all.mjs（33 项测试）
 ```
 
 **构建命令**：
+
 ```bash
 npm run build   # webpack 编译前端 + 脚本 → dist/
 ```
@@ -115,6 +118,7 @@ D:\Desktop\tavern_helper_template-main\
 ## 三、schema.ts 核心变量结构
 
 ### 顶层结构（非 $ 字段，AI 可写）：
+
 ```
 stat_data
 ├── 晓光
@@ -162,6 +166,7 @@ stat_data
 ```
 
 ### Transform 派生字段（$ 开头，AI 不可写，schema 自动算）：
+
 ```
 $精神区间, $思维加速可用,
 $装备总重, $当前负重, $负重比, $负重速度修正, $移动速度总修正,
@@ -174,6 +179,7 @@ $灵力缓冲系数, $灵力等级, $灵力满格参考
 ```
 
 ### 关键设计决策：
+
 - **`z.string()` 替代 `z.enum()`**：描述性字段（庇护所类型、坡度、地表状况等）全部改为 string，AI 可写自由描述
 - **严格 enum 保留位置**：系统逻辑需要的枚举（时间.时段、天气、季节、衣物层次等）仍为 enum
 - **`.prefault()`**：每个字段都有默认值，空 parse 不报错
@@ -185,8 +191,9 @@ $灵力缓冲系数, $灵力等级, $灵力满格参考
 ## 四、脚本核心逻辑（系统辅助/index.ts）
 
 ### 事件监听器：
+
 ```typescript
-eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, handler)
+eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, handler);
 // AI 每次更新变量后触发，handler 接收 (variables) 参数
 // variables.stat_data 就是当前 stat_data（已应用 AI 的 JSONPatch）
 ```
@@ -207,13 +214,14 @@ eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, handler)
 3. **时间与代谢推进**（第 231-末尾）
    - 监听 `$推进时段`，合法值：`次日`/`黄昏`/`夜晚`
    - **灵力环境衰减/恢复**：按 `世界.地形.灵脉强度` 给灵力值增减
-     - 枯竭-8, 稀薄-3, 正常0, 丰沛+6, 灵脉交汇+12
-     - 未知描述按正常处理（不惩罚AI自由描述）
-     - 过夜额外有"休息回灵"：有庇护所+10, 无庇护所+2
-   - `次日`：天数+1, 时段=清晨, 代谢结算, 睡眠恢复, 伤口愈合, 食物腐败, 篝火熄灭, 陷阱判定
-   - `黄昏`/`夜晚`：单时段代谢消耗, 电子设备电量衰减(-2%)
-   - 非法值：写 `$前端操作` 反馈
-   - 最后清空 `$推进时段`
+
+- 枯竭-6, 稀薄-2, 正常0, 丰沛+4, 灵脉交汇+8
+- 未知描述按正常处理（不惩罚AI自由描述）
+- 过夜额外有"休息回灵"：有庇护所+6, 无庇护所+2
+- `次日`：天数+1, 时段=清晨, 代谢结算, 睡眠恢复, 伤口愈合, 食物腐败, 篝火熄灭, 陷阱判定
+- `黄昏`/`夜晚`：单时段代谢消耗, 电子设备电量衰减(-2%)
+- 非法值：写 `$前端操作` 反馈
+- 最后清空 `$推进时段`
 
 ---
 
@@ -233,30 +241,36 @@ watchIgnorable(data, ...) → updateVariablesWith → 写回 variables.stat_data
 ```
 
 ### 关键注意事项：
-- **setup.ts 中的 write 路径**：所有组件写 `_.set(store.data, 'xxx', yyy)`（不是 `_.set(store.data, 'stat_data.xxx', yyy)`，因为 store.data 已经是 stat_data 的根）
+
+- **setup.ts 中的 write 路径**：所有组件写 `_.set(store.data, 'xxx', yyy)`（不是
+  `_.set(store.data, 'stat_data.xxx', yyy)`，因为 store.data 已经是 stat_data 的根）
 - **ChoiceModal 触发机制**（已修复）：
   - 挂载时检查滞留的 `$前端选择`
   - 监听 `JSON.stringify($前端选择)` 变化（绕过 _.isEqual 短路）
   - 800ms 主动轮询兜底
 - **iframe 约束**：position:fixed 锚定到整个 iframe 文档，不用 vh 单位
-- **Polyfill**：SillyTavern iframe 缺少 Element/HTMLElement/SVGElement/MathMLElement/Storage/Node/CharacterData/Text/DocumentFragment 全局变量
+- **Polyfill**：SillyTavern
+  iframe 缺少 Element/HTMLElement/SVGElement/MathMLElement/Storage/Node/CharacterData/Text/DocumentFragment 全局变量
 
 ---
 
 ## 六、最近完成的 6 阶段重构
 
 ### 阶段2 — 去严格化 ✅
+
 - `庇护所.类型`/`防水性`/`防风性`/`床铺类型`：enum → string
 - `CampGroup.vue` 的 `isUnlocked` 接受任意非空非"无"的字符串
 - 累积负荷/地势/天气详情/水文/第六感/环境感知：描述性 enum → string（共约 20 个）
 
 ### 阶段4 — 修真 bug ✅
+
 - `StatusGroup.vue:14`：`t('当前位置')` 读 `世界.时间.当前位置`（不存在）→ 改读 `世界.地形.当前位置`
 - `ChoiceModal.vue`：弹窗不弹根因是 `util/mvu.ts` 2s 轮询的 `_.isEqual` 短路。修复：挂载即查+JSON序列化watch+800ms轮询
 - `ChoiceModal.vue`：新增双语义——`类型: '拾取'`（写物品栏）/ `'行动'`（只回传意图）
 - `探索系统.yaml`：教 AI 移动后更新地标距离
 
 ### 阶段1 — 灵力核心系统 ✅
+
 - **schema 新增**：`狐类特性.灵力值`(number≥0无上限)、`狐类特性.灵力峰值`(自动同步新高)、`世界.地形.灵脉强度`(string)
 - **transform 新增**：`$灵力等级`(枯竭/稀薄/充盈/旺盛/全盛)、`$恢复倍率`(0.5+灵力值/100)、`$灵力缓冲系数`(clamp(1-灵力值/200,0,1))、`$灵力满格参考`(max(峰值,当前值,50))
 - **灵力总开关**：负重惩罚×缓冲系数（200+归零）；散热×(0.6+0.4×系数)；恢复倍率连续
@@ -266,17 +280,20 @@ watchIgnorable(data, ...) → updateVariablesWith → 写回 variables.stat_data
 - **initvar**：`灵力值:8`（低开局/艰难起步）、`灵脉强度:稀薄`
 
 ### 阶段3 — 工坊重构 ✅
+
 - 删除脚本合成引擎（`$合成请求` handler, 原第 227-309 行）
 - 搜刮骰子：移除自动入栏和 `$待搜刮货舱` 关联，只产出完好度判定供 AI 叙事
 - `WorkshopGroup.vue`：删合成按钮+搜刮残骸按钮；配方改只读知识卡；加地点探索说明
 - `制作系统.yaml`/`前端交互系统.yaml`：AI 直接改物品栏（扣材料/加产物），不走触发器
 
 ### 阶段5 — 全量变量输出 ✅
+
 - `变量输出格式.yaml`：JSONPatch 增量 → 按顶层分组整体 replace（7 组：晓光/世界/装备/工坊/图鉴/营地/环境感知）
 - AI 每轮重审每个字段，没变的照原样写回，防止增量遗忘
 - `$` 派生字段不输出（schema transform 自动算），触发器按需 insert
 
 ### 附带修复 ✅
+
 - 保暖系数文案 0.5→0.6（热力学法则.yaml + preview.html，与 schema 一致）
 - `POS_CAPS` 三处重复合并为 schema 单源（`schema.ts` 导出 `POS_CAPS`/`POS_ICONS`，InventoryGroup/SetupWizard 导入）
 
@@ -287,6 +304,7 @@ watchIgnorable(data, ...) → updateVariablesWith → 写回 variables.stat_data
 位于 `src/银月脉纪_荒野篇/第一条消息/0.txt` 末尾。**这是唯一初始化数据源**。
 
 关键起始值：
+
 ```yaml
 晓光:
   基础属性: { 体质: 2, 敏捷: 2, 智力: 8, 意志: 4, 感知: 4 }
@@ -298,9 +316,9 @@ watchIgnorable(data, ...) → updateVariablesWith → 写回 variables.stat_data
   时间: { 天数: 0, 时段: 清晨, 天气: 阴 }
   地形: { 当前位置: 飞机残骸西侧——机身中部与驾驶舱之间, 灵脉强度: 稀薄 }
 装备:
-  物品栏: { 女式巫女服: {...}, 项圈铃铛: {...} }  # 巫女服保底
-  负重: { }  # 安全上限不写死（prefault=9，SetupWizard 公式覆盖）
-$已初始化: false  # SetupWizard 完成后写 true
+  物品栏: { 女式巫女服: { ... }, 项圈铃铛: { ... } } # 巫女服保底
+  负重: {} # 安全上限不写死（prefault=9，SetupWizard 公式覆盖）
+$已初始化: false # SetupWizard 完成后写 true
 ```
 
 标记顺序（重要！）：`<UpdateVariable><initvar>...</initvar></UpdateVariable>` 在 `<StatusPlaceHolderImpl/>` **之前**。
@@ -334,6 +352,7 @@ $已初始化: false  # SetupWizard 完成后写 true
 ## 九、玩家真实存档兼容性
 
 `_localtest/fixtures/real_save.json` 是玩家 30+ 轮的真实存档。3 个兼容性测试确保：
+
 1. 存档能 `parse` 不报错
 2. 庇护所类型保留（测试记录显示存档值是 `"无"`——AI 写的 "天然岩壁凹陷" 被旧 enum 拒绝）
 3. 物品栏/图鉴/伤口数量保留
@@ -345,9 +364,11 @@ $已初始化: false  # SetupWizard 完成后写 true
 ## 十、CDN 配置
 
 `index.yaml` 中的前端和脚本通过 jsDelivr CDN 加载：
+
 ```
 cdn.jsdelivr.net/gh/BaiMeou/tavern_helper_template@20b9083/dist/银月脉纪_荒野篇/...
 ```
+
 - 前端界面：`index.html`（iframe 加载）
 - 脚本（三个独立 entry）：
   - `脚本/变量结构/index.js`（导入 schema.ts → 预设声明）
@@ -418,6 +439,7 @@ PR: https://github.com/BaiMeou/tavern_helper_template/pull/1
 ## 十三、编码规则（从 CLAUDE.md 和 .cursor/rules 提取）
 
 ### 关键约束
+
 1. **酒馆助手前端界面**: Vue 3 + Pinia + webpack；`inject:'body'` HtmlWebpackPlugin 选项
 2. **iframe 约束**: position:fixed 锚定到整个 iframe 文档，不用 vh/vw 单位
 3. **Polyfill**: SillyTavern iframe 缺少全局变量，需要 force-override polyfill（已在 index.ts 中实现）
@@ -429,6 +451,7 @@ PR: https://github.com/BaiMeou/tavern_helper_template/pull/1
 9. **enum vs string**: 系统逻辑需要的保留 enum（时段/天气/季节等），描述性的改 string
 
 ### CDN hash 更新流程
+
 1. 改代码
 2. `git commit`
 3. `git log --oneline -1` → 拿新 hash
@@ -438,6 +461,7 @@ PR: https://github.com/BaiMeou/tavern_helper_template/pull/1
 7. `git push`
 
 ### 测试规范
+
 - 新功能必须配套测试（`_localtest/engine.test.mjs` 或 `schema.test.mjs`）
 - `baseData()` 函数提供最小可跑 stat_data
 - `boot()` 返回 harness → `h.fire({stat_data})` 触发脚本
