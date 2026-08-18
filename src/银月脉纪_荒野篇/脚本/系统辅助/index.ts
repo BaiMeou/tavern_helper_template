@@ -75,6 +75,17 @@ async function init() {
         _.set(variables, `stat_data.晓光.属性成长.${xpKey}`, remaining);
         toastr.success(`${名称} 升级！${level} → ${newLevel}`);
         console.info(`[系统辅助] ${名称}升级: ${level}→${newLevel}, XP余: ${remaining}`);
+        // ── 体质升级时同步更新负重安全上限（与 SetupWizard 公式一致）──
+        // 公式：50 × 0.3 × 0.6 × (1 + (体质-1) × 0.08)，钳到 5-15
+        if (名称 === '体质') {
+          const w = 50,
+            r = 0.3,
+            c = 0.6;
+          const m = 1 + (newLevel - 1) * 0.08;
+          const newLimit = Math.round(w * r * c * m * 10) / 10;
+          _.set(variables, 'stat_data.装备.负重.安全上限', newLimit);
+          console.info(`[系统辅助] 体质升级→安全上限更新: ${newLimit}kg`);
+        }
       }
       // ── 第三步：记录本轮基线（升级后的值，供下轮限流对比）──
       xpRecentGain[xpKey + ':prev'] = _.get(variables, `stat_data.晓光.属性成长.${xpKey}`, 0);

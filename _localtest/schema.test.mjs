@@ -6,15 +6,26 @@ import fs from 'fs';
 import path from 'path';
 import YAML from 'yaml';
 import { fileURLToPath } from 'url';
-globalThis._ = _; globalThis.z = Z.z ?? Z.default ?? Z;
+globalThis._ = _;
+globalThis.z = Z.z ?? Z.default ?? Z;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const mod = await import('file://' + path.join(ROOT, 'src/银月脉纪_荒野篇/schema.ts').replace(/\\/g, '/'));
 const Schema = mod.Schema;
 
-let pass = 0, fail = 0;
-const T = (name, fn) => { try { fn(); console.log('  ✅', name); pass++; } catch (e) { console.log('  ❌', name, '\n     ', e.message); fail++; } };
+let pass = 0,
+  fail = 0;
+const T = (name, fn) => {
+  try {
+    fn();
+    console.log('  ✅', name);
+    pass++;
+  } catch (e) {
+    console.log('  ❌', name, '\n     ', e.message);
+    fail++;
+  }
+};
 
 console.log('\n[schema 测试: 派生计算 + initvar 契约]');
 
@@ -42,7 +53,10 @@ T('0.txt initvar：可解析 + 巫女服保底', () => {
   const r = Schema.parse(initvar);
   assert.strictEqual(r.装备.穿着, '破损的巫女服', '穿着应为巫女服');
   assert(r.装备.衣物.巫女服, '应有巫女服衣物');
-  assert.strictEqual(Object.keys(r.装备.物品栏).length, 0, '开局物品栏空（玩家自选）');
+  // 开局有金属杆（叙事中晓光捡起的第一件工具），物品栏非空
+  assert.strictEqual(Object.keys(r.装备.物品栏).length, 1, '开局物品栏有金属杆');
+  assert(r.装备.物品栏.金属杆, '应有金属杆');
+  assert.strictEqual(r.装备.手持, '金属杆', '手持应为金属杆');
 });
 
 // ── 3. 派生计算：体感温度公式 ──
