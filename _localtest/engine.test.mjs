@@ -199,6 +199,21 @@ async function main() {
     );
   });
 
+  // ── 7. $玩家选择 自动清理：存在超过1轮后自动清空 ──
+  await T('玩家选择清理：存在超过1轮后自动清空', async () => {
+    const h = await boot();
+    const d = baseData();
+    // 第一轮：写入 $玩家选择
+    d.$玩家选择 = { 类型: '行动', 已选: [{ id: 'test', 名称: '测试' }], 时间: '第1天 清晨' };
+    let r = h.fire({ stat_data: d });
+    // 第一轮后 $玩家选择 应仍存在（给 AI 一轮读取时间）
+    assert(r.stat_data.$玩家选择 != null, `第一轮后 $玩家选择 应存在, 实际 ${r.stat_data.$玩家选择}`);
+    // 第二轮：不改变 $玩家选择（模拟 AI 没有清空它）
+    r = h.fire({ stat_data: r.stat_data });
+    // 第二轮后 $玩家选择 应被自动清空
+    assert(r.stat_data.$玩家选择 == null, `第二轮后 $玩家选择 应清空, 实际 ${r.stat_data.$玩家选择}`);
+  });
+
   console.log(`\n脚本引擎: ${pass} 通过, ${fail} 失败\n`);
   process.exitCode = fail ? 1 : 0;
 }
