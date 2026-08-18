@@ -23,21 +23,20 @@ async function init() {
 
   // ─── $玩家选择 自动清理：AI 读取后自动清空，防止残留 ───
   // 设计：前端 confirm() 写入 $玩家选择，AI 下一轮读取后应清理。
-  // 若 AI 忘记清理，此处在新一轮变量更新开始时自动清空（保留一轮供 AI 读取）。
+  // 若 AI 忘记清理，此处用轮次计数器延迟清空——给 AI 一轮读取时间。
+  let 玩家选择轮次 = 0;
   eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, (variables: any) => {
     if (!variables?.stat_data) return;
-    // $玩家选择 存在且本轮 AI 已做过其他更新（$前端操作 被写过或掷骰/推进已处理）→ 清空
     const 玩家选择 = variables.stat_data.$玩家选择;
-    const 前端操作 = variables.stat_data.$前端操作;
-    if (
-      玩家选择 &&
-      前端操作 &&
-      !String(前端操作).includes('玩家在') &&
-      !String(前端操作).includes('玩家从') &&
-      !String(前端操作).includes('玩家放弃')
-    ) {
-      // $前端操作 已被 AI 改写（不再是前端原始操作），说明 AI 已处理 → 清空 $玩家选择
-      _.set(variables, 'stat_data.$玩家选择', null);
+    if (玩家选择) {
+      玩家选择轮次++;
+      // $玩家选择 存在超过 1 轮 → AI 已有读取机会，清空防止残留
+      if (玩家选择轮次 >= 2) {
+        _.set(variables, 'stat_data.$玩家选择', null);
+        玩家选择轮次 = 0;
+      }
+    } else {
+      玩家选择轮次 = 0;
     }
   });
 
