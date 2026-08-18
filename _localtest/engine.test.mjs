@@ -139,6 +139,20 @@ async function main() {
     assert(gained === 50 || gained <= 8, `首轮行为记录: 实际 +${gained}`);
   });
 
+  // ── 5c. 体质升级时安全上限同步更新 ──
+  await T('体质升级：安全上限同步更新', async () => {
+    const h = await boot();
+    const d = baseData();
+    // 体质=2，给足够XP让体质升级到3：Lv2需100XP
+    d.晓光.属性成长.体质XP = 100;
+    d.装备.负重.安全上限 = 9;
+    const r = h.fire({ stat_data: d });
+    // 体质应升级到3
+    assert(r.stat_data.晓光.基础属性.体质 === 3, `体质应升级到3, 实际 ${r.stat_data.晓光.基础属性.体质}`);
+    // 安全上限应更新：50×0.3×0.6×(1+2×0.08)=10.44→round到10.4
+    assert(r.stat_data.装备.负重.安全上限 === 10.4, `安全上限应更新到10.4, 实际 ${r.stat_data.装备.负重.安全上限}`);
+  });
+
   // ── 6. 灵力环境衰减/恢复：脚本按灵脉强度在时间推进里给灵力值增减 ──
   await T('灵力环境：丰沛灵脉次日回灵（+4环境+过夜休息）', async () => {
     const h = await boot();
