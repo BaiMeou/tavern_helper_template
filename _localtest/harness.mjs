@@ -29,22 +29,51 @@ export function makeHarness({ seed = 1 } = {}) {
   const globals = {
     _,
     Math: Object.assign(Object.create(Math), { random: rand }),
-    Mvu: { events: { VARIABLE_UPDATE_ENDED: 'VARIABLE_UPDATE_ENDED', COMMAND_PARSED: 'COMMAND_PARSED', VARIABLE_UPDATE_STARTED: 'VARIABLE_UPDATE_STARTED' } },
-    eventOn: (evt, fn) => { (handlers[evt] ||= []).push(fn); },
+    Mvu: {
+      events: {
+        VARIABLE_UPDATE_ENDED: 'VARIABLE_UPDATE_ENDED',
+        COMMAND_PARSED: 'COMMAND_PARSED',
+        VARIABLE_UPDATE_STARTED: 'VARIABLE_UPDATE_STARTED',
+      },
+    },
+    eventOn: (evt, fn) => {
+      (handlers[evt] ||= []).push(fn);
+    },
     waitGlobalInitialized: async () => {},
-    errorCatched: (fn) => fn,
-    $: (fn) => { if (typeof fn === 'function') pending.push(Promise.resolve().then(fn)); return { ready: (f) => f && f() }; },
+    errorCatched: fn => fn,
+    $: fn => {
+      if (typeof fn === 'function') pending.push(Promise.resolve().then(fn));
+      return { ready: f => f && f() };
+    },
     toastr: new Proxy({}, { get: () => (msg, title) => toasts.push({ title, msg }) }),
-    console: { info: (...a) => logs.push(['info', ...a]), warn: (...a) => logs.push(['warn', ...a]), error: (...a) => logs.push(['error', ...a]), log: (...a) => logs.push(['log', ...a]) },
+    console: {
+      info: (...a) => logs.push(['info', ...a]),
+      warn: (...a) => logs.push(['warn', ...a]),
+      error: (...a) => logs.push(['error', ...a]),
+      log: (...a) => logs.push(['log', ...a]),
+    },
   };
 
-  return { handlers, toasts, logs, rand, globals,
+  return {
+    handlers,
+    toasts,
+    logs,
+    rand,
+    globals,
     // 等待脚本顶层 $(...) 注册的 async init 跑完（handler 注册完成）
-    async ready() { while (pending.length) { const p = pending.splice(0); await Promise.all(p); } },
+    async ready() {
+      while (pending.length) {
+        const p = pending.splice(0);
+        await Promise.all(p);
+      }
+    },
     // 触发一次 VARIABLE_UPDATE_ENDED：把 variables 依次过所有 handler
     fire(variables, old_variables) {
       for (const fn of handlers.VARIABLE_UPDATE_ENDED) fn(variables, old_variables);
       return variables;
+    },
+    getHandlers(evt) {
+      return handlers[evt] || [];
     },
   };
 }

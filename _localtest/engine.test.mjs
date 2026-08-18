@@ -214,6 +214,26 @@ async function main() {
     assert(r.stat_data.$玩家选择 == null, `第二轮后 $玩家选择 应清空, 实际 ${r.stat_data.$玩家选择}`);
   });
 
+  // ── 8. COMMAND_PARSED 过滤：AI 写前端字段应被拦截 ──
+  await T('命令过滤：拦截AI写$前端操作等前端字段', async () => {
+    const h = await boot();
+    await h.ready();
+    // 模拟 AI 发送写 $前端操作 的命令
+    const commands = [
+      { args: ['/$前端操作', '晓光烤了两条熏肉当早餐'] },
+      { args: ['/晓光/生存状态/饥饿', 60] },
+      { args: ['/$玩家选择', { 类型: '行动' }] },
+      { args: ['/世界/时间/时段', '中午'] },
+    ];
+    // 触发 COMMAND_PARSED handler
+    const handlers = h.getHandlers?.('COMMAND_PARSED') || [];
+    for (const fn of handlers) fn({}, commands);
+    // $前端操作 和 $玩家选择 命令应被删除，其余保留
+    assert.strictEqual(commands.length, 2, `应剩2条命令, 实际 ${commands.length}`);
+    assert(commands[0].args[0] === '/晓光/生存状态/饥饿', `第一条应为晓光.饥饿, 实际 ${commands[0].args[0]}`);
+    assert(commands[1].args[0] === '/世界/时间/时段', `第二条应为世界.时段, 实际 ${commands[1].args[0]}`);
+  });
+
   console.log(`\n脚本引擎: ${pass} 通过, ${fail} 失败\n`);
   process.exitCode = fail ? 1 : 0;
 }

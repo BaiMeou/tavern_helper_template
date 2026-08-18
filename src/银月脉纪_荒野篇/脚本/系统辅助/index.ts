@@ -21,6 +21,21 @@ const xpRecentGain: Record<string, number> = {};
 async function init() {
   await waitGlobalInitialized('Mvu');
 
+  // ─── 命令过滤：拦截 AI 写前端维护的 $ 字段 ───
+  // 这些字段只应由前端/引擎写入，AI 只读不写：
+  //   $前端操作、$玩家选择、$上次掷骰、$近期操作、$崩溃轮次、$已初始化
+  // AI 若误写（insert/replace/delta），在此拦截删除该命令，防止覆盖前端原始值。
+  const AI禁写字段 = ['$前端操作', '$玩家选择', '$上次掷骰', '$近期操作', '$崩溃轮次', '$已初始化'];
+  eventOn(Mvu.events.COMMAND_PARSED, (_variables: any, commands: any[]) => {
+    for (let i = commands.length - 1; i >= 0; i--) {
+      const path = commands[i]?.args?.[0] as string | undefined;
+      if (path && AI禁写字段.some(f => path.includes(f))) {
+        console.warn(`[系统辅助] 拦截 AI 写前端字段: ${path}`);
+        commands.splice(i, 1);
+      }
+    }
+  });
+
   // ─── $玩家选择 自动清理：AI 读取后自动清空，防止残留 ───
   // 设计：前端 confirm() 写入 $玩家选择，AI 下一轮读取后应清理。
   // 若 AI 忘记清理，此处用轮次计数器延迟清空——给 AI 一轮读取时间。
