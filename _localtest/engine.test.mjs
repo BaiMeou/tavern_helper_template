@@ -144,7 +144,7 @@ async function main() {
     const h = await boot();
     const d = baseData();
     // 体质=2，给足够XP让体质升级到3：Lv2需100XP
-    d.晓光.属性成长.体质XP = 100;
+    d.晓光.属性成长.体质XP = 115; // xpThreshold(2)=round(100*1.15)=115
     d.装备.负重.安全上限 = 9;
     const r = h.fire({ stat_data: d });
     // 体质应升级到3

@@ -183,6 +183,70 @@ export const Schema = z
             时间感知偏差: z.string().prefault('正常'),
           })
           .prefault({}),
+
+        // ── 心理状态：精神系统的层次化扩展（v4 新增）──
+        // 供状态页精神事件时间线、首页精神环深度展示。AI 在叙事中根据事件写入。
+        心理状态: z
+          .object({
+            心情: z.string().prefault('平静'),              // 建议：平静/紧张/恐惧/焦虑/安心/兴奋/绝望/思念
+            情绪强度: z.coerce.number().prefault(50).transform(v => _.clamp(v, 0, 100)),
+            社交需求: z.coerce.number().prefault(30).transform(v => _.clamp(v, 0, 100)),
+            压力源: z.array(z.string()).prefault([]),       // 当前压力来源列表
+            精神事件: z
+              .record(
+                z.string().describe('事件标识 D天 时段'),
+                z.object({
+                  内容: z.string(),
+                  类型: z.enum(['积极', '消极', '中性']).prefault('中性'),
+                  影响: z.string().prefault(''),            // 对精神的影响描述
+                  时间: z.string().prefault(''),            // D3 黄昏 等
+                }),
+              )
+              .prefault({}),
+          })
+          .prefault({}),
+
+        // ── 技能熟练度：与基础属性平行，反映实际操作经验（v4 新增）──
+        // 多次制作/狩猎/采集可提升熟练度，影响成功率。AI 在玩家重复操作时小幅增加。
+        技能熟练度: z
+          .object({
+            制作: z.coerce.number().prefault(1).transform(v => _.clamp(v, 1, 20)),
+            狩猎: z.coerce.number().prefault(1).transform(v => _.clamp(v, 1, 20)),
+            采集: z.coerce.number().prefault(1).transform(v => _.clamp(v, 1, 20)),
+            医疗: z.coerce.number().prefault(1).transform(v => _.clamp(v, 1, 20)),
+            生存: z.coerce.number().prefault(1).transform(v => _.clamp(v, 1, 20)),
+          })
+          .prefault({}),
+
+        // ── 任务/目标系统：AI 可给玩家短期目标（v4 新增）──
+        // 供首页推荐路线、任务追踪。AI 在剧情推进时写入/更新/完成。
+        任务: z
+          .record(
+            z.string().describe('任务标识'),
+            z.object({
+              描述: z.string(),
+              类型: z.enum(['探索', '采集', '狩猎', '制作', '生存', '主线', '支线']).prefault('生存'),
+              状态: z.enum(['进行中', '已完成', '失败', '已放弃']).prefault('进行中'),
+              进度: z.string().prefault(''),               // 自由描述进度
+              奖励: z.string().prefault(''),               // 完成后的收益描述
+            }),
+          )
+          .prefault({}),
+
+        // ── 关系/社交：遇到 NPC 或驯化动物时用（v4 新增）──
+        // 供图鉴页 NPC 标注、关系追踪。荒野篇主要是动物，但也可能遇到其他幸存者。
+        关系: z
+          .record(
+            z.string().describe('关系对象名'),
+            z.object({
+              类型: z.enum(['动物', 'NPC', '妖兽', '其他']).prefault('动物'),
+              好感度: z.coerce.number().prefault(0).transform(v => _.clamp(v, -100, 100)),
+              信任度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+              备注: z.string().prefault(''),
+              首次遭遇: z.string().prefault(''),
+            }),
+          )
+          .prefault({}),
       })
       .passthrough()
       .transform(data => {
@@ -259,6 +323,10 @@ export const Schema = z
             树冠覆盖率: z.coerce.number().prefault(65).transform(v => _.clamp(v, 0, 100)),
             气压趋势: z.string().prefault('稳定'),            // 建议：上升/稳定/下降
             光照明度: z.string().prefault('阴翳'),            // 建议：全暗/微光/阴翳/明亮/直射
+            // ── v4 新增：天气详情扩展 ──
+            风速等级: z.enum(['无风', '微风', '中风', '大风', '狂风', '暴风']).prefault('微风'),
+            降水概率: z.coerce.number().prefault(20).transform(v => _.clamp(v, 0, 100)),
+            日照强度: z.coerce.number().prefault(30).transform(v => _.clamp(v, 0, 100)),
           })
           .prefault({}),
 
@@ -281,6 +349,34 @@ export const Schema = z
             可见星座: z.string().prefault(''),
             夜间能见度: z.enum(['漆黑', '微光', '月光可辨', '明亮']).prefault('月光可辨'),
           })
+          .prefault({}),
+
+        // ── 环境感知：第六感的显式数据化（v4 新增）──
+        // 供世界页环境感知展示、首页环境威胁评级。AI 在探索/观察时写入。
+        环境感知: z
+          .object({
+            环境舒适度: z.coerce.number().prefault(50).transform(v => _.clamp(v, 0, 100)),
+            噪声等级: z.coerce.number().prefault(10).transform(v => _.clamp(v, 0, 100)),
+            气味强度: z.coerce.number().prefault(20).transform(v => _.clamp(v, 0, 100)),
+            威胁感: z.coerce.number().prefault(10).transform(v => _.clamp(v, 0, 100)),
+            灵力感知: z.string().prefault(''),              // 灵脉/妖气/异常感知
+          })
+          .prefault({}),
+
+        // ── 危险区域：已知危险点地图标注（v4 新增）──
+        // 供世界页手绘地图危险标注。AI 在发现危险时 insert。
+        危险区域: z
+          .record(
+            z.string().describe('危险区域名'),
+            z.object({
+              类型: z.enum(['野兽领地', '悬崖', '沼泽', '急流', '滑坡', '妖气', '其他']).prefault('其他'),
+              方位: z.string().prefault(''),               // 自由描述方位
+              距离: z.string().prefault(''),
+              威胁等级: z.enum(['低', '中', '高', '极高']).prefault('中'),
+              描述: z.string().prefault(''),
+              已确认: z.boolean().prefault(false),
+            }),
+          )
           .prefault({}),
       })
       .prefault({}),
@@ -402,6 +498,12 @@ export const Schema = z
             捕获物: z.string().prefault(''),
             布置天数: z.coerce.number().prefault(0),
             重置需求: z.string().prefault(''),
+            // ── v4 新增：捕获历史 ──
+            捕获历史: z.array(z.object({
+              时间: z.string().prefault(''),
+              捕获物: z.string().prefault(''),
+              结果: z.enum(['成功', '逃脱', '空']).prefault('空'),
+            })).prefault([]),
           }))
           .prefault({}),
       })
@@ -441,6 +543,9 @@ export const Schema = z
             发现地点: z.string(),
             季节: z.string(),
             采集数量: z.coerce.number().prefault(0),
+            // ── v4 新增：毒性标识 ──
+            毒性: z.enum(['安全', '微毒', '剧毒']).prefault('安全'),
+            中毒症状: z.string().prefault(''),
           }))
           .prefault({}),
 
@@ -455,7 +560,18 @@ export const Schema = z
           .prefault({}),
 
         日志: z
-          .record(z.string().describe('日期 第X天 HH:MM'), z.string())
+          .record(
+            z.string().describe('日期 第X天 HH:MM'),
+            z.union([
+              // 旧格式：纯字符串（向后兼容）
+              z.string().transform(s => ({ 内容: s, 类型: '其他' as const })),
+              // 新格式：带类型标签（v4 新增）
+              z.object({
+                内容: z.string(),
+                类型: z.enum(['探索', '采集', '狩猎', '制作', '战斗', '休息', '危机', '其他']).prefault('其他'),
+              }),
+            ]),
+          )
           .prefault({}),
       })
       .prefault({}),
@@ -507,6 +623,18 @@ export const Schema = z
             保质期剩余天: z.coerce.number(),
             腐败风险: z.enum(['安全', '需尽快食用', '即将腐败', '已腐败']).prefault('安全'),
           }))
+          .prefault({}),
+
+        // ── 营地建设状态：升级树数值反馈（v4 新增）──
+        // 供营地页升级树展示。AI 在玩家建设营地时更新。
+        建设状态: z
+          .object({
+            建设进度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+            防御度: z.enum(['无', '差', '一般', '好', '极好']).prefault('无'),
+            隐蔽度: z.coerce.number().prefault(0).transform(v => _.clamp(v, 0, 100)),
+            当前等级: z.string().prefault('无'),            // 无/临时/简易/加固/永久
+            下一级需求: z.string().prefault(''),            // 如"需木板×3"
+          })
           .prefault({}),
       })
       .prefault({}),
@@ -725,6 +853,83 @@ export const Schema = z
       $灵力缓冲系数: Math.round($灵力缓冲系数 * 100) / 100,
       $灵力等级,
       $灵力满格参考,
+
+      // ═══ v4 新增隐变量 — 先计算再 return（避免作用域问题）═══
+      ...(() => {
+        const 健康值 = data.晓光?.生存状态?.健康 ?? 75;
+        const 精力值 = data.晓光?.生存状态?.精力 ?? 50;
+        const 精神值 = data.晓光?.生存状态?.精神 ?? 75;
+        const 肌肉疲劳 = data.晓光?.疲劳?.肌肉疲劳 ?? 0;
+        const 伤口数 = Object.keys(data.晓光?.伤口 || {}).length;
+        const 严重伤口 = _(data.晓光?.伤口 || {}).values().filter((w: any) => w.严重度 === '严重' || w.严重度 === '危急').size();
+        const 疾病数 = Object.keys(data.晓光?.疾病 || {}).length;
+        const $总体健康评分 = _.clamp(Math.round(健康值 * 0.3 + 精力值 * 0.2 + 精神值 * 0.2 + (100 - 肌肉疲劳) * 0.1 - 伤口数 * 3 - 严重伤口 * 8 - 疾病数 * 5), 0, 100);
+
+        const 饥饿压力 = 100 - (data.晓光?.生存状态?.饥饿 ?? 85);
+        const 口渴压力 = 100 - (data.晓光?.生存状态?.口渴 ?? 55);
+        const 失温压力 = ($失温风险等级 === '极高' ? 25 : $失温风险等级 === '高' ? 18 : $失温风险等级 === '偏高' ? 10 : 0);
+        const 精神压力 = 精神值 < 25 ? 20 : 精神值 < 50 ? 10 : 0;
+        const $生存压力指数 = _.clamp(Math.round(饥饿压力 * 0.2 + 口渴压力 * 0.2 + (肌肉疲劳) * 0.15 + 伤口数 * 10 + 疾病数 * 8 + 失温压力 + 精神压力), 0, 100);
+
+        let 威胁分 = 0;
+        const 天气 = data.世界?.时间?.天气 ?? '阴';
+        if (['大雨', '暴风雨', '暴风雪'].includes(天气)) 威胁分 += 3; else if (['雪', '雾'].includes(天气)) 威胁分 += 2;
+        const 迷路 = data.世界?.地势?.迷路风险 ?? '低';
+        威胁分 += ({ '低': 0, '中': 1, '高': 2, '极高': 3 } as any)[迷路] ?? 0;
+        威胁分 += Object.keys(data.世界?.危险区域 || {}).length * 2;
+        威胁分 += Math.floor((data.世界?.环境感知?.威胁感 ?? 0) / 25);
+        const 时段 = data.世界?.时间?.时段 ?? '清晨';
+        if (时段 === '夜晚' || 时段 === '深夜') 威胁分 += 1;
+        const $环境威胁等级 = 威胁分 >= 7 ? '极高' : 威胁分 >= 5 ? '高' : 威胁分 >= 3 ? '中' : 威胁分 >= 1 ? '低' : '无';
+
+        const 庇护完整 = data.营地?.庇护所?.完整度 ?? 0;
+        const 庇护舒适 = data.营地?.庇护所?.舒适度 ?? 0;
+        const 火状态 = data.营地?.篝火?.状态 ?? '未点燃';
+        const 火加分 = ['旺盛', '点燃'].includes(火状态) ? 20 : ['衰减', '余烬'].includes(火状态) ? 8 : 0;
+        const 储水量 = _(data.营地?.储水 || {}).values().sumBy((w: any) => w.容量 || 0);
+        const 食物数 = Object.keys(data.营地?.食物库存 || {}).length;
+        const 建设进度 = data.营地?.建设状态?.建设进度 ?? 0;
+        const $营地舒适度 = _.clamp(Math.round(庇护完整 * 0.3 + 庇护舒适 * 3 + 火加分 + Math.min(15, Math.floor(储水量 * 10)) + Math.min(15, 食物数 * 5) + 建设进度 * 0.1), 0, 100);
+
+        const 物品列表 = Object.values(data.装备?.物品栏 || {}) as any[];
+        const 有耐久品 = 物品列表.filter((i: any) => i.耐久度 != null || i.破损度 != null);
+        const $装备完整度 = !有耐久品.length ? 100 : Math.round(有耐久品.reduce((s: number, i: any) => s + _.clamp(i.耐久度 ?? (100 - (i.破损度 ?? 0)), 0, 100), 0) / 有耐久品.length);
+
+        const 地标列表 = Object.values(data.世界?.地标 || {}) as any[];
+        const $探索价值 = 地标列表.filter((l: any) => !l.已探索).length * 2 + 地标列表.filter((l: any) => ['资源点', '采集点', '狩猎点'].includes(l.类型)).length;
+
+        const $今日代谢赤字 = Math.round((data.晓光?.营养代谢?.今日摄入?.卡路里 ?? 0) - (data.晓光?.营养代谢?.基础代谢率 ?? 1450) - 肌肉疲劳 * 5);
+        const $预计危机时间 = 健康值 > 30 ? Infinity : Math.round((健康值 / ($生存压力指数 > 70 ? 2 : $生存压力指数 > 50 ? 1 : 0.5)) * 60);
+
+        const 灵脉 = data.世界?.地形?.灵脉强度 ?? '正常';
+        const $灵力恢复速率 = Math.max(0, (灵脉 === '丰沛' ? 4 : 灵脉 === '灵脉交汇' ? 6 : 灵脉 === '正常' ? 2 : 灵脉 === '稀薄' ? 1 : 0) + (data.晓光?.狐类特性?.狐尾湿度 === '湿透' ? -1 : 0));
+        const $AI叙事压力 = _.clamp(Math.round($生存压力指数 * 0.6 + (精神值 < 25 ? 30 : 精神值 < 50 ? 15 : 0) + ($环境威胁等级 === '极高' ? 15 : $环境威胁等级 === '高' ? 8 : 0)), 0, 100);
+        const $热量收入 = 75 + 火补偿 * 10 + Math.round($总保暖值 * 5) + Math.round(庇护补偿 * 3);
+        const $热量散失 = $散热速率;
+
+        const issues: string[] = [];
+        if ($失温风险等级 === '极高' || $失温风险等级 === '高') issues.push('失温风险');
+        if ((data.晓光?.生存状态?.口渴 ?? 55) < 30) issues.push('严重缺水');
+        if ((data.晓光?.生存状态?.饥饿 ?? 85) < 25) issues.push('饥饿');
+        if (伤口数 > 0) issues.push('受伤');
+        if (疾病数 > 0) issues.push('疾病');
+        if (精神值 < 25) issues.push('精神崩溃');
+        const $状态诊断 = issues.length === 0 ? '状态稳定，注意保持' : issues.join('+') + '，需立即处理';
+
+        const $今日成就 = { 新物种: Object.keys(data.图鉴?.野兽 || {}).length, 新配方: _(data.工坊?.配方 || {}).values().filter((r: any) => r.已解锁).size(), 新地标: Object.keys(data.世界?.地标 || {}).length };
+
+        const 水源地标 = 地标列表.find((l: any) => l.类型 === '水源' && l.已探索);
+        const 庇护地标 = 地标列表.find((l: any) => l.类型 === '庇护所' && l.已探索);
+        const 未探索地标 = 地标列表.find((l: any) => !l.已探索);
+        const parts: string[] = [];
+        if (水源地标) parts.push(`前往${水源地标.名称}取水`);
+        if (庇护地标 && ($失温风险等级 === '高' || $失温风险等级 === '极高')) parts.push(`回${庇护地标.名称}生火取暖`);
+        if (未探索地标) parts.push(`探索${未探索地标.名称}`);
+        if (时段 === '黄昏' || 时段 === '夜晚') parts.push('夜间避免外出');
+        const $今日推荐路线 = parts.join(' → ') || '保持观察，等待时机';
+
+        return { $总体健康评分, $生存压力指数, $环境威胁等级, $营地舒适度, $装备完整度, $探索价值, $今日代谢赤字, $预计危机时间, $灵力恢复速率, $AI叙事压力, $热量收入, $热量散失, $状态诊断, $今日成就, $今日推荐路线 };
+      })(),
     };
   });
 

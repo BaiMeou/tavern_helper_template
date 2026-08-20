@@ -227,7 +227,7 @@ function close() {
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .modal-card {
   background: var(--bg); border: 3px double var(--border); border-radius: 8px;
-  padding: 16px; max-width: 480px; width: 100%; max-height: 80vh; overflow-y: auto;
+  padding: 16px; max-width: 480px; width: 100%; max-height: 80%; overflow-y: auto;
   box-shadow: var(--shadow-lg); animation: slide .25s cubic-bezier(.2,.8,.3,1);
 }
 @keyframes slide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

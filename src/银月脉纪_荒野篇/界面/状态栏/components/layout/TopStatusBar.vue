@@ -5,9 +5,11 @@
     <div class="time">{{ timeDisplay }}</div>
     <!-- 无手机条目时隐藏电量区；电量=0 表示手机关机 -->
     <div v-if="battery !== null" class="battery">
-      <span>{{ battery === 0 ? '📵 关机' : (battery < 10 ? '🪫 ' + battery + '%' : '🔋 ' + battery + '%') }}</span>
-      <div class="battery-fill">
-        <div class="battery-level" :style="{ width: battery + '%' }"></div>
+      <span :class="['bat-text', battery <= 20 ? 'low' : battery <= 50 ? 'medium' : '']">
+        {{ battery === 0 ? '📵 关机' : (battery < 10 ? '🪫 ' + battery + '%' : '🔋 ' + battery + '%') }}
+      </span>
+      <div class="battery-shell">
+        <div class="battery-level" :style="{ width: battery + '%' }" :class="{ low: battery <= 20, medium: battery > 20 && battery <= 50 }"></div>
       </div>
     </div>
   </div>
@@ -36,24 +38,79 @@ const timeDisplay = computed(() => {
 
 <style scoped>
 .top-bar {
-  background: var(--text);
+  background: linear-gradient(135deg, #2C2520, #1f1a17);
   color: var(--nav);
-  padding: 5px 14px;
+  padding: 6px 14px;
   font-size: 11px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  font-family: var(--font-data);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(44, 37, 32, 0.2);
+  position: relative;
+  z-index: 10;
 }
-.time { font-weight: bold; }
-.battery { display: flex; align-items: center; gap: 4px; }
-.battery-fill {
-  width: 15px; height: 8px;
+.top-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(234, 223, 201, 0.2), transparent);
+}
+.time {
+  font-weight: bold;
+  font-size: 12px;
+}
+.signal {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.85;
+}
+.battery {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.battery-shell {
+  width: 18px;
+  height: 9px;
   border: 1px solid var(--nav);
+  border-radius: 1px;
   padding: 1px;
+  position: relative;
+}
+.battery-shell::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 4px;
+  background: var(--nav);
+  border-radius: 0 1px 1px 0;
 }
 .battery-level {
   height: 100%;
-  background: var(--success);
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  border-radius: 1px;
+  transition: width 0.3s var(--ease-out), background 0.3s;
 }
+.battery-level.low {
+  background: linear-gradient(90deg, #b8403a, #e0493c);
+}
+.battery-level.medium {
+  background: linear-gradient(90deg, #b06f12, #e28f1b);
+}
+.bat-text {
+  min-width: 34px;
+  text-align: right;
+}
+.bat-text.low { color: #ff8a80; }
+.bat-text.medium { color: #ffd180; }
 </style>

@@ -268,14 +268,7 @@
             },
             "累积负荷": {
               "default": "疲惫",
-              "type": "string",
-              "enum": [
-                "轻松",
-                "正常",
-                "疲惫",
-                "透支",
-                "极限"
-              ]
+              "type": "string"
             }
           }
         },
@@ -291,6 +284,14 @@
                 "正常",
                 "充沛"
               ]
+            },
+            "灵力值": {
+              "default": 20,
+              "type": "number"
+            },
+            "灵力峰值": {
+              "default": 20,
+              "type": "number"
             },
             "狐尾湿度": {
               "default": "干燥",
@@ -310,7 +311,8 @@
                 "完全展开"
               ]
             }
-          }
+          },
+          "additionalProperties": {}
         },
         "生理状态": {
           "default": {},
@@ -385,15 +387,7 @@
             },
             "床铺类型": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "裸地",
-                "草垫",
-                "保温毯",
-                "帐篷",
-                "庇护所床铺"
-              ]
+              "type": "string"
             }
           }
         },
@@ -418,13 +412,7 @@
                     "type": "string"
                   },
                   "威胁评估": {
-                    "type": "string",
-                    "enum": [
-                      "无害",
-                      "注意",
-                      "警惕",
-                      "危险"
-                    ]
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -448,12 +436,7 @@
                     "type": "string"
                   },
                   "强度": {
-                    "type": "string",
-                    "enum": [
-                      "微弱",
-                      "明显",
-                      "浓烈"
-                    ]
+                    "type": "string"
                   },
                   "方向": {
                     "type": "string"
@@ -477,6 +460,182 @@
             "时间感知偏差": {
               "default": "正常",
               "type": "string"
+            }
+          }
+        },
+        "心理状态": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "心情": {
+              "default": "平静",
+              "type": "string"
+            },
+            "情绪强度": {
+              "default": 50,
+              "type": "number"
+            },
+            "社交需求": {
+              "default": 30,
+              "type": "number"
+            },
+            "压力源": {
+              "default": [],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "精神事件": {
+              "default": {},
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "description": "事件标识 D天 时段"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "内容": {
+                    "type": "string"
+                  },
+                  "类型": {
+                    "default": "中性",
+                    "type": "string",
+                    "enum": [
+                      "积极",
+                      "消极",
+                      "中性"
+                    ]
+                  },
+                  "影响": {
+                    "default": "",
+                    "type": "string"
+                  },
+                  "时间": {
+                    "default": "",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "内容"
+                ]
+              }
+            }
+          }
+        },
+        "技能熟练度": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "制作": {
+              "default": 1,
+              "type": "number"
+            },
+            "狩猎": {
+              "default": 1,
+              "type": "number"
+            },
+            "采集": {
+              "default": 1,
+              "type": "number"
+            },
+            "医疗": {
+              "default": 1,
+              "type": "number"
+            },
+            "生存": {
+              "default": 1,
+              "type": "number"
+            }
+          }
+        },
+        "任务": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "任务标识"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "描述": {
+                "type": "string"
+              },
+              "类型": {
+                "default": "生存",
+                "type": "string",
+                "enum": [
+                  "探索",
+                  "采集",
+                  "狩猎",
+                  "制作",
+                  "生存",
+                  "主线",
+                  "支线"
+                ]
+              },
+              "状态": {
+                "default": "进行中",
+                "type": "string",
+                "enum": [
+                  "进行中",
+                  "已完成",
+                  "失败",
+                  "已放弃"
+                ]
+              },
+              "进度": {
+                "default": "",
+                "type": "string"
+              },
+              "奖励": {
+                "default": "",
+                "type": "string"
+              }
+            },
+            "required": [
+              "描述"
+            ]
+          }
+        },
+        "关系": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "关系对象名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "类型": {
+                "default": "动物",
+                "type": "string",
+                "enum": [
+                  "动物",
+                  "NPC",
+                  "妖兽",
+                  "其他"
+                ]
+              },
+              "好感度": {
+                "default": 0,
+                "type": "number"
+              },
+              "信任度": {
+                "default": 0,
+                "type": "number"
+              },
+              "备注": {
+                "default": "",
+                "type": "string"
+              },
+              "首次遭遇": {
+                "default": "",
+                "type": "string"
+              }
             }
           }
         }
@@ -572,6 +731,10 @@
             "西方": {
               "default": "",
               "type": "string"
+            },
+            "灵脉强度": {
+              "default": "正常",
+              "type": "string"
             }
           }
         },
@@ -581,38 +744,15 @@
           "properties": {
             "坡度": {
               "default": "缓坡",
-              "type": "string",
-              "enum": [
-                "平坦",
-                "缓坡",
-                "中坡",
-                "陡坡",
-                "悬崖"
-              ]
+              "type": "string"
             },
             "地表类型": {
               "default": "针叶铺地",
-              "type": "string",
-              "enum": [
-                "碎石",
-                "泥地",
-                "草地",
-                "针叶铺地",
-                "雪地",
-                "岩石",
-                "沙地"
-              ]
+              "type": "string"
             },
             "路径质量": {
               "default": "开阔",
-              "type": "string",
-              "enum": [
-                "无路",
-                "兽径",
-                "小路",
-                "清晰路径",
-                "开阔"
-              ]
+              "type": "string"
             },
             "迷路风险": {
               "default": "低",
@@ -723,15 +863,7 @@
             },
             "地表状况": {
               "default": "微湿",
-              "type": "string",
-              "enum": [
-                "干燥",
-                "微湿",
-                "泥泞",
-                "冻结",
-                "积雪",
-                "冰面"
-              ]
+              "type": "string"
             },
             "树冠覆盖率": {
               "default": 65,
@@ -739,23 +871,31 @@
             },
             "气压趋势": {
               "default": "稳定",
-              "type": "string",
-              "enum": [
-                "上升",
-                "稳定",
-                "下降"
-              ]
+              "type": "string"
             },
             "光照明度": {
               "default": "阴翳",
+              "type": "string"
+            },
+            "风速等级": {
+              "default": "微风",
               "type": "string",
               "enum": [
-                "全暗",
-                "微光",
-                "阴翳",
-                "明亮",
-                "直射"
+                "无风",
+                "微风",
+                "中风",
+                "大风",
+                "狂风",
+                "暴风"
               ]
+            },
+            "降水概率": {
+              "default": 20,
+              "type": "number"
+            },
+            "日照强度": {
+              "default": 30,
+              "type": "number"
             }
           }
         },
@@ -765,35 +905,15 @@
           "properties": {
             "溪流水位": {
               "default": "低位",
-              "type": "string",
-              "enum": [
-                "干涸",
-                "枯水",
-                "低位",
-                "正常",
-                "高位",
-                "泛滥"
-              ]
+              "type": "string"
             },
             "流速": {
               "default": "缓慢",
-              "type": "string",
-              "enum": [
-                "静止",
-                "缓慢",
-                "中等",
-                "湍急"
-              ]
+              "type": "string"
             },
             "浑浊度": {
               "default": "微浊",
-              "type": "string",
-              "enum": [
-                "清澈",
-                "微浊",
-                "浑浊",
-                "泥浆"
-              ]
+              "type": "string"
             },
             "水生生物": {
               "default": "",
@@ -801,13 +921,7 @@
             },
             "地下水可获取性": {
               "default": "需深挖",
-              "type": "string",
-              "enum": [
-                "不可及",
-                "需深挖",
-                "浅挖可得",
-                "地表渗出"
-              ]
+              "type": "string"
             },
             "雨水收集效率": {
               "default": 0,
@@ -854,6 +968,84 @@
                 "月光可辨",
                 "明亮"
               ]
+            }
+          }
+        },
+        "环境感知": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "环境舒适度": {
+              "default": 50,
+              "type": "number"
+            },
+            "噪声等级": {
+              "default": 10,
+              "type": "number"
+            },
+            "气味强度": {
+              "default": 20,
+              "type": "number"
+            },
+            "威胁感": {
+              "default": 10,
+              "type": "number"
+            },
+            "灵力感知": {
+              "default": "",
+              "type": "string"
+            }
+          }
+        },
+        "危险区域": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "危险区域名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "类型": {
+                "default": "其他",
+                "type": "string",
+                "enum": [
+                  "野兽领地",
+                  "悬崖",
+                  "沼泽",
+                  "急流",
+                  "滑坡",
+                  "妖气",
+                  "其他"
+                ]
+              },
+              "方位": {
+                "default": "",
+                "type": "string"
+              },
+              "距离": {
+                "default": "",
+                "type": "string"
+              },
+              "威胁等级": {
+                "default": "中",
+                "type": "string",
+                "enum": [
+                  "低",
+                  "中",
+                  "高",
+                  "极高"
+                ]
+              },
+              "描述": {
+                "default": "",
+                "type": "string"
+              },
+              "已确认": {
+                "default": false,
+                "type": "boolean"
+              }
             }
           }
         }
@@ -1299,6 +1491,32 @@
               "重置需求": {
                 "default": "",
                 "type": "string"
+              },
+              "捕获历史": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "时间": {
+                      "default": "",
+                      "type": "string"
+                    },
+                    "捕获物": {
+                      "default": "",
+                      "type": "string"
+                    },
+                    "结果": {
+                      "default": "空",
+                      "type": "string",
+                      "enum": [
+                        "成功",
+                        "逃脱",
+                        "空"
+                      ]
+                    }
+                  }
+                }
               }
             },
             "required": [
@@ -1441,6 +1659,19 @@
               "采集数量": {
                 "default": 0,
                 "type": "number"
+              },
+              "毒性": {
+                "default": "安全",
+                "type": "string",
+                "enum": [
+                  "安全",
+                  "微毒",
+                  "剧毒"
+                ]
+              },
+              "中毒症状": {
+                "default": "",
+                "type": "string"
               }
             },
             "required": [
@@ -1504,7 +1735,36 @@
             "description": "日期 第X天 HH:MM"
           },
           "additionalProperties": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "内容": {
+                    "type": "string"
+                  },
+                  "类型": {
+                    "default": "其他",
+                    "type": "string",
+                    "enum": [
+                      "探索",
+                      "采集",
+                      "狩猎",
+                      "制作",
+                      "战斗",
+                      "休息",
+                      "危机",
+                      "其他"
+                    ]
+                  }
+                },
+                "required": [
+                  "内容"
+                ]
+              }
+            ]
           }
         }
       }
@@ -1519,16 +1779,7 @@
           "properties": {
             "类型": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "临时草铺",
-                "狐尾裹身",
-                "保温毯帐篷",
-                "天然岩洞",
-                "木架帐篷",
-                "加固庇护所"
-              ]
+              "type": "string"
             },
             "完整度": {
               "default": 0,
@@ -1540,25 +1791,11 @@
             },
             "防水性": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "差",
-                "一般",
-                "好",
-                "极好"
-              ]
+              "type": "string"
             },
             "防风性": {
               "default": "无",
-              "type": "string",
-              "enum": [
-                "无",
-                "差",
-                "一般",
-                "好",
-                "极好"
-              ]
+              "type": "string"
             },
             "内部温差": {
               "default": 0,
@@ -1700,6 +1937,39 @@
               "保质期剩余天"
             ]
           }
+        },
+        "建设状态": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "建设进度": {
+              "default": 0,
+              "type": "number"
+            },
+            "防御度": {
+              "default": "无",
+              "type": "string",
+              "enum": [
+                "无",
+                "差",
+                "一般",
+                "好",
+                "极好"
+              ]
+            },
+            "隐蔽度": {
+              "default": 0,
+              "type": "number"
+            },
+            "当前等级": {
+              "default": "无",
+              "type": "string"
+            },
+            "下一级需求": {
+              "default": "",
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -1713,25 +1983,11 @@
           "properties": {
             "环境噪声音量": {
               "default": "安静",
-              "type": "string",
-              "enum": [
-                "死寂",
-                "安静",
-                "轻微",
-                "正常",
-                "嘈杂"
-              ]
+              "type": "string"
             },
             "晓光自身噪音": {
               "default": "轻微",
-              "type": "string",
-              "enum": [
-                "无声",
-                "极低",
-                "轻微",
-                "明显",
-                "嘈杂"
-              ]
+              "type": "string"
             },
             "可闻距离": {
               "default": 150,
@@ -1749,14 +2005,7 @@
             },
             "晓光自身气味强度": {
               "default": "轻微",
-              "type": "string",
-              "enum": [
-                "无",
-                "微弱",
-                "轻微",
-                "明显",
-                "浓烈"
-              ]
+              "type": "string"
             },
             "嗅觉可追踪距离": {
               "default": 80,
