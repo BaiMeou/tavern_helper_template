@@ -1,6 +1,10 @@
 import { StoreDefinition } from 'pinia';
 
+<<<<<<< HEAD
 export function defineMvuDataStore<T extends z.ZodType>(
+=======
+export function defineMvuDataStore<T extends z.ZodObject>(
+>>>>>>> a3cb78b63bdf702a635b6e770e4a9bba040fb8b5
   schema: T,
   variable_option: VariableOption,
   additional_setup?: (data: Ref<z.infer<T>>) => void,
